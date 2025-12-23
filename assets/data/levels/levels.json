@@ -1,0 +1,70 @@
+{
+  "levels": [
+    {
+      "id": 1,
+      "name": "Tutorial Level",
+      "description": "Learn the basic mechanics of movement, jumping, and ball throwing",
+      "unlocked": true,
+      "dataPath": "data/levels/level_1.json",
+      "difficulty": 1,
+      "estimatedTime": 3,
+      "preview": {
+        "tileCount": 13,
+        "elementCount": 1,
+        "hasElevator": true,
+        "hasDestructibleTiles": true
+      }
+    },
+    {
+      "id": 2,
+      "name": "Construction Site",
+      "description": "Navigate through the construction site obstacles",
+      "unlocked": false,
+      "dataPath": "data/levels/level_2.json",
+      "difficulty": 2,
+      "estimatedTime": 5,
+      "preview": {
+        "tileCount": 25,
+        "elementCount": 2,
+        "hasElevator": true,
+        "hasDestructibleTiles": true
+      }
+    },
+    {
+      "id": 3,
+      "name": "High Rise Challenge",
+      "description": "Climb the high rise building using elevators and springs",
+      "unlocked": false,
+      "dataPath": "data/levels/level_3.json",
+      "difficulty": 3,
+      "estimatedTime": 8,
+      "preview": {
+        "tileCount": 40,
+        "elementCount": 4,
+        "hasElevator": true,
+        "hasDestructibleTiles": true
+      }
+    },
+    {
+      "id": 4,
+      "name": "Final Tower",
+      "description": "Conquer the final tower in this ultimate challenge",
+      "unlocked": false,
+      "dataPath": "data/levels/level_4.json",
+      "difficulty": 5,
+      "estimatedTime": 12,
+      "preview": {
+        "tileCount": 60,
+        "elementCount": 6,
+        "hasElevator": true,
+        "hasDestructibleTiles": true
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "totalLevels": 4,
+    "convertedFrom": "godot_hard_hat",
+    "lastUpdated": "2024-12-22"
+  }
+}

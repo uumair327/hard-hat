@@ -1,0 +1,69 @@
+{
+  "name": "game",
+  "sprites": [
+    {
+      "name": "idle",
+      "path": "images/sprites/game/player/idle.png",
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "run",
+      "path": "images/sprites/game/player/run.png",
+      "x": 32,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "jump",
+      "path": "images/sprites/game/player/jump.png",
+      "x": 64,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "fall",
+      "path": "images/sprites/game/player/fall.png",
+      "x": 96,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "peak",
+      "path": "images/sprites/game/player/peak.png",
+      "x": 128,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "aim",
+      "path": "images/sprites/game/player/aim.png",
+      "x": 160,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "strike",
+      "path": "images/sprites/game/player/strike.png",
+      "x": 192,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "death",
+      "path": "images/sprites/game/player/death.png",
+      "x": 224,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    }
+  ]
+}

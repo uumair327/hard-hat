@@ -1,0 +1,68 @@
+{
+  "name": "particles",
+  "sprites": [
+    {
+      "name": "star_particle",
+      "path": "images/sprites/game/particles/star_particle.svg",
+      "x": 0,
+      "y": 0,
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "step_particle",
+      "path": "images/sprites/game/particles/step_particle.svg",
+      "x": 8,
+      "y": 0,
+      "width": 4,
+      "height": 4
+    },
+    {
+      "name": "dust_particle",
+      "path": "images/sprites/game/particles/dust_particle.png",
+      "x": 12,
+      "y": 0,
+      "width": 4,
+      "height": 4
+    },
+    {
+      "name": "wood_chip",
+      "path": "images/sprites/game/particles/wood_chip.png",
+      "x": 16,
+      "y": 0,
+      "width": 6,
+      "height": 6
+    },
+    {
+      "name": "brick_fragment",
+      "path": "images/sprites/game/particles/brick_fragment.png",
+      "x": 22,
+      "y": 0,
+      "width": 8,
+      "height": 6
+    },
+    {
+      "name": "metal_spark",
+      "path": "images/sprites/game/particles/metal_spark.png",
+      "x": 30,
+      "y": 0,
+      "width": 4,
+      "height": 8
+    },
+    {
+      "name": "smoke_puff",
+      "path": "images/sprites/game/particles/smoke_puff.png",
+      "x": 0,
+      "y": 8,
+      "width": 16,
+      "height": 16
+    }
+  ],
+  "animations": {
+    "impact_burst": ["star_particle", "dust_particle"],
+    "wood_break": ["wood_chip", "dust_particle"],
+    "brick_break": ["brick_fragment", "dust_particle"],
+    "metal_impact": ["metal_spark", "star_particle"],
+    "step_effect": ["step_particle", "dust_particle"]
+  }
+}

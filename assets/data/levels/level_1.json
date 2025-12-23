@@ -1,0 +1,153 @@
+{
+  "id": 1,
+  "name": "Tutorial Level",
+  "description": "Learn the basic mechanics of movement, jumping, and ball throwing",
+  "size": {
+    "x": 2400,
+    "y": 800
+  },
+  "playerSpawn": {
+    "x": -288,
+    "y": 32
+  },
+  "cameraMin": {
+    "x": -400,
+    "y": -300
+  },
+  "cameraMax": {
+    "x": 2000,
+    "y": 500
+  },
+  "tiles": [
+    {"position": {"x": -320, "y": 0}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": -288, "y": 0}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": -256, "y": 0}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": -224, "y": 0}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": -192, "y": 0}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": -160, "y": 0}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": -128, "y": 0}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": -320, "y": -32}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": -288, "y": -32}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": -256, "y": -32}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": -224, "y": -32}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": -192, "y": -32}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": -160, "y": -32}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": -128, "y": -32}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 480, "y": 64}, "type": "timber", "durability": 2, "maxDurability": 2, "isDestructible": true},
+    {"position": {"x": 512, "y": 64}, "type": "timber", "durability": 2, "maxDurability": 2, "isDestructible": true},
+    {"position": {"x": 544, "y": 64}, "type": "bricks", "durability": 3, "maxDurability": 3, "isDestructible": true},
+    {"position": {"x": 576, "y": 64}, "type": "bricks", "durability": 3, "maxDurability": 3, "isDestructible": true},
+    {"position": {"x": 736, "y": 32}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 768, "y": 32}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1200, "y": 96}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": 1232, "y": 96}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": 1264, "y": 96}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": 1296, "y": 96}, "type": "scaffolding", "durability": 1, "maxDurability": 1, "isDestructible": true},
+    {"position": {"x": 0, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 32, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 64, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 96, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 128, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 160, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 192, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 224, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 256, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 288, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 320, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 352, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 384, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 416, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 448, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 800, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 832, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 864, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 896, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 928, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 960, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 992, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1024, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1056, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1088, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1120, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1152, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1184, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1328, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1360, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1392, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1424, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1456, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1488, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1520, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1552, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1584, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1616, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1648, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1680, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1712, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1744, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1776, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1808, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1840, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1872, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1904, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1936, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 1968, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 2000, "y": 0}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 2496, "y": 64}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 2528, "y": 64}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 2560, "y": 64}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false},
+    {"position": {"x": 2592, "y": 64}, "type": "beam", "durability": -1, "maxDurability": -1, "isDestructible": false}
+  ],
+  "elements": [
+    {
+      "type": "elevator",
+      "position": {"x": 2544, "y": 96},
+      "properties": {
+        "speed": 2.0,
+        "range": 160.0
+      }
+    }
+  ],
+  "segments": [
+    {
+      "id": 0,
+      "bounds": {
+        "min": {"x": -400, "y": -300},
+        "max": {"x": 400, "y": 300}
+      }
+    },
+    {
+      "id": 1,
+      "bounds": {
+        "min": {"x": 352, "y": -300},
+        "max": {"x": 1152, "y": 300}
+      }
+    },
+    {
+      "id": 2,
+      "bounds": {
+        "min": {"x": 1120, "y": -300},
+        "max": {"x": 1920, "y": 300}
+      }
+    },
+    {
+      "id": 3,
+      "bounds": {
+        "min": {"x": 1888, "y": -300},
+        "max": {"x": 2688, "y": 300}
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "type": "reach_elevator",
+      "description": "Reach the elevator to complete the level",
+      "position": {"x": 2544, "y": 96}
+    }
+  ],
+  "metadata": {
+    "converted_from": "godot_level_1",
+    "difficulty": 1,
+    "estimated_time": 3
+  }
+}

@@ -1,0 +1,28 @@
+[gd_scene load_steps=9 format=3 uid="uid://bsthyeg64jidb"]
+
+[ext_resource type="Script" path="res://game/main.gd" id="1_3mn24"]
+[ext_resource type="PackedScene" uid="uid://btx2vr3g068xy" path="res://game/core/sandbox.tscn" id="2_0yo7a"]
+[ext_resource type="PackedScene" uid="uid://dn2m0dp8mxgou" path="res://game/menu/main_menu.tscn" id="2_e67h5"]
+[ext_resource type="PackedScene" uid="uid://bcirwvmld7mew" path="res://game/menu/pause_menu.tscn" id="4_2utbm"]
+[ext_resource type="PackedScene" uid="uid://6ybnsoagwp76" path="res://game/menu/transition.tscn" id="5_7bqwy"]
+[ext_resource type="PackedScene" uid="uid://cxqdrp1vkku0b" path="res://game/menu/splash.tscn" id="6_heoa3"]
+[ext_resource type="PackedScene" uid="uid://dm40hr0aknmyy" path="res://game/menu/comic/intro.tscn" id="7_4lui5"]
+[ext_resource type="PackedScene" uid="uid://rhp45d4nqcrm" path="res://game/menu/comic/outro.tscn" id="8_wo8ff"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_3mn24")
+sandbox = ExtResource("2_0yo7a")
+main_menu = ExtResource("2_e67h5")
+pause_menu = ExtResource("4_2utbm")
+transition = ExtResource("5_7bqwy")
+splash = ExtResource("6_heoa3")
+intro = ExtResource("7_4lui5")
+outro = ExtResource("8_wo8ff")
+
+[node name="Transition" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="GameUI" type="CanvasLayer" parent="."]

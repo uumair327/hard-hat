@@ -1,0 +1,135 @@
+{
+  "id": 2,
+  "name": "Construction Site",
+  "size": {
+    "x": 1200,
+    "y": 800
+  },
+  "playerSpawn": {
+    "x": 50,
+    "y": 700
+  },
+  "cameraMin": {
+    "x": 0,
+    "y": 0
+  },
+  "cameraMax": {
+    "x": 1200,
+    "y": 800
+  },
+  "tiles": [
+    {
+      "position": {
+        "x": 300,
+        "y": 600
+      },
+      "type": "scaffolding",
+      "durability": 1,
+      "maxDurability": 1,
+      "isDestructible": true
+    },
+    {
+      "position": {
+        "x": 332,
+        "y": 600
+      },
+      "type": "scaffolding",
+      "durability": 1,
+      "maxDurability": 1,
+      "isDestructible": true
+    },
+    {
+      "position": {
+        "x": 364,
+        "y": 600
+      },
+      "type": "scaffolding",
+      "durability": 1,
+      "maxDurability": 1,
+      "isDestructible": true
+    },
+    {
+      "position": {
+        "x": 300,
+        "y": 568
+      },
+      "type": "timber",
+      "durability": 2,
+      "maxDurability": 2,
+      "isDestructible": true
+    },
+    {
+      "position": {
+        "x": 332,
+        "y": 568
+      },
+      "type": "timber",
+      "durability": 2,
+      "maxDurability": 2,
+      "isDestructible": true
+    },
+    {
+      "position": {
+        "x": 364,
+        "y": 568
+      },
+      "type": "timber",
+      "durability": 2,
+      "maxDurability": 2,
+      "isDestructible": true
+    },
+    {
+      "position": {
+        "x": 300,
+        "y": 536
+      },
+      "type": "bricks",
+      "durability": 3,
+      "maxDurability": 3,
+      "isDestructible": true
+    },
+    {
+      "position": {
+        "x": 332,
+        "y": 536
+      },
+      "type": "bricks",
+      "durability": 3,
+      "maxDurability": 3,
+      "isDestructible": true
+    },
+    {
+      "position": {
+        "x": 364,
+        "y": 536
+      },
+      "type": "bricks",
+      "durability": 3,
+      "maxDurability": 3,
+      "isDestructible": true
+    }
+  ],
+  "elements": [
+    {
+      "type": "elevator",
+      "position": {
+        "x": 500,
+        "y": 700
+      },
+      "properties": {
+        "speed": 50,
+        "range": 200
+      }
+    },
+    {
+      "type": "spring",
+      "position": {
+        "x": 800,
+        "y": 700
+      },
+      "properties": {
+        "force": 300
+      }
+    }
+  ]
+}

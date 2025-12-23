@@ -1,0 +1,109 @@
+{
+  "name": "tiles",
+  "sprites": [
+    {
+      "name": "scaffolding",
+      "path": "images/sprites/tiles/scaffolding.png",
+      "x": 0,
+      "y": 0,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "timber",
+      "path": "images/sprites/tiles/timber.png",
+      "x": 64,
+      "y": 0,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "timber_one_hit",
+      "path": "images/sprites/tiles/timber_one_hit.png",
+      "x": 128,
+      "y": 0,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "bricks",
+      "path": "images/sprites/tiles/bricks.png",
+      "x": 192,
+      "y": 0,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "bricks_one_hit",
+      "path": "images/sprites/tiles/bricks_one_hit.png",
+      "x": 256,
+      "y": 0,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "bricks_two_hits",
+      "path": "images/sprites/tiles/bricks_two_hits.png",
+      "x": 320,
+      "y": 0,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "beam",
+      "path": "images/sprites/tiles/beam.png",
+      "x": 0,
+      "y": 64,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "girder",
+      "path": "images/sprites/tiles/girder.png",
+      "x": 64,
+      "y": 64,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "support",
+      "path": "images/sprites/tiles/support.png",
+      "x": 128,
+      "y": 64,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "spring",
+      "path": "images/sprites/tiles/spring.png",
+      "x": 192,
+      "y": 64,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "elevator",
+      "path": "images/sprites/tiles/elevator.png",
+      "x": 256,
+      "y": 64,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "spikes",
+      "path": "images/sprites/tiles/spikes.png",
+      "x": 320,
+      "y": 64,
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "shutter",
+      "path": "images/sprites/tiles/shutter.png",
+      "x": 0,
+      "y": 128,
+      "width": 64,
+      "height": 64
+    }
+  ]
+}
