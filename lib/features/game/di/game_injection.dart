@@ -2,7 +2,6 @@ import 'package:get_it/get_it.dart';
 import 'package:hard_hat/features/game/domain/domain.dart';
 import 'package:hard_hat/features/game/data/data.dart';
 import 'package:hard_hat/features/game/presentation/presentation.dart';
-import 'package:hard_hat/core/services/audio_manager.dart';
 
 /// Game-specific dependency injection configuration
 /// This maintains proper separation from core dependencies
@@ -11,6 +10,12 @@ class GameInjection {
 
   /// Initialize game-specific dependencies
   static Future<void> initializeGameDependencies() async {
+    // Check if already initialized to prevent duplicate registrations
+    // Use GameBloc as marker since it's only registered in game injection
+    if (_sl.isRegistered<GameBloc>()) {
+      return; // Already initialized
+    }
+    
     // Game Data Layer
     _sl.registerLazySingleton<LevelLocalDataSource>(() => LevelLocalDataSourceImpl());
     _sl.registerLazySingleton<SaveLocalDataSource>(() => SaveLocalDataSourceImpl());
@@ -23,17 +28,12 @@ class GameInjection {
     _sl.registerLazySingleton<LoadLevel>(() => LoadLevelImpl(_sl()));
     _sl.registerLazySingleton<SaveProgress>(() => SaveProgressImpl(_sl()));
     
-    // Game Domain Services
-    _sl.registerLazySingleton<IEntityManager>(() => EntityManagerImpl());
+    // Game Domain Services (only register what's not already in manual injection)
     _sl.registerLazySingleton<IMovementSystem>(() => MovementSystem());
     _sl.registerLazySingleton<CollisionSystem>(() => CollisionSystem());
     _sl.registerLazySingleton<InputSystem>(() => InputSystem());
     _sl.registerLazySingleton<AudioSystem>(() => AudioSystem(_sl()));
-    _sl.registerLazySingleton<AudioStateManager>(() => AudioStateManager(
-      _sl<AudioSystem>(), 
-      _sl()
-    ));
-    _sl.registerLazySingleton<IGameStateManager>(() => GameStateManagerImpl(_sl()));
+    _sl.registerLazySingleton<GameStateManager>(() => GameStateManager(_sl()));
     _sl.registerLazySingleton<CameraSystem>(() => CameraSystem());
     _sl.registerLazySingleton<RenderSystem>(() => RenderSystem(
       enableBatching: true,
@@ -51,48 +51,15 @@ class GameInjection {
     _sl.registerLazySingleton<PlayerPhysicsSystem>(() => PlayerPhysicsSystem());
     _sl.registerLazySingleton<TileDamageSystem>(() => TileDamageSystem());
     _sl.registerLazySingleton<TileStateSystem>(() => TileStateSystem());
-    _sl.registerLazySingleton<FocusDetector>(() => FocusDetector.instance);
     
-    // Game Orchestrators
-    _sl.registerLazySingleton<ECSOrchestrator>(() => ECSOrchestrator(
-      entityManager: _sl(),
-      movementSystem: _sl(),
-      collisionSystem: _sl(),
-      inputSystem: _sl(),
-      audioSystem: _sl(),
-      cameraSystem: _sl(),
-      renderSystem: _sl(),
-      particleSystem: _sl(),
-      stateTransitionSystem: _sl(),
-      playerStateSystem: _sl(),
-      playerPhysicsSystem: _sl(),
-      tileDamageSystem: _sl(),
-      tileStateSystem: _sl(),
-    ));
-    
-    _sl.registerLazySingleton<GameStateOrchestrator>(() => GameStateOrchestrator(
-      gameStateManager: _sl(),
-      focusDetector: _sl(),
-    ));
-    
-    _sl.registerLazySingleton<LevelOrchestrator>(() => LevelOrchestrator(
-      levelManager: _sl(),
-      saveSystem: _sl(),
-      entityManager: _sl(),
-    ));
-    
-    // Game Controller (Domain) - requires orchestrators
-    _sl.registerLazySingleton<GameController>(() => GameController(
-      ecsOrchestrator: _sl(),
-      stateOrchestrator: _sl(),
-      levelOrchestrator: _sl(),
-    ));
+    // Game Controller (Domain) - already registered in manual injection
+    // All orchestrators are already registered in manual injection
     
     // Game Presentation Layer
     _sl.registerFactory(() => GameBloc(
       loadLevel: _sl(),
       saveProgress: _sl(),
-      gameStateManager: _sl(),
+      gameStateManager: _sl<GameStateManager>(),
     ));
     
     // System Manager for dynamic system registration

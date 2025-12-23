@@ -6,18 +6,57 @@ import 'package:hard_hat/features/game/domain/domain.dart';
 final GetIt getIt = GetIt.instance;
 
 /// Simple AudioStateManager implementation for manual DI
+/// This extends the real AudioStateManager but provides minimal functionality
 class SimpleAudioStateManager extends AudioStateManager {
-  SimpleAudioStateManager(AudioManager audioManager) 
-    : super(null as dynamic, audioManager);
+  final AudioManager _audioManager;
+  
+  SimpleAudioStateManager(this._audioManager) 
+    : super(_createMinimalAudioSystem(), _audioManager);
+  
+  static AudioSystem? _minimalAudioSystem;
+  
+  static AudioSystem _createMinimalAudioSystem() {
+    // Create a minimal AudioSystem only once to avoid repeated initialization
+    if (_minimalAudioSystem == null) {
+      try {
+        _minimalAudioSystem = AudioSystem(AssetManager());
+      } catch (e) {
+        // If AudioSystem creation fails, create a null-safe fallback
+        // This is a last resort to prevent crashes
+        throw Exception('Failed to create minimal AudioSystem: $e');
+      }
+    }
+    return _minimalAudioSystem!;
+  }
   
   @override
   void pauseAudio() {
-    // Simple implementation without audio system
+    try {
+      // Call parent implementation first
+      super.pauseAudio();
+    } catch (e) {
+      // Fallback to audio manager only
+      try {
+        _audioManager.pauseAll();
+      } catch (e2) {
+        // Ignore all errors in simple implementation
+      }
+    }
   }
   
   @override
   void resumeAudio() {
-    // Simple implementation without audio system
+    try {
+      // Call parent implementation first
+      super.resumeAudio();
+    } catch (e) {
+      // Fallback to audio manager only
+      try {
+        _audioManager.resumeAll();
+      } catch (e2) {
+        // Ignore all errors in simple implementation
+      }
+    }
   }
 }
 
