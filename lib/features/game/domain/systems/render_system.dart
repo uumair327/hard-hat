@@ -1,10 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'package:hard_hat/features/game/domain/systems/game_system.dart';
-import 'package:hard_hat/features/game/domain/components/position_component.dart';
-import 'package:hard_hat/features/game/domain/components/sprite_component.dart';
-import 'package:hard_hat/features/game/domain/components/particle_component.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 import 'package:hard_hat/features/game/domain/services/particle_pool.dart';
 import 'package:hard_hat/core/services/sprite_batch.dart';
 import 'package:hard_hat/core/services/render_performance.dart';

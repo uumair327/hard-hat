@@ -8,8 +8,9 @@ export 'entity_manager.dart';
 export 'entity_manager_impl.dart';
 
 // Game State Management
-export 'game_state_manager.dart';
+export 'game_state_manager.dart' hide GameState;
 export 'game_state_manager_impl.dart';
+export 'game_state_types.dart'; // Separate export for GameState enum
 
 // Audio Systems
 export 'audio_state_manager.dart';

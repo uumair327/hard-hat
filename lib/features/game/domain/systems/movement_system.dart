@@ -1,9 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:hard_hat/features/game/domain/systems/game_system.dart';
-import 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart';
-import 'package:hard_hat/features/game/domain/components/position_component.dart';
-import 'package:hard_hat/features/game/domain/components/velocity_component.dart';
-import 'package:hard_hat/features/game/domain/components/collision_component.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 
 /// System responsible for handling movement physics with realistic gravity, friction, and special mechanics
 class MovementSystem extends GameSystem implements IMovementSystem {

@@ -1,6 +1,5 @@
-import 'package:hard_hat/features/game/domain/systems/game_system.dart';
-import 'package:hard_hat/features/game/domain/entities/tile.dart';
-import 'package:hard_hat/features/game/domain/components/damage_component.dart';
+import 'package:flame/components.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 
 /// System responsible for processing tile damage
 /// Separates damage logic from tile entities (proper ECS pattern)
@@ -44,35 +43,11 @@ class TileDamageSystem extends GameSystem {
       return;
     }
     
-    // Apply damage
-    final newDurability = (tile.durability - event.damage).clamp(0, tile.maxDurability);
-    tile.setDurability(newDurability);
+    // Apply damage using the tile's takeDamage method
+    tile.takeDamage(event.damage);
     
-    // Determine new state based on durability
-    final newState = _calculateTileState(tile);
-    if (newState != tile.currentState) {
-      tile.setState(newState);
-      
-      // Trigger state change effects
-      _triggerStateChangeEffects(tile, newState, event);
-    }
-  }
-
-  /// Calculate tile state based on durability
-  TileState _calculateTileState(TileEntity tile) {
-    if (tile.durability <= 0) {
-      return TileState.destroying;
-    }
-    
-    final durabilityRatio = tile.durability / tile.maxDurability;
-    
-    if (durabilityRatio > 0.66) {
-      return TileState.intact;
-    } else if (durabilityRatio > 0.33) {
-      return TileState.damaged;
-    } else {
-      return TileState.heavilyDamaged;
-    }
+    // Trigger effects based on the tile's current state after damage
+    _triggerStateChangeEffects(tile, tile.currentState, event);
   }
 
   /// Trigger effects when tile state changes
@@ -88,15 +63,17 @@ class TileDamageSystem extends GameSystem {
         _triggerDestructionEffects(tile, event);
         break;
       case TileState.intact:
-        // No effects for intact state
+      case TileState.destroyed:
+        // No effects for intact or destroyed state
         break;
     }
   }
 
   /// Trigger effects for initial damage
   void _triggerDamageEffects(TileEntity tile, TileDamageEvent event) {
-    // Spawn damage particles
-    tile.onParticleSpawn?.call('damage_particles', tile.position);
+    // Spawn damage particles using the tile's position
+    final tilePosition = tile.positionComponent.position + Vector2(16, 16); // Center of tile
+    tile.onParticleSpawn?.call(tile, tilePosition);
     
     // Play damage sound
     // AudioSystem will handle this through events
@@ -105,7 +82,8 @@ class TileDamageSystem extends GameSystem {
   /// Trigger effects for heavy damage
   void _triggerHeavyDamageEffects(TileEntity tile, TileDamageEvent event) {
     // Spawn more particles
-    tile.onParticleSpawn?.call('heavy_damage_particles', tile.position);
+    final tilePosition = tile.positionComponent.position + Vector2(16, 16); // Center of tile
+    tile.onParticleSpawn?.call(tile, tilePosition);
     
     // Play heavy damage sound
     // AudioSystem will handle this through events
@@ -114,23 +92,17 @@ class TileDamageSystem extends GameSystem {
   /// Trigger effects for destruction
   void _triggerDestructionEffects(TileEntity tile, TileDamageEvent event) {
     // Spawn destruction particles
-    tile.onParticleSpawn?.call('destruction_particles', tile.position);
+    final tilePosition = tile.positionComponent.position + Vector2(16, 16); // Center of tile
+    tile.onParticleSpawn?.call(tile, tilePosition);
     
     // Play destruction sound
     // AudioSystem will handle this through events
     
     // Trigger destruction callback
-    tile.onDestroyed?.call();
+    tile.onDestroyed?.call(tile);
     
-    // Schedule tile removal (handled by entity manager)
-    _scheduleTileRemoval(tile);
-  }
-
-  /// Schedule tile for removal after destruction animation
-  void _scheduleTileRemoval(TileEntity tile) {
-    // This would typically be handled by a separate cleanup system
-    // For now, we'll just mark it for removal
-    tile.markForRemoval();
+    // Note: Tile removal is handled by the tile's own state machine
+    // No need to manually mark for removal here
   }
 
   @override
@@ -153,55 +125,4 @@ class TileDamageEvent {
     this.source,
     required this.timestamp,
   });
-}
-
-/// Component for tracking damage over time
-class DamageComponent {
-  int currentDamage = 0;
-  int maxDamage;
-  bool isInvulnerable = false;
-  double invulnerabilityDuration = 0.0;
-  double invulnerabilityTimer = 0.0;
-
-  DamageComponent({
-    required this.maxDamage,
-    this.currentDamage = 0,
-  });
-
-  /// Apply damage and return actual damage dealt
-  int applyDamage(int damage) {
-    if (isInvulnerable) return 0;
-    
-    final actualDamage = damage.clamp(0, maxDamage - currentDamage);
-    currentDamage += actualDamage;
-    
-    return actualDamage;
-  }
-
-  /// Set invulnerability for a duration
-  void setInvulnerable(double duration) {
-    isInvulnerable = true;
-    invulnerabilityDuration = duration;
-    invulnerabilityTimer = 0.0;
-  }
-
-  /// Update invulnerability timer
-  void updateInvulnerability(double dt) {
-    if (isInvulnerable) {
-      invulnerabilityTimer += dt;
-      if (invulnerabilityTimer >= invulnerabilityDuration) {
-        isInvulnerable = false;
-        invulnerabilityTimer = 0.0;
-      }
-    }
-  }
-
-  /// Check if entity is destroyed
-  bool get isDestroyed => currentDamage >= maxDamage;
-
-  /// Get damage ratio (0.0 to 1.0)
-  double get damageRatio => currentDamage / maxDamage;
-
-  /// Get health ratio (1.0 to 0.0)
-  double get healthRatio => 1.0 - damageRatio;
 }

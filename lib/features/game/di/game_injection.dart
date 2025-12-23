@@ -1,35 +1,8 @@
 import 'package:get_it/get_it.dart';
-import 'package:hard_hat/features/game/domain/systems/entity_manager.dart';
-import 'package:hard_hat/features/game/domain/systems/game_system.dart';
-import 'package:hard_hat/features/game/domain/systems/input_system.dart';
-import 'package:hard_hat/features/game/domain/systems/audio_system.dart';
-import 'package:hard_hat/features/game/domain/systems/audio_state_manager.dart';
-import 'package:hard_hat/features/game/domain/systems/game_state_manager.dart';
-import 'package:hard_hat/features/game/domain/systems/camera_system.dart';
-import 'package:hard_hat/features/game/domain/systems/render_system.dart';
-import 'package:hard_hat/features/game/domain/systems/particle_system.dart';
-import 'package:hard_hat/features/game/domain/systems/state_transition_system.dart';
-import 'package:hard_hat/features/game/domain/systems/level_manager.dart';
-import 'package:hard_hat/features/game/domain/systems/save_system.dart';
-import 'package:hard_hat/features/game/domain/systems/movement_system.dart';
-import 'package:hard_hat/features/game/domain/systems/collision_system.dart';
-import 'package:hard_hat/features/game/domain/entities/game_entity.dart';
-import 'package:hard_hat/features/game/domain/services/game_controller.dart';
-import 'package:hard_hat/features/game/domain/services/pause_menu_service.dart';
-import 'package:hard_hat/features/game/domain/services/pause_menu_manager.dart';
-import 'package:hard_hat/features/game/domain/services/focus_detector.dart';
-import 'package:hard_hat/features/game/data/datasources/level_local_datasource.dart';
-import 'package:hard_hat/features/game/data/datasources/save_local_datasource.dart';
-import 'package:hard_hat/features/game/data/repositories/level_repository_impl.dart';
-import 'package:hard_hat/features/game/data/repositories/save_repository_impl.dart';
-import 'package:hard_hat/features/game/domain/repositories/level_repository.dart';
-import 'package:hard_hat/features/game/domain/repositories/save_repository.dart';
-import 'package:hard_hat/features/game/domain/usecases/load_level.dart';
-import 'package:hard_hat/features/game/domain/usecases/save_progress.dart';
-import 'package:hard_hat/features/game/presentation/bloc/game_bloc.dart';
-import 'package:hard_hat/core/services/asset_manager.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
+import 'package:hard_hat/features/game/data/data.dart';
+import 'package:hard_hat/features/game/presentation/presentation.dart';
 import 'package:hard_hat/core/services/audio_manager.dart';
-import 'package:hard_hat/core/di/injection_container.dart';
 
 /// Game-specific dependency injection configuration
 /// This maintains proper separation from core dependencies
@@ -47,22 +20,20 @@ class GameInjection {
     _sl.registerLazySingleton<SaveRepository>(() => SaveRepositoryImpl(_sl()));
     
     // Game Use Cases
-    _sl.registerLazySingleton(() => LoadLevel(_sl()));
-    _sl.registerLazySingleton(() => SaveProgress(_sl()));
+    _sl.registerLazySingleton<LoadLevel>(() => LoadLevelImpl(_sl()));
+    _sl.registerLazySingleton<SaveProgress>(() => SaveProgressImpl(_sl()));
     
     // Game Domain Services
-    _sl.registerLazySingleton<EntityManager>(() => EntityManager());
-    _sl.registerLazySingleton<MovementSystem>(() => MovementSystem());
+    _sl.registerLazySingleton<IEntityManager>(() => EntityManagerImpl());
+    _sl.registerLazySingleton<IMovementSystem>(() => MovementSystem());
     _sl.registerLazySingleton<CollisionSystem>(() => CollisionSystem());
     _sl.registerLazySingleton<InputSystem>(() => InputSystem());
-    _sl.registerLazySingleton<AudioSystem>(() => AudioSystem(sl()));
+    _sl.registerLazySingleton<AudioSystem>(() => AudioSystem(_sl()));
     _sl.registerLazySingleton<AudioStateManager>(() => AudioStateManager(
-      _sl(), 
-      sl()
-    ));
-    _sl.registerLazySingleton<GameStateManager>(() => GameStateManager(
+      _sl<AudioSystem>(), 
       _sl()
     ));
+    _sl.registerLazySingleton<IGameStateManager>(() => GameStateManagerImpl(_sl()));
     _sl.registerLazySingleton<CameraSystem>(() => CameraSystem());
     _sl.registerLazySingleton<RenderSystem>(() => RenderSystem(
       enableBatching: true,
@@ -76,10 +47,46 @@ class GameInjection {
       entityManager: _sl(),
     ));
     _sl.registerLazySingleton<SaveSystem>(() => SaveSystem(_sl()));
+    _sl.registerLazySingleton<PlayerStateSystem>(() => PlayerStateSystem());
+    _sl.registerLazySingleton<PlayerPhysicsSystem>(() => PlayerPhysicsSystem());
+    _sl.registerLazySingleton<TileDamageSystem>(() => TileDamageSystem());
+    _sl.registerLazySingleton<TileStateSystem>(() => TileStateSystem());
     _sl.registerLazySingleton<FocusDetector>(() => FocusDetector.instance);
     
-    // Game Controller (Domain)
-    _sl.registerLazySingleton<GameController>(() => GameController());
+    // Game Orchestrators
+    _sl.registerLazySingleton<ECSOrchestrator>(() => ECSOrchestrator(
+      entityManager: _sl(),
+      movementSystem: _sl(),
+      collisionSystem: _sl(),
+      inputSystem: _sl(),
+      audioSystem: _sl(),
+      cameraSystem: _sl(),
+      renderSystem: _sl(),
+      particleSystem: _sl(),
+      stateTransitionSystem: _sl(),
+      playerStateSystem: _sl(),
+      playerPhysicsSystem: _sl(),
+      tileDamageSystem: _sl(),
+      tileStateSystem: _sl(),
+    ));
+    
+    _sl.registerLazySingleton<GameStateOrchestrator>(() => GameStateOrchestrator(
+      gameStateManager: _sl(),
+      focusDetector: _sl(),
+    ));
+    
+    _sl.registerLazySingleton<LevelOrchestrator>(() => LevelOrchestrator(
+      levelManager: _sl(),
+      saveSystem: _sl(),
+      entityManager: _sl(),
+    ));
+    
+    // Game Controller (Domain) - requires orchestrators
+    _sl.registerLazySingleton<GameController>(() => GameController(
+      ecsOrchestrator: _sl(),
+      stateOrchestrator: _sl(),
+      levelOrchestrator: _sl(),
+    ));
     
     // Game Presentation Layer
     _sl.registerFactory(() => GameBloc(

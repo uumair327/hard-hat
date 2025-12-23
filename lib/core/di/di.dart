@@ -1,3 +1,3 @@
 // Dependency Injection barrel export
 export 'injection.dart';
-export 'manual_injection.dart';
+export 'manual_injection.dart' hide getIt;

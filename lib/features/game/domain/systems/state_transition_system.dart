@@ -44,26 +44,26 @@ class StateTransitionSystem extends GameSystem {
   }
   
   /// Determine the type of transition based on state change
-  TransitionType? _getTransitionType(GameState from, GameState to) {
+  StateTransitionType? _getTransitionType(GameState from, GameState to) {
     // Define transition mappings
-    final transitionMap = <String, TransitionType>{
-      '${GameState.menu}_${GameState.playing}': TransitionType.fadeIn,
-      '${GameState.playing}_${GameState.menu}': TransitionType.fadeOut,
-      '${GameState.playing}_${GameState.paused}': TransitionType.blur,
-      '${GameState.paused}_${GameState.playing}': TransitionType.unblur,
-      '${GameState.playing}_${GameState.levelComplete}': TransitionType.zoomOut,
-      '${GameState.levelComplete}_${GameState.playing}': TransitionType.zoomIn,
-      '${GameState.playing}_${GameState.gameOver}': TransitionType.shake,
-      '${GameState.gameOver}_${GameState.playing}': TransitionType.fadeIn,
-      '${GameState.loading}_${GameState.playing}': TransitionType.slideIn,
-      '${GameState.playing}_${GameState.loading}': TransitionType.slideOut,
+    final transitionMap = <String, StateTransitionType>{
+      '${GameState.menu}_${GameState.playing}': StateTransitionType.fadeIn,
+      '${GameState.playing}_${GameState.menu}': StateTransitionType.fadeOut,
+      '${GameState.playing}_${GameState.paused}': StateTransitionType.blur,
+      '${GameState.paused}_${GameState.playing}': StateTransitionType.unblur,
+      '${GameState.playing}_${GameState.levelComplete}': StateTransitionType.zoomOut,
+      '${GameState.levelComplete}_${GameState.playing}': StateTransitionType.zoomIn,
+      '${GameState.playing}_${GameState.gameOver}': StateTransitionType.shake,
+      '${GameState.gameOver}_${GameState.playing}': StateTransitionType.fadeIn,
+      '${GameState.loading}_${GameState.playing}': StateTransitionType.slideIn,
+      '${GameState.playing}_${GameState.loading}': StateTransitionType.slideOut,
     };
     
     return transitionMap['${from}_$to'];
   }
   
   /// Start a transition effect
-  void _startTransition(TransitionType type, GameState newState, GameState previousState) {
+  void _startTransition(StateTransitionType type, GameState newState, GameState previousState) {
     // Stop current transition if running
     _currentTransition?.stop();
     
@@ -79,21 +79,21 @@ class StateTransitionSystem extends GameSystem {
   }
   
   /// Get transition duration based on type
-  Duration _getTransitionDuration(TransitionType type) {
+  Duration _getTransitionDuration(StateTransitionType type) {
     switch (type) {
-      case TransitionType.fadeIn:
-      case TransitionType.fadeOut:
+      case StateTransitionType.fadeIn:
+      case StateTransitionType.fadeOut:
         return const Duration(milliseconds: 500);
-      case TransitionType.blur:
-      case TransitionType.unblur:
+      case StateTransitionType.blur:
+      case StateTransitionType.unblur:
         return const Duration(milliseconds: 300);
-      case TransitionType.zoomIn:
-      case TransitionType.zoomOut:
+      case StateTransitionType.zoomIn:
+      case StateTransitionType.zoomOut:
         return const Duration(milliseconds: 800);
-      case TransitionType.shake:
+      case StateTransitionType.shake:
         return const Duration(milliseconds: 600);
-      case TransitionType.slideIn:
-      case TransitionType.slideOut:
+      case StateTransitionType.slideIn:
+      case StateTransitionType.slideOut:
         return const Duration(milliseconds: 400);
     }
   }
@@ -138,8 +138,8 @@ class StateTransitionSystem extends GameSystem {
   }
 }
 
-/// Types of transition effects
-enum TransitionType {
+/// Types of transition effects for game state changes
+enum StateTransitionType {
   fadeIn,
   fadeOut,
   blur,
@@ -153,7 +153,7 @@ enum TransitionType {
 
 /// Represents a transition effect
 class TransitionEffect {
-  final TransitionType type;
+  final StateTransitionType type;
   final Duration duration;
   final VoidCallback? onComplete;
   
@@ -200,19 +200,19 @@ class TransitionEffect {
   /// Get eased progress for smooth animations
   double get easedProgress {
     switch (type) {
-      case TransitionType.fadeIn:
-      case TransitionType.fadeOut:
+      case StateTransitionType.fadeIn:
+      case StateTransitionType.fadeOut:
         return _easeInOut(_progress);
-      case TransitionType.blur:
-      case TransitionType.unblur:
+      case StateTransitionType.blur:
+      case StateTransitionType.unblur:
         return _easeOut(_progress);
-      case TransitionType.zoomIn:
-      case TransitionType.zoomOut:
+      case StateTransitionType.zoomIn:
+      case StateTransitionType.zoomOut:
         return _easeInOut(_progress);
-      case TransitionType.shake:
+      case StateTransitionType.shake:
         return _progress; // Linear for shake
-      case TransitionType.slideIn:
-      case TransitionType.slideOut:
+      case StateTransitionType.slideIn:
+      case StateTransitionType.slideOut:
         return _easeOut(_progress);
     }
   }
@@ -263,31 +263,31 @@ class TransitionOverlay extends Component with HasGameRef {
     
     // Render transition effect based on type
     switch (transition.type) {
-      case TransitionType.fadeIn:
+      case StateTransitionType.fadeIn:
         _renderFade(canvas, 1.0 - progress);
         break;
-      case TransitionType.fadeOut:
+      case StateTransitionType.fadeOut:
         _renderFade(canvas, progress);
         break;
-      case TransitionType.blur:
+      case StateTransitionType.blur:
         _renderBlur(canvas, progress);
         break;
-      case TransitionType.unblur:
+      case StateTransitionType.unblur:
         _renderBlur(canvas, 1.0 - progress);
         break;
-      case TransitionType.zoomIn:
+      case StateTransitionType.zoomIn:
         _renderZoom(canvas, 0.5 + (progress * 0.5));
         break;
-      case TransitionType.zoomOut:
+      case StateTransitionType.zoomOut:
         _renderZoom(canvas, 1.0 + (progress * 0.5));
         break;
-      case TransitionType.shake:
+      case StateTransitionType.shake:
         _renderShake(canvas, progress);
         break;
-      case TransitionType.slideIn:
+      case StateTransitionType.slideIn:
         _renderSlide(canvas, 1.0 - progress);
         break;
-      case TransitionType.slideOut:
+      case StateTransitionType.slideOut:
         _renderSlide(canvas, progress);
         break;
     }

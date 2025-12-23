@@ -1,10 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:hard_hat/features/game/domain/systems/game_system.dart';
-import 'package:hard_hat/features/game/domain/entities/player_entity.dart';
-import 'package:hard_hat/features/game/domain/systems/entity_manager.dart';
-import 'package:hard_hat/features/game/domain/components/input_component.dart';
-import 'package:hard_hat/features/game/domain/components/velocity_component.dart';
-import 'package:hard_hat/features/game/domain/components/position_component.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 
 /// System responsible for player physics calculations
 /// Separates physics logic from player entity (proper ECS pattern)
@@ -45,13 +40,9 @@ class PlayerPhysicsSystem extends GameSystem {
 
   /// Update physics for individual player
   void _updatePlayerPhysics(PlayerEntity player, double dt) {
-    final inputComponent = player.getComponent<InputComponent>();
-    final velocityComponent = player.getComponent<VelocityComponent>();
-    final positionComponent = player.getComponent<PositionComponent>();
-    
-    if (inputComponent == null || velocityComponent == null || positionComponent == null) {
-      return;
-    }
+    final inputComponent = player.inputComponent;
+    final velocityComponent = player.velocityComponent;
+    final positionComponent = player.positionComponent;
     
     // Update physics based on current state
     switch (player.currentState) {
@@ -88,7 +79,7 @@ class PlayerPhysicsSystem extends GameSystem {
   }
 
   /// Update physics for idle state
-  void _updateIdlePhysics(PlayerEntity player, InputComponent input, VelocityComponent velocity, double dt) {
+  void _updateIdlePhysics(PlayerEntity player, PlayerInputComponent input, VelocityComponent velocity, double dt) {
     // Apply friction to horizontal movement
     velocity.velocity.x *= groundFriction;
     
@@ -104,7 +95,7 @@ class PlayerPhysicsSystem extends GameSystem {
   }
 
   /// Update physics for moving state
-  void _updateMovingPhysics(PlayerEntity player, InputComponent input, VelocityComponent velocity, double dt) {
+  void _updateMovingPhysics(PlayerEntity player, PlayerInputComponent input, VelocityComponent velocity, double dt) {
     if (input.canMove) {
       // Apply horizontal movement
       final targetVelocity = input.movementDirection * moveSpeed;
@@ -121,7 +112,7 @@ class PlayerPhysicsSystem extends GameSystem {
   }
 
   /// Update physics for jumping state
-  void _updateJumpingPhysics(PlayerEntity player, InputComponent input, VelocityComponent velocity, double dt) {
+  void _updateJumpingPhysics(PlayerEntity player, PlayerInputComponent input, VelocityComponent velocity, double dt) {
     // Apply horizontal movement in air
     if (input.canMove) {
       final targetVelocity = input.movementDirection * moveSpeed;
@@ -139,7 +130,7 @@ class PlayerPhysicsSystem extends GameSystem {
   }
 
   /// Update physics for falling state
-  void _updateFallingPhysics(PlayerEntity player, InputComponent input, VelocityComponent velocity, double dt) {
+  void _updateFallingPhysics(PlayerEntity player, PlayerInputComponent input, VelocityComponent velocity, double dt) {
     // Apply horizontal movement in air (same as jumping)
     if (input.canMove) {
       final targetVelocity = input.movementDirection * moveSpeed;
@@ -150,7 +141,7 @@ class PlayerPhysicsSystem extends GameSystem {
   }
 
   /// Update physics for aiming state
-  void _updateAimingPhysics(PlayerEntity player, InputComponent input, VelocityComponent velocity, double dt) {
+  void _updateAimingPhysics(PlayerEntity player, PlayerInputComponent input, VelocityComponent velocity, double dt) {
     // Reduce movement while aiming
     velocity.velocity.x *= 0.5;
     
@@ -161,7 +152,7 @@ class PlayerPhysicsSystem extends GameSystem {
   }
 
   /// Update physics for launching state
-  void _updateLaunchingPhysics(PlayerEntity player, InputComponent input, VelocityComponent velocity, double dt) {
+  void _updateLaunchingPhysics(PlayerEntity player, PlayerInputComponent input, VelocityComponent velocity, double dt) {
     // Apply recoil force from launch
     if (player.stateTimer < 0.1) { // Apply recoil for first 100ms
       final recoilForce = _calculateLaunchRecoil(player);
@@ -195,9 +186,9 @@ class PlayerPhysicsSystem extends GameSystem {
   }
 
   /// Update position based on velocity
-  void _updatePosition(PositionComponent position, VelocityComponent velocity, double dt) {
+  void _updatePosition(GamePositionComponent position, VelocityComponent velocity, double dt) {
     final deltaPosition = velocity.velocity * dt;
-    position.position += deltaPosition;
+    position.updatePosition(position.position + deltaPosition);
   }
 
   /// Calculate launch recoil force
@@ -209,32 +200,26 @@ class PlayerPhysicsSystem extends GameSystem {
 
   /// Apply jump force to player
   void applyJumpForce(PlayerEntity player) {
-    final velocityComponent = player.getComponent<VelocityComponent>();
-    if (velocityComponent != null) {
-      velocityComponent.velocity.y = jumpForce;
-    }
+    final velocityComponent = player.velocityComponent;
+    velocityComponent.velocity.y = jumpForce;
   }
 
   /// Apply external force to player (e.g., from explosions, springs)
   void applyExternalForce(PlayerEntity player, Vector2 force) {
-    final velocityComponent = player.getComponent<VelocityComponent>();
-    if (velocityComponent != null) {
-      velocityComponent.velocity += force;
-    }
+    final velocityComponent = player.velocityComponent;
+    velocityComponent.velocity += force;
   }
 
   /// Set player velocity directly
   void setPlayerVelocity(PlayerEntity player, Vector2 velocity) {
-    final velocityComponent = player.getComponent<VelocityComponent>();
-    if (velocityComponent != null) {
-      velocityComponent.velocity = velocity;
-    }
+    final velocityComponent = player.velocityComponent;
+    velocityComponent.velocity = velocity;
   }
 
   /// Get player velocity
   Vector2? getPlayerVelocity(PlayerEntity player) {
-    final velocityComponent = player.getComponent<VelocityComponent>();
-    return velocityComponent?.velocity;
+    final velocityComponent = player.velocityComponent;
+    return velocityComponent.velocity;
   }
 
   /// Check if player is moving horizontally

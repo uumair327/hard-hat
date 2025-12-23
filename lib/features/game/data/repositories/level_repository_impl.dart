@@ -1,9 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:dartz/dartz.dart';
 import 'package:hard_hat/core/errors/failures.dart';
-import 'package:hard_hat/features/game/domain/repositories/level_repository.dart';
-import 'package:hard_hat/features/game/domain/entities/level.dart';
-import 'package:hard_hat/features/game/data/datasources/level_local_datasource.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
+import 'package:hard_hat/features/game/data/data.dart';
 
 @LazySingleton(as: LevelRepository)
 class LevelRepositoryImpl implements LevelRepository {
@@ -18,7 +17,7 @@ class LevelRepositoryImpl implements LevelRepository {
       final level = Level.fromJson(levelData);
       return Right(level);
     } catch (e) {
-      return Left(CacheFailure('Failed to load level $levelId: $e'));
+      return Left(LevelLoadFailure('Failed to load level $levelId: $e'));
     }
   }
 
@@ -29,7 +28,7 @@ class LevelRepositoryImpl implements LevelRepository {
       final levels = levelsData.map((data) => Level.fromJson(data)).toList();
       return Right(levels);
     } catch (e) {
-      return Left(CacheFailure('Failed to load all levels: $e'));
+      return Left(LevelLoadFailure('Failed to load all levels: $e'));
     }
   }
 
@@ -39,7 +38,7 @@ class LevelRepositoryImpl implements LevelRepository {
       await _localDataSource.saveLevel(level.toJson());
       return const Right(null);
     } catch (e) {
-      return Left(CacheFailure('Failed to save level: $e'));
+      return Left(SaveFailure('Failed to save level: $e'));
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../components/particle_component.dart';
 import '../services/particle_pool.dart';
+import '../entities/tile.dart'; // Import TileType from tile entity
 import '../../presentation/game/hard_hat_game.dart';
 import 'game_system.dart';
 
@@ -309,15 +310,6 @@ class ParticleSystem extends GameSystem {
     _poolManager.dispose();
     super.dispose();
   }
-}
-
-/// Tile types for material-specific particle effects
-enum TileType {
-  scaffolding,
-  timber,
-  bricks,
-  beam,
-  indestructible,
 }
 
 /// Extension methods for easy particle spawning from other systems

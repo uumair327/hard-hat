@@ -28,25 +28,35 @@ class SaveSystem {
   Future<Either<Failure, SaveData>> initialize() async {
     try {
       final result = await _loadSaveDataWithRecovery();
-      return result.fold(
-        (failure) async {
-          // Fallback to repository if direct file access fails
-          final repositoryResult = await _saveRepository.getSaveData();
-          return repositoryResult.fold(
-            (repoFailure) => Left(failure), // Return original failure
-            (saveData) {
-              _cachedSaveData = saveData;
-              _startAutoSave();
-              return Right(saveData);
-            },
-          );
-        },
-        (saveData) {
-          _cachedSaveData = saveData;
-          _startAutoSave();
-          return Right(saveData);
-        },
-      );
+      
+      if (result.isRight()) {
+        // Successfully loaded from file
+        final saveData = result.getOrElse(() => throw Exception('Unexpected null'));
+        _cachedSaveData = saveData;
+        _startAutoSave();
+        return Right(saveData);
+      } else {
+        // Fallback to repository if direct file access fails
+        final repositoryResult = await _saveRepository.getSaveData();
+        
+        if (repositoryResult.isRight()) {
+          final saveData = repositoryResult.getOrElse(() => null);
+          if (saveData != null) {
+            _cachedSaveData = saveData;
+            _startAutoSave();
+            return Right(saveData);
+          } else {
+            // Repository returned null, create default save data
+            final defaultSaveData = await _createDefaultSaveData();
+            _cachedSaveData = defaultSaveData;
+            _startAutoSave();
+            return Right(defaultSaveData);
+          }
+        } else {
+          // Both file and repository failed, return original failure
+          return result;
+        }
+      }
     } catch (e) {
       return Left(SaveFailure('Failed to initialize save system: $e'));
     }

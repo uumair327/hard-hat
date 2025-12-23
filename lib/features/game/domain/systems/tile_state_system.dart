@@ -1,6 +1,4 @@
-import 'package:hard_hat/features/game/domain/systems/game_system.dart';
-import 'package:hard_hat/features/game/domain/entities/tile.dart';
-import 'package:hard_hat/features/game/domain/systems/entity_manager.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 
 /// System responsible for managing tile state transitions and animations
 /// Separates state logic from tile entities (proper ECS pattern)
@@ -62,10 +60,9 @@ class TileStateSystem extends GameSystem {
     final tile = transition.tile;
     final oldState = tile.currentState;
     
-    // Set new state
-    tile.setState(transition.targetState);
-    
-    // Handle state-specific logic
+    // Note: TileEntity manages its own state transitions internally
+    // We can only trigger state changes through damage or other mechanisms
+    // For now, we'll handle the effects based on the target state
     _handleStateChange(tile, oldState, transition.targetState);
   }
 
@@ -83,6 +80,9 @@ class TileStateSystem extends GameSystem {
         break;
       case TileState.destroying:
         _handleDestroyingState(tile);
+        break;
+      case TileState.destroyed:
+        _handleDestroyedTile(tile);
         break;
     }
   }
@@ -162,19 +162,17 @@ class TileStateSystem extends GameSystem {
 
   /// Update destroying tile
   void _updateDestroyingTile(TileEntity tile, double dt) {
-    // Update destruction animation
-    tile.updateDestructionAnimation(dt);
-    
-    // Check if animation is complete
-    if (tile.isDestructionAnimationComplete) {
-      tile.setState(TileState.destroyed);
+    // The tile handles its own destruction animation internally
+    // We just monitor its state
+    if (tile.currentState == TileState.destroyed) {
+      _handleDestroyedTile(tile);
     }
   }
 
   /// Handle destroyed tile
   void _handleDestroyedTile(TileEntity tile) {
     // Mark for removal from entity manager
-    _entityManager.removeEntity(tile.id);
+    _entityManager.unregisterEntity(tile.id);
   }
 
   /// Get tiles in a specific state
@@ -223,52 +221,52 @@ class TileStateTransition {
 
 /// Extension methods for TileEntity to support state system
 extension TileEntityStateExtensions on TileEntity {
-  /// Reset visual effects
+  /// Reset visual effects (placeholder - tile handles this internally)
   void resetVisualEffects() {
-    // Implementation would reset any visual damage indicators
+    // The tile's internal state machine handles visual updates
   }
 
-  /// Start damage effects
+  /// Start damage effects (placeholder - tile handles this internally)
   void startDamageEffects() {
-    // Implementation would start crack animations, color changes, etc.
+    // The tile's internal state machine handles damage effects
   }
 
-  /// Intensify damage effects
+  /// Intensify damage effects (placeholder - tile handles this internally)
   void intensifyDamageEffects() {
-    // Implementation would increase crack size, add more particles, etc.
+    // The tile's internal state machine handles effect intensification
   }
 
-  /// Start destruction animation
+  /// Start destruction animation (placeholder - tile handles this internally)
   void startDestructionAnimation() {
-    // Implementation would start destruction particle effects, crumbling animation, etc.
+    // The tile's internal state machine handles destruction animation
   }
 
-  /// Update damage effects
+  /// Update damage effects (placeholder - tile handles this internally)
   void updateDamageEffects(double dt) {
-    // Implementation would update damage visual effects
+    // The tile's updateEntity method handles all visual updates
   }
 
-  /// Update heavy damage effects
+  /// Update heavy damage effects (placeholder - tile handles this internally)
   void updateHeavyDamageEffects(double dt) {
-    // Implementation would update heavy damage effects
+    // The tile's updateEntity method handles all visual updates
   }
 
-  /// Update destruction animation
+  /// Update destruction animation (placeholder - tile handles this internally)
   void updateDestructionAnimation(double dt) {
-    // Implementation would update destruction animation
+    // The tile's updateEntity method handles destruction animation
   }
 
   /// Get destruction animation duration
-  double get destructionAnimationDuration => 0.5; // 500ms
+  double get destructionAnimationDuration => 0.5; // 500ms (matches TileEntity)
 
   /// Check if destruction animation is complete
   bool get isDestructionAnimationComplete {
-    // Implementation would check animation state
-    return false; // Placeholder
+    // Check if tile has completed destruction
+    return currentState == TileState.destroyed;
   }
 
-  /// Mark entity for removal
+  /// Mark entity for removal (placeholder - handled by entity manager)
   void markForRemoval() {
-    // Implementation would mark entity for cleanup
+    // Entity removal is handled by the entity manager
   }
 }

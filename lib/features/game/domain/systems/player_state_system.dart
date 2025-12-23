@@ -1,7 +1,4 @@
-import 'package:hard_hat/features/game/domain/systems/game_system.dart';
-import 'package:hard_hat/features/game/domain/entities/player_entity.dart';
-import 'package:hard_hat/features/game/domain/systems/entity_manager.dart';
-import 'package:hard_hat/features/game/domain/components/input_component.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 
 /// System responsible for managing player state transitions
 /// Separates state machine logic from player entity (proper ECS pattern)
@@ -32,11 +29,7 @@ class PlayerStateSystem extends GameSystem {
 
   /// Update individual player state
   void _updatePlayerState(PlayerEntity player, double dt) {
-    final inputComponent = player.getComponent<InputComponent>();
-    if (inputComponent == null) return;
-    
-    // Update state timers
-    player.incrementStateTimer(dt);
+    final inputComponent = player.inputComponent;
     
     // Process state machine
     final newState = _processStateMachine(player, inputComponent);
@@ -47,7 +40,7 @@ class PlayerStateSystem extends GameSystem {
   }
 
   /// Process the player state machine
-  PlayerState _processStateMachine(PlayerEntity player, InputComponent input) {
+  PlayerState _processStateMachine(PlayerEntity player, PlayerInputComponent input) {
     switch (player.currentState) {
       case PlayerState.idle:
         return _processIdleState(player, input);
@@ -65,7 +58,7 @@ class PlayerStateSystem extends GameSystem {
   }
 
   /// Process idle state
-  PlayerState _processIdleState(PlayerEntity player, InputComponent input) {
+  PlayerState _processIdleState(PlayerEntity player, PlayerInputComponent input) {
     if (!player.isOnGround) {
       return PlayerState.falling;
     }
@@ -86,7 +79,7 @@ class PlayerStateSystem extends GameSystem {
   }
 
   /// Process moving state
-  PlayerState _processMovingState(PlayerEntity player, InputComponent input) {
+  PlayerState _processMovingState(PlayerEntity player, PlayerInputComponent input) {
     if (!player.isOnGround) {
       return PlayerState.falling;
     }
@@ -107,9 +100,9 @@ class PlayerStateSystem extends GameSystem {
   }
 
   /// Process jumping state
-  PlayerState _processJumpingState(PlayerEntity player, InputComponent input) {
+  PlayerState _processJumpingState(PlayerEntity player, PlayerInputComponent input) {
     // Check if we've reached the peak of the jump (velocity becomes positive/downward)
-    if (player.velocityY >= 0) {
+    if (player.velocityComponent.velocity.y >= 0) {
       return PlayerState.falling;
     }
     
@@ -117,7 +110,7 @@ class PlayerStateSystem extends GameSystem {
   }
 
   /// Process falling state
-  PlayerState _processFallingState(PlayerEntity player, InputComponent input) {
+  PlayerState _processFallingState(PlayerEntity player, PlayerInputComponent input) {
     if (player.isOnGround) {
       if (input.hasMovementInput) {
         return PlayerState.moving;
@@ -130,7 +123,7 @@ class PlayerStateSystem extends GameSystem {
   }
 
   /// Process aiming state
-  PlayerState _processAimingState(PlayerEntity player, InputComponent input) {
+  PlayerState _processAimingState(PlayerEntity player, PlayerInputComponent input) {
     if (!input.isAiming) {
       if (input.shouldLaunch) {
         return PlayerState.launching;
@@ -143,10 +136,9 @@ class PlayerStateSystem extends GameSystem {
   }
 
   /// Process launching state
-  PlayerState _processLaunchingState(PlayerEntity player, InputComponent input) {
+  PlayerState _processLaunchingState(PlayerEntity player, PlayerInputComponent input) {
     // Return to normal state after launch animation
     if (player.stateTimer > 0.3) { // Launch animation duration
-      player.setCanStrike(true);
       
       if (player.isOnGround) {
         return input.hasMovementInput ? PlayerState.moving : PlayerState.idle;
@@ -165,8 +157,8 @@ class PlayerStateSystem extends GameSystem {
     // Exit old state
     _exitState(player, oldState);
     
-    // Set new state
-    player.setState(newState);
+    // Set new state using the correct method
+    player.forceStateChange(newState);
     
     // Enter new state
     _enterState(player, newState);
@@ -191,8 +183,7 @@ class PlayerStateSystem extends GameSystem {
         // No special exit logic
         break;
       case PlayerState.aiming:
-        // Reset aiming state
-        player.resetAiming();
+        // Reset aiming state - handled by PlayerEntity internally
         break;
       case PlayerState.launching:
         // No special exit logic
@@ -204,104 +195,30 @@ class PlayerStateSystem extends GameSystem {
   void _enterState(PlayerEntity player, PlayerState state) {
     switch (state) {
       case PlayerState.idle:
-        // Start idle animation
-        player.startIdleAnimation();
+        // State-specific logic handled by PlayerEntity itself
         break;
       case PlayerState.moving:
-        // Start movement animation
-        player.startMovementAnimation();
+        // State-specific logic handled by PlayerEntity itself
         break;
       case PlayerState.jumping:
-        // Apply jump force and start animation
-        player.applyJumpForce();
-        player.startJumpAnimation();
+        // State-specific logic handled by PlayerEntity itself
         break;
       case PlayerState.falling:
-        // Start falling animation
-        player.startFallingAnimation();
+        // State-specific logic handled by PlayerEntity itself
         break;
       case PlayerState.aiming:
-        // Start aiming mode
-        player.startAiming();
+        // State-specific logic handled by PlayerEntity itself
         break;
       case PlayerState.launching:
-        // Execute launch and start animation
-        player.executeLaunch();
-        player.startLaunchAnimation();
-        player.setCanStrike(false);
+        // State-specific logic handled by PlayerEntity itself
         break;
     }
   }
 
   /// Handle state change events
   void _onStateChanged(PlayerEntity player, PlayerState oldState, PlayerState newState) {
-    // Trigger audio events
-    _triggerAudioEvents(player, oldState, newState);
-    
-    // Trigger visual effects
-    _triggerVisualEffects(player, oldState, newState);
-    
-    // Update animation state
-    _updateAnimationState(player, newState);
-  }
-
-  /// Trigger audio events for state changes
-  void _triggerAudioEvents(PlayerEntity player, PlayerState oldState, PlayerState newState) {
-    switch (newState) {
-      case PlayerState.jumping:
-        // Play jump sound
-        player.playSound('jump');
-        break;
-      case PlayerState.launching:
-        // Play launch sound
-        player.playSound('launch');
-        break;
-      case PlayerState.idle:
-        if (oldState == PlayerState.falling) {
-          // Play landing sound
-          player.playSound('land');
-        }
-        break;
-      case PlayerState.moving:
-        if (oldState == PlayerState.falling) {
-          // Play landing sound
-          player.playSound('land');
-        }
-        break;
-      default:
-        // No audio for other transitions
-        break;
-    }
-  }
-
-  /// Trigger visual effects for state changes
-  void _triggerVisualEffects(PlayerEntity player, PlayerState oldState, PlayerState newState) {
-    switch (newState) {
-      case PlayerState.jumping:
-        // Spawn jump particles
-        player.spawnParticles('jump_dust');
-        break;
-      case PlayerState.launching:
-        // Spawn launch particles
-        player.spawnParticles('launch_effect');
-        break;
-      case PlayerState.idle:
-      case PlayerState.moving:
-        if (oldState == PlayerState.falling) {
-          // Spawn landing particles
-          player.spawnParticles('landing_dust');
-        }
-        break;
-      default:
-        // No effects for other transitions
-        break;
-    }
-  }
-
-  /// Update animation state
-  void _updateAnimationState(PlayerEntity player, PlayerState state) {
-    // This would typically update the sprite animation controller
-    player.setAnimationState(state.toString());
+    // State change events can be handled here or delegated to other systems
+    // For now, we'll keep it simple and let the PlayerEntity handle its own state changes
   }
 
   /// Force a player to a specific state (for testing/debugging)
@@ -320,103 +237,6 @@ class PlayerStateSystem extends GameSystem {
 
   @override
   void dispose() {
-    super.dispose();
-  }
-}
-
-/// Extension methods for PlayerEntity to support state system
-extension PlayerEntityStateExtensions on PlayerEntity {
-  /// Start idle animation
-  void startIdleAnimation() {
-    // Implementation would start idle sprite animation
-  }
-
-  /// Start movement animation
-  void startMovementAnimation() {
-    // Implementation would start walking/running animation
-  }
-
-  /// Start jump animation
-  void startJumpAnimation() {
-    // Implementation would start jump animation
-  }
-
-  /// Start falling animation
-  void startFallingAnimation() {
-    // Implementation would start falling animation
-  }
-
-  /// Start aiming mode
-  void startAiming() {
-    // Implementation would show aiming reticle, change sprite, etc.
-  }
-
-  /// Start launch animation
-  void startLaunchAnimation() {
-    // Implementation would start launch animation
-  }
-
-  /// Reset aiming state
-  void resetAiming() {
-    // Implementation would hide aiming reticle, reset aim direction, etc.
-  }
-
-  /// Apply jump force
-  void applyJumpForce() {
-    // Implementation would apply upward velocity
-  }
-
-  /// Execute launch
-  void executeLaunch() {
-    // Implementation would launch the ball/projectile
-  }
-
-  /// Play sound effect
-  void playSound(String soundName) {
-    // Implementation would trigger audio system
-  }
-
-  /// Spawn particle effects
-  void spawnParticles(String particleType) {
-    // Implementation would trigger particle system
-  }
-
-  /// Set animation state
-  void setAnimationState(String animationName) {
-    // Implementation would update sprite animation
-  }
-
-  /// Get velocity Y component
-  double get velocityY {
-    // Implementation would return Y velocity from velocity component
-    return 0.0; // Placeholder
-  }
-
-  /// Check if player is on ground
-  bool get isOnGround {
-    // Implementation would check collision with ground
-    return true; // Placeholder
-  }
-
-  /// Check if player can strike
-  bool get canStrike {
-    // Implementation would check strike cooldown/availability
-    return true; // Placeholder
-  }
-
-  /// Set can strike flag
-  void setCanStrike(bool canStrike) {
-    // Implementation would set strike availability
-  }
-
-  /// Get current state timer
-  double get stateTimer {
-    // Implementation would return time in current state
-    return 0.0; // Placeholder
-  }
-
-  /// Increment state timer
-  void incrementStateTimer(double dt) {
-    // Implementation would increment state timer
+    // Clean up resources
   }
 }

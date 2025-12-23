@@ -1,8 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:hard_hat/features/game/domain/systems/audio_system.dart';
-import 'package:hard_hat/features/game/domain/components/audio_component.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 
 /// Enhanced AudioManager that works with the AudioSystem for spatial audio
 /// and provides a high-level interface for audio management

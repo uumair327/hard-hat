@@ -6,6 +6,7 @@ import '../entities/level.dart';
 import '../entities/tile.dart';
 import '../entities/player_entity.dart';
 import '../repositories/level_repository.dart';
+import '../interfaces/entity_manager_interface.dart';
 import 'game_system.dart';
 import 'entity_manager.dart';
 
@@ -38,9 +39,9 @@ class LevelManager extends GameSystem {
 
   LevelManager({
     required LevelRepository levelRepository,
-    required EntityManager entityManager,
+    required IEntityManager entityManager,
   }) : _levelRepository = levelRepository,
-       _entityManager = entityManager;
+       _entityManager = entityManager as EntityManager;
 
   @override
   int get priority => -500; // Execute after entity manager but before other systems

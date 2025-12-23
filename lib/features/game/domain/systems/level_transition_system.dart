@@ -134,11 +134,20 @@ class LevelTransitionSystem extends GameSystem {
         );
       },
       (saveData) {
-        _progression = LevelProgression(
-          currentLevel: saveData.currentLevel,
-          unlockedLevels: saveData.unlockedLevels,
-          maxLevel: 10, // Could be loaded from config
-        );
+        if (saveData != null) {
+          _progression = LevelProgression(
+            currentLevel: saveData.currentLevel,
+            unlockedLevels: saveData.unlockedLevels,
+            maxLevel: 10, // Could be loaded from config
+          );
+        } else {
+          // Use default progression if save data is null
+          _progression = const LevelProgression(
+            currentLevel: 1,
+            unlockedLevels: {1},
+            maxLevel: 10,
+          );
+        }
       },
     );
     
@@ -150,7 +159,7 @@ class LevelTransitionSystem extends GameSystem {
     final saveData = SaveData(
       currentLevel: _progression.currentLevel,
       unlockedLevels: _progression.unlockedLevels,
-      settings: {}, // Keep existing settings or use empty map
+      settings: <String, dynamic>{}, // Empty settings for now
       lastPlayed: DateTime.now(),
     );
     

@@ -1,5 +1,4 @@
-import 'package:hard_hat/features/game/domain/entities/game_entity.dart';
-import 'package:hard_hat/features/game/domain/systems/game_system.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 
 /// System responsible for managing entity lifecycle and registration
 class EntityManager extends GameSystem {

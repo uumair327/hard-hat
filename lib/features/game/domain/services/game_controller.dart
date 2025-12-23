@@ -1,13 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:injectable/injectable.dart';
-import 'package:hard_hat/features/game/domain/orchestrators/ecs_orchestrator.dart';
-import 'package:hard_hat/features/game/domain/orchestrators/game_state_orchestrator.dart';
-import 'package:hard_hat/features/game/domain/orchestrators/level_orchestrator.dart';
-import 'package:hard_hat/features/game/domain/interfaces/game_controller_interfaces.dart';
-import 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart';
-import 'package:hard_hat/features/game/domain/entities/level.dart';
-import 'package:hard_hat/features/game/domain/systems/game_state_manager.dart';
-import 'package:hard_hat/features/game/domain/entities/player_entity.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
+import 'package:hard_hat/features/game/domain/systems/game_state_types.dart';
 
 /// Domain-level game controller that coordinates orchestrators
 /// Follows SRP - only responsible for high-level game coordination

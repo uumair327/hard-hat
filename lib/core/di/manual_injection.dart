@@ -1,19 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:hard_hat/core/services/asset_manager.dart';
 import 'package:hard_hat/core/services/audio_manager.dart';
-import 'package:hard_hat/features/game/domain/interfaces/entity_manager_interface.dart';
-import 'package:hard_hat/features/game/domain/interfaces/game_state_manager_interface.dart';
-import 'package:hard_hat/features/game/domain/interfaces/game_controller_interfaces.dart';
-import 'package:hard_hat/features/game/domain/systems/entity_manager_impl.dart';
-import 'package:hard_hat/features/game/domain/systems/game_state_manager_impl.dart';
-import 'package:hard_hat/features/game/domain/systems/audio_state_manager.dart';
-import 'package:hard_hat/features/game/domain/orchestrators/ecs_orchestrator.dart';
-import 'package:hard_hat/features/game/domain/orchestrators/game_state_orchestrator.dart';
-import 'package:hard_hat/features/game/domain/orchestrators/level_orchestrator.dart';
-import 'package:hard_hat/features/game/domain/services/game_controller.dart';
-import 'package:hard_hat/features/game/domain/services/focus_detector.dart';
-import 'package:hard_hat/features/game/domain/services/pause_menu_manager.dart';
-import 'package:hard_hat/features/game/domain/services/pause_menu_service.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 
 final GetIt getIt = GetIt.instance;
 

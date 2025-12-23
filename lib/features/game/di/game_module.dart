@@ -1,27 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart';
-import 'package:hard_hat/features/game/domain/interfaces/entity_manager_interface.dart';
-import 'package:hard_hat/features/game/domain/interfaces/game_state_manager_interface.dart';
-import 'package:hard_hat/features/game/domain/systems/entity_manager_impl.dart';
-import 'package:hard_hat/features/game/domain/systems/game_state_manager_impl.dart';
-import 'package:hard_hat/features/game/domain/systems/movement_system.dart';
-import 'package:hard_hat/features/game/domain/systems/collision_system.dart';
-import 'package:hard_hat/features/game/domain/systems/input_system.dart';
-import 'package:hard_hat/features/game/domain/systems/audio_system.dart';
-import 'package:hard_hat/features/game/domain/systems/camera_system.dart';
-import 'package:hard_hat/features/game/domain/systems/render_system.dart';
-import 'package:hard_hat/features/game/domain/systems/particle_system.dart';
-import 'package:hard_hat/features/game/domain/systems/state_transition_system.dart';
-import 'package:hard_hat/features/game/domain/systems/level_manager.dart';
-import 'package:hard_hat/features/game/domain/systems/save_system.dart';
-import 'package:hard_hat/features/game/domain/systems/player_state_system.dart';
-import 'package:hard_hat/features/game/domain/systems/player_physics_system.dart';
-import 'package:hard_hat/features/game/domain/systems/tile_damage_system.dart';
-import 'package:hard_hat/features/game/domain/systems/tile_state_system.dart';
-import 'package:hard_hat/features/game/domain/systems/audio_state_manager.dart';
-import 'package:hard_hat/features/game/domain/services/focus_detector.dart';
-import 'package:hard_hat/features/game/domain/repositories/level_repository.dart';
-import 'package:hard_hat/features/game/domain/repositories/save_repository.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 import 'package:hard_hat/core/services/asset_manager.dart';
 import 'package:hard_hat/core/services/audio_manager.dart';
 
@@ -93,7 +71,7 @@ abstract class GameModule {
   // Audio State Manager
   @lazySingleton
   AudioStateManager audioStateManager(
-    IAudioSystem audioSystem,
+    AudioSystem audioSystem,
     AudioManager audioManager,
   ) => AudioStateManager(audioSystem, audioManager);
 

@@ -16,6 +16,7 @@ class SaveProgressImpl implements SaveProgress {
     final saveData = SaveData(
       currentLevel: params.currentLevel,
       unlockedLevels: params.unlockedLevels,
+      settings: <String, dynamic>{}, // Empty settings for now
       lastPlayed: DateTime.now(),
     );
     

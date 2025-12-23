@@ -7,23 +7,26 @@ class LevelModel extends Level {
   const LevelModel({
     required super.id,
     required super.name,
+    required super.description,
     required super.size,
     required super.tiles,
     required super.playerSpawn,
     required super.cameraMin,
     required super.cameraMax,
     required super.elements,
+    super.data = const {},
   });
 
   factory LevelModel.fromJson(Map<String, dynamic> json) {
     return LevelModel(
       id: json['id'] as int,
       name: json['name'] as String,
+      description: json['description'] as String? ?? '',
       size: Vector2(
         (json['size']['x'] as num).toDouble(),
         (json['size']['y'] as num).toDouble(),
       ),
-      tiles: (json['tiles'] as List)
+      tiles: (json['tiles'] as List? ?? [])
           .map((tileJson) => TileModel.fromJson(tileJson))
           .cast<TileData>()
           .toList(),
@@ -42,19 +45,23 @@ class LevelModel extends Level {
       elements: (json['elements'] as List? ?? [])
           .map((elementJson) => InteractiveElementModel.fromJson(elementJson))
           .toList(),
+      data: json,
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
+      'description': description,
       'size': {'x': size.x, 'y': size.y},
       'tiles': tiles.map((tile) => TileModel.fromTileData(tile).toJson()).toList(),
       'playerSpawn': {'x': playerSpawn.x, 'y': playerSpawn.y},
       'cameraMin': {'x': cameraMin.x, 'y': cameraMin.y},
       'cameraMax': {'x': cameraMax.x, 'y': cameraMax.y},
       'elements': elements.map((element) => InteractiveElementModel.fromEntity(element).toJson()).toList(),
+      ...data,
     };
   }
 
@@ -62,12 +69,14 @@ class LevelModel extends Level {
     return LevelModel(
       id: level.id,
       name: level.name,
+      description: level.description,
       size: level.size,
       tiles: level.tiles,
       playerSpawn: level.playerSpawn,
       cameraMin: level.cameraMin,
       cameraMax: level.cameraMax,
       elements: level.elements,
+      data: level.data,
     );
   }
 }
@@ -129,7 +138,7 @@ class InteractiveElementModel extends InteractiveElement {
         (json['position']['x'] as num).toDouble(),
         (json['position']['y'] as num).toDouble(),
       ),
-      properties: json['properties'] as Map<String, dynamic>,
+      properties: json['properties'] as Map<String, dynamic>? ?? {},
     );
   }
 

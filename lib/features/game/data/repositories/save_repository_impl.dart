@@ -1,9 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:dartz/dartz.dart';
 import 'package:hard_hat/core/errors/failures.dart';
-import 'package:hard_hat/features/game/domain/repositories/save_repository.dart';
-import 'package:hard_hat/features/game/domain/entities/save_data.dart';
-import 'package:hard_hat/features/game/data/datasources/save_local_datasource.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
+import 'package:hard_hat/features/game/data/data.dart';
 
 @LazySingleton(as: SaveRepository)
 class SaveRepositoryImpl implements SaveRepository {
@@ -21,7 +20,7 @@ class SaveRepositoryImpl implements SaveRepository {
       final saveData = SaveData.fromJson(saveDataMap);
       return Right(saveData);
     } catch (e) {
-      return Left(CacheFailure('Failed to load save data: $e'));
+      return Left(SaveFailure('Failed to load save data: $e'));
     }
   }
 
@@ -31,7 +30,7 @@ class SaveRepositoryImpl implements SaveRepository {
       await _localDataSource.saveSaveData(saveData.toJson());
       return const Right(null);
     } catch (e) {
-      return Left(CacheFailure('Failed to save data: $e'));
+      return Left(SaveFailure('Failed to save data: $e'));
     }
   }
 
@@ -41,7 +40,7 @@ class SaveRepositoryImpl implements SaveRepository {
       await _localDataSource.deleteSaveData();
       return const Right(null);
     } catch (e) {
-      return Left(CacheFailure('Failed to delete save data: $e'));
+      return Left(SaveFailure('Failed to delete save data: $e'));
     }
   }
 }
