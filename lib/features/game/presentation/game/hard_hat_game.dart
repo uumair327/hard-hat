@@ -7,7 +7,7 @@ import 'package:hard_hat/features/game/domain/interfaces/interfaces.dart';
 import 'package:hard_hat/features/game/domain/entities/entities.dart';
 import 'package:hard_hat/features/game/domain/systems/systems.dart';
 import 'package:hard_hat/features/game/presentation/services/services.dart';
-import 'package:hard_hat/core/di/di.dart';
+import 'package:hard_hat/core/di/manual_injection.dart' as manual_di;
 
 /// Flutter Flame game implementation - handles only presentation concerns
 /// Game logic is managed by GameController in the domain layer
@@ -52,13 +52,13 @@ class HardHatGame extends FlameGame with HasCollisionDetection, HasKeyboardHandl
     _pauseMenuService = PauseMenuServiceImpl();
     
     // Register pause menu service and manager
-    registerPauseMenuManager(_pauseMenuService);
+    manual_di.registerPauseMenuManager(_pauseMenuService);
   }
 
   /// Initialize domain layer through game controller
   Future<void> _initializeDomainLayer() async {
     // Get game controller from DI
-    _gameController = getIt<IGameController>();
+    _gameController = manual_di.getIt<IGameController>();
     
     // Set up callbacks
     _gameController.onLevelComplete = _handleLevelComplete;
@@ -145,6 +145,21 @@ class HardHatGame extends FlameGame with HasCollisionDetection, HasKeyboardHandl
 
   /// Check if game is paused
   bool get isPaused => _gameController.isPaused;
+
+  // System access for testing - get systems directly from DI container
+  IEntityManager get entityManager => manual_di.getIt<IEntityManager>();
+  IInputSystem? get inputSystem => manual_di.getIt<InputSystem>();
+  IAudioSystem? get audioSystem => manual_di.getIt<AudioSystem>();
+  IGameStateManager get gameStateManager => manual_di.getIt<IGameStateManager>();
+  ICameraSystem? get cameraSystem => manual_di.getIt<CameraSystem>();
+  IRenderSystem? get renderSystem => manual_di.getIt<RenderSystem>();
+  IParticleSystem? get particleSystem => null; // Not implemented yet
+  IStateTransitionSystem? get stateTransitionSystem => null; // Not implemented yet
+  ILevelManager? get levelManager => null; // Not implemented yet
+  ISaveSystem? get saveSystem => null; // Not implemented yet
+  IMovementSystem? get movementSystem => manual_di.getIt<MovementSystem>();
+  ICollisionSystem? get collisionSystem => manual_di.getIt<CollisionSystem>();
+  IPauseMenuManager? get pauseMenuManager => manual_di.getIt.isRegistered<IPauseMenuManager>() ? manual_di.getIt<IPauseMenuManager>() : null;
 
   @override
   void onRemove() {

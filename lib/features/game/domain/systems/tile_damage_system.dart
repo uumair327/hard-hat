@@ -1,11 +1,18 @@
 import 'package:flame/components.dart';
 import 'package:hard_hat/features/game/domain/domain.dart';
+import 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart';
 
 /// System responsible for processing tile damage
 /// Separates damage logic from tile entities (proper ECS pattern)
-class TileDamageSystem extends GameSystem {
+class TileDamageSystem extends GameSystem implements ITileDamageSystem {
   /// List of damage events to process
   final List<TileDamageEvent> _damageEvents = [];
+  
+  /// Reference to particle system for spawning destruction effects
+  IParticleSystem? _particleSystem;
+  
+  /// Reference to audio system for playing destruction sounds
+  IAudioSystem? _audioSystem;
   
   @override
   int get priority => 5; // Process after collision detection
@@ -13,6 +20,16 @@ class TileDamageSystem extends GameSystem {
   @override
   Future<void> initialize() async {
     // Initialize damage processing
+  }
+  
+  /// Set particle system for integration
+  void setParticleSystem(IParticleSystem particleSystem) {
+    _particleSystem = particleSystem;
+  }
+  
+  /// Set audio system for integration
+  void setAudioSystem(IAudioSystem audioSystem) {
+    _audioSystem = audioSystem;
   }
 
   /// Queue a damage event for processing
@@ -91,18 +108,65 @@ class TileDamageSystem extends GameSystem {
 
   /// Trigger effects for destruction
   void _triggerDestructionEffects(TileEntity tile, TileDamageEvent event) {
-    // Spawn destruction particles
+    // Spawn destruction particles based on tile type
     final tilePosition = tile.positionComponent.position + Vector2(16, 16); // Center of tile
-    tile.onParticleSpawn?.call(tile, tilePosition);
     
-    // Play destruction sound
-    // AudioSystem will handle this through events
+    if (_particleSystem != null) {
+      // Spawn material-specific destruction particles
+      switch (tile.type) {
+        case TileType.scaffolding:
+          _particleSystem!.spawnParticles('destruction', tilePosition);
+          break;
+        case TileType.timber:
+          _particleSystem!.spawnParticles('destruction', tilePosition);
+          break;
+        case TileType.bricks:
+          _particleSystem!.spawnParticles('destruction', tilePosition);
+          break;
+        default:
+          _particleSystem!.spawnParticles('destruction', tilePosition);
+      }
+    }
+    
+    // Play destruction sound based on tile type
+    if (_audioSystem != null) {
+      if (_audioSystem is AudioSystem) {
+        switch (tile.type) {
+          case TileType.scaffolding:
+          case TileType.timber:
+          case TileType.bricks:
+            (_audioSystem as AudioSystem).playBreakSound(tilePosition);
+            break;
+          default:
+            (_audioSystem as AudioSystem).playBreakSound(tilePosition);
+        }
+      } else {
+        switch (tile.type) {
+          case TileType.scaffolding:
+            _audioSystem!.playSound('scaffolding_break');
+            break;
+          case TileType.timber:
+            _audioSystem!.playSound('timber_break');
+            break;
+          case TileType.bricks:
+            _audioSystem!.playSound('brick_break');
+            break;
+          default:
+            _audioSystem!.playSound('tile_break');
+        }
+      }
+    }
     
     // Trigger destruction callback
     tile.onDestroyed?.call(tile);
     
     // Note: Tile removal is handled by the tile's own state machine
     // No need to manually mark for removal here
+  }
+
+  @override
+  void processDamageEvents(double dt) {
+    update(dt);
   }
 
   @override

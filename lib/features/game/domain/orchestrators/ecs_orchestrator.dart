@@ -79,8 +79,58 @@ class ECSOrchestrator {
     for (final system in _systems) {
       await system.initialize();
     }
+    
+    // Connect systems for integration
+    _connectSystems();
 
     _isInitialized = true;
+  }
+  
+  /// Connect systems together for integration
+  void _connectSystems() {
+    // Set entity manager for all systems that need it
+    for (final system in _systems) {
+      if (system is InputSystem) {
+        system.setEntityManager(_entityManager);
+      } else if (system is CollisionSystem) {
+        system.setEntityManager(_entityManager);
+        // Connect collision system to other systems
+        if (_tileDamageSystem != null) {
+          system.setTileDamageSystem(_tileDamageSystem!);
+        }
+        if (_particleSystem != null) {
+          system.setParticleSystem(_particleSystem!);
+        }
+        if (_audioSystem != null) {
+          system.setAudioSystem(_audioSystem!);
+        }
+        if (_cameraSystem != null) {
+          system.setCameraSystem(_cameraSystem!);
+        }
+      } else if (system is PlayerPhysicsSystem) {
+        system.setEntityManager(_entityManager);
+        // Connect player physics to audio system
+        if (_audioSystem != null) {
+          system.setAudioSystem(_audioSystem!);
+        }
+      } else if (system is TileDamageSystem) {
+        // Connect tile damage system to particle and audio systems
+        if (_particleSystem != null) {
+          system.setParticleSystem(_particleSystem!);
+        }
+        if (_audioSystem != null) {
+          system.setAudioSystem(_audioSystem!);
+        }
+      } else if (system is AudioSystem) {
+        system.setEntityManager(_entityManager);
+      } else if (system is CameraSystem) {
+        system.setEntityManager(_entityManager);
+      } else if (system is ParticleSystem) {
+        system.setEntityManager(_entityManager);
+      } else if (system is RenderSystem) {
+        system.setEntityManager(_entityManager);
+      }
+    }
   }
 
   /// Update all ECS systems

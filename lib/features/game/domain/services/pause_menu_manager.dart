@@ -1,10 +1,11 @@
 import 'package:hard_hat/features/game/domain/interfaces/game_state_manager_interface.dart';
+import 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart';
 import 'package:hard_hat/features/game/domain/services/focus_detector.dart';
 import 'package:hard_hat/features/game/domain/services/pause_menu_service.dart';
 
 /// Manages the pause menu coordination and game state
 /// This is a domain service that coordinates with the presentation layer through interfaces
-class PauseMenuManager {
+class PauseMenuManager implements IPauseMenuManager {
   final IGameStateManager _gameStateManager;
   final FocusDetector _focusDetector;
   final PauseMenuService _pauseMenuService;
@@ -50,6 +51,7 @@ class PauseMenuManager {
   }
 
   /// Show the pause menu
+  @override
   void showPauseMenu() {
     if (_pauseMenuService.isShown) return;
     
@@ -61,6 +63,7 @@ class PauseMenuManager {
   }
 
   /// Hide the pause menu
+  @override
   void hidePauseMenu() {
     if (!_pauseMenuService.isShown) return;
     
@@ -94,16 +97,19 @@ class PauseMenuManager {
   }
 
   /// Set restart callback
+  @override
   void setRestartCallback(void Function() callback) {
     _onRestart = callback;
   }
 
   /// Set quit callback
+  @override
   void setQuitCallback(void Function() callback) {
     _onQuit = callback;
   }
 
   /// Toggle pause menu visibility
+  @override
   void togglePauseMenu() {
     if (_pauseMenuService.isShown) {
       _handleResume();
@@ -113,9 +119,11 @@ class PauseMenuManager {
   }
 
   /// Check if pause menu is currently shown
+  @override
   bool get isShown => _pauseMenuService.isShown;
 
   /// Dispose resources
+  @override
   void dispose() {
     hidePauseMenu();
     _focusDetector.removeFocusLostCallback(_handleFocusLost);

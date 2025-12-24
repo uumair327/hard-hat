@@ -6,10 +6,11 @@ import '../services/particle_pool.dart';
 import '../entities/tile.dart'; // Import TileType from tile entity
 import '../../presentation/game/hard_hat_game.dart';
 import 'game_system.dart';
+import '../interfaces/game_system_interfaces.dart';
 
 /// System responsible for managing all particle effects in the game
 /// Handles particle spawning, lifecycle management, and rendering with object pooling
-class ParticleSystem extends GameSystem {
+class ParticleSystem extends GameSystem implements IParticleSystem {
   /// Global particle pool manager for performance optimization
   late final GlobalParticlePoolManager _poolManager;
   
@@ -279,6 +280,35 @@ class ParticleSystem extends GameSystem {
       default:
         return ParticleEmitterConfig.destruction;
     }
+  }
+  
+  @override
+  void spawnParticles(String type, dynamic position) {
+    final pos = position is Vector2 ? position : Vector2.zero();
+    
+    switch (type) {
+      case 'impact':
+        spawnImpactParticles(pos);
+        break;
+      case 'movement':
+        spawnMovementParticles(pos);
+        break;
+      case 'explosion':
+        spawnExplosionParticles(pos);
+        break;
+      default:
+        spawnImpactParticles(pos);
+    }
+  }
+
+  @override
+  void updateParticles(double dt) {
+    updateSystem(dt);
+  }
+
+  @override
+  void clearParticles() {
+    clearAllParticles();
   }
   
   /// Get current particle system statistics

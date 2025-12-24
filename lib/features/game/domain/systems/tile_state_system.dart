@@ -1,8 +1,9 @@
 import 'package:hard_hat/features/game/domain/domain.dart';
+import 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart';
 
 /// System responsible for managing tile state transitions and animations
 /// Separates state logic from tile entities (proper ECS pattern)
-class TileStateSystem extends GameSystem {
+class TileStateSystem extends GameSystem implements ITileStateSystem {
   late EntityManager _entityManager;
   
   /// Map of tiles with pending state changes
@@ -173,6 +174,11 @@ class TileStateSystem extends GameSystem {
   void _handleDestroyedTile(TileEntity tile) {
     // Mark for removal from entity manager
     _entityManager.unregisterEntity(tile.id);
+  }
+
+  @override
+  void updateTileStates(double dt) {
+    update(dt);
   }
 
   /// Get tiles in a specific state

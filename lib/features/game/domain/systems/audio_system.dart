@@ -1,544 +1,322 @@
-import 'dart:async';
-import 'dart:math' as math;
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:hard_hat/features/game/domain/systems/game_system.dart';
-import 'package:hard_hat/features/game/domain/systems/game_state_manager.dart';
-import 'package:hard_hat/features/game/domain/components/audio_component.dart';
-import 'package:hard_hat/core/services/asset_manager.dart';
+import 'package:hard_hat/features/game/domain/domain.dart';
 
-/// System for handling spatial audio and entity-based sound effects
-class AudioSystem extends GameSystem {
-  /// Asset manager for loading audio paths
-  final AssetManager _assetManager;
+/// Audio categories for volume control
+enum AudioCategory {
+  sfx,
+  music,
+}
+
+/// Audio system for managing game sounds and music
+class AudioSystem extends GameSystem implements IAudioSystem {
+  late EntityManager _entityManager;
   
-  /// Game state manager for state-aware audio behavior
-  GameStateManager? _gameStateManager;
+  // Audio state
+  bool _isEnabled = true;
+  double _masterVolume = 1.0;
+  double _sfxVolume = 1.0;
+  double _musicVolume = 0.7;
   
-  /// Current listener position for spatial audio calculations
-  Vector2 _listenerPosition = Vector2.zero();
+  // Currently playing music
+  String? _currentMusic;
   
-  /// Master volume levels for different categories
-  final Map<AudioCategory, double> _categoryVolumes = {
-    AudioCategory.sfx: 1.0,
-    AudioCategory.music: 0.7,
-    AudioCategory.voice: 1.0,
-    AudioCategory.ambient: 0.5,
+  // Audio registry for sound effects
+  static const Map<String, String> _soundEffects = {
+    'jump': 'sfx/jump.wav',
+    'land': 'sfx/land.wav',
+    'hit': 'sfx/hit.wav',
+    'break': 'sfx/break.wav',
+    'strike': 'sfx/strike.wav',
+    'fizzle': 'sfx/fizzle.wav',
+    'boing': 'sfx/boing.wav',
+    'death': 'sfx/death.wav',
   };
   
-  /// Whether audio is globally muted
-  bool _isMuted = false;
-  
-  /// Currently playing audio instances for management
-  final Map<String, String> _activeAudioPlayers = {};
-  
-  /// Background music tracking
-  String? _currentMusicId;
-  
-  /// Audio mixing - maximum simultaneous sounds per category
-  final Map<AudioCategory, int> _maxSimultaneousSounds = {
-    AudioCategory.sfx: 8,
-    AudioCategory.music: 1,
-    AudioCategory.voice: 2,
-    AudioCategory.ambient: 4,
+  // Music registry
+  static const Map<String, String> _music = {
+    'menu': 'music/menu.mp3',
+    'game': 'music/game.mp3',
+    'victory': 'music/victory.mp3',
   };
   
-  /// Currently playing sounds count per category
-  final Map<AudioCategory, int> _currentSoundCount = {
-    AudioCategory.sfx: 0,
-    AudioCategory.music: 0,
-    AudioCategory.voice: 0,
-    AudioCategory.ambient: 0,
-  };
-  
-  /// State-specific audio behaviors
-  final Map<GameState, AudioBehavior> _stateBehaviors = {};
-  
-  /// Saved audio state for pause/resume
-  Map<AudioCategory, double>? _savedVolumes;
-  bool _wasMusicPlaying = false;
-
-  AudioSystem(this._assetManager);
-
   @override
-  int get priority => 100; // Audio system runs after most other systems
+  int get priority => 8; // Process late to respond to game events
 
   @override
   Future<void> initialize() async {
-    super.initialize();
-    // Preload commonly used audio assets
-    await _preloadAudioAssets();
-    
-    // Initialize state-specific audio behaviors
-    _initializeAudioBehaviors();
+    // Preload commonly used sound effects
+    await _preloadSounds();
   }
-  
-  /// Set the game state manager for state-aware audio behavior
-  void setGameStateManager(GameStateManager gameStateManager) {
-    _gameStateManager = gameStateManager;
-    
-    // Register for state change callbacks
-    _gameStateManager?.addStateChangeCallback(_onGameStateChanged);
-  }
-  
-  /// Initialize state-specific audio behaviors
-  void _initializeAudioBehaviors() {
-    _stateBehaviors[GameState.playing] = AudioBehavior(
-      allowSfx: true,
-      allowMusic: true,
-      allowVoice: true,
-      allowAmbient: true,
-      volumeMultiplier: 1.0,
-    );
-    
-    _stateBehaviors[GameState.paused] = AudioBehavior(
-      allowSfx: false,
-      allowMusic: true,
-      allowVoice: false,
-      allowAmbient: false,
-      volumeMultiplier: 0.3, // Reduced volume when paused
-    );
-    
-    _stateBehaviors[GameState.menu] = AudioBehavior(
-      allowSfx: true,
-      allowMusic: true,
-      allowVoice: true,
-      allowAmbient: false,
-      volumeMultiplier: 1.0,
-    );
-    
-    _stateBehaviors[GameState.levelComplete] = AudioBehavior(
-      allowSfx: true,
-      allowMusic: true,
-      allowVoice: true,
-      allowAmbient: false,
-      volumeMultiplier: 1.0,
-    );
-    
-    _stateBehaviors[GameState.gameOver] = AudioBehavior(
-      allowSfx: true,
-      allowMusic: true,
-      allowVoice: true,
-      allowAmbient: false,
-      volumeMultiplier: 1.0,
-    );
-    
-    _stateBehaviors[GameState.loading] = AudioBehavior(
-      allowSfx: false,
-      allowMusic: true,
-      allowVoice: false,
-      allowAmbient: false,
-      volumeMultiplier: 0.5,
-    );
-    
-    _stateBehaviors[GameState.settings] = AudioBehavior(
-      allowSfx: true,
-      allowMusic: true,
-      allowVoice: false,
-      allowAmbient: false,
-      volumeMultiplier: 1.0,
-    );
-    
-    _stateBehaviors[GameState.error] = AudioBehavior(
-      allowSfx: false,
-      allowMusic: false,
-      allowVoice: false,
-      allowAmbient: false,
-      volumeMultiplier: 0.0,
-    );
-  }
-  
-  /// Handle game state changes
-  void _onGameStateChanged(GameState newState, GameState? previousState) {
-    final behavior = _stateBehaviors[newState];
-    if (behavior != null) {
-      _applyAudioBehavior(behavior, newState, previousState);
-    }
-  }
-  
-  /// Apply audio behavior based on current state
-  void _applyAudioBehavior(AudioBehavior behavior, GameState newState, GameState? previousState) {
-    switch (newState) {
-      case GameState.paused:
-        _saveAudioState();
-        _pauseAudio();
-        break;
-      case GameState.playing:
-        if (previousState == GameState.paused) {
-          _resumeAudio();
-        }
-        break;
-      case GameState.menu:
-        if (previousState == GameState.playing) {
-          _fadeOutGameplayAudio();
-        }
-        break;
-      case GameState.levelComplete:
-      case GameState.gameOver:
-        _stopCategory(AudioCategory.sfx);
-        break;
-      case GameState.loading:
-        _stopCategory(AudioCategory.sfx);
-        _stopCategory(AudioCategory.voice);
-        break;
-      case GameState.error:
-        stopAll();
-        break;
-      default:
-        break;
-    }
-  }
-  
-  /// Get current audio behavior based on game state
-  AudioBehavior _getCurrentAudioBehavior() {
-    final currentState = _gameStateManager?.currentState ?? GameState.playing;
-    return _stateBehaviors[currentState] ?? _stateBehaviors[GameState.playing]!;
-  }
-  
-  /// Save current audio state for pause/resume
-  void _saveAudioState() {
-    _savedVolumes = Map.from(_categoryVolumes);
-    _wasMusicPlaying = _currentMusicId != null;
-  }
-  
-  /// Pause audio for pause state
-  void _pauseAudio() {
-    FlameAudio.bgm.pause();
-    
-    // Reduce volume for all categories
-    final behavior = _getCurrentAudioBehavior();
-    for (final category in AudioCategory.values) {
-      final originalVolume = _categoryVolumes[category] ?? 1.0;
-      _categoryVolumes[category] = originalVolume * behavior.volumeMultiplier;
-    }
-  }
-  
-  /// Resume audio from pause state
-  void _resumeAudio() {
-    if (_savedVolumes != null) {
-      _categoryVolumes.addAll(_savedVolumes!);
-      _savedVolumes = null;
-    }
-    
-    if (_wasMusicPlaying) {
-      FlameAudio.bgm.resume();
-    }
-  }
-  
-  /// Fade out gameplay audio when transitioning to menu
-  void _fadeOutGameplayAudio() {
-    // This would ideally use a tween to fade out over time
-    // For now, we'll just reduce the volume
-    _categoryVolumes[AudioCategory.sfx] = (_categoryVolumes[AudioCategory.sfx] ?? 1.0) * 0.3;
-    _categoryVolumes[AudioCategory.ambient] = (_categoryVolumes[AudioCategory.ambient] ?? 1.0) * 0.3;
+
+  /// Set entity manager
+  void setEntityManager(EntityManager entityManager) {
+    _entityManager = entityManager;
   }
 
   @override
-  void updateSystem(double dt) {
-    super.updateSystem(dt);
-    
-    final behavior = _getCurrentAudioBehavior();
-    
-    // Update all audio components
-    final audioComponents = getComponents<AudioComponent>();
-    
-    for (final audioComponent in audioComponents) {
-      // Only update audio if the category is allowed in current state
-      if (_isCategoryAllowed(audioComponent.category, behavior)) {
-        _updateAudioComponent(audioComponent, dt, behavior);
-      } else {
-        // Stop audio that's not allowed in current state
-        audioComponent.stop();
-      }
-    }
-    
-    // Clean up finished one-shot audio components
-    _cleanupFinishedAudio();
+  void update(double dt) {
+    // Audio system doesn't need regular updates
+    // Sound effects are triggered by events
   }
   
-  /// Check if an audio category is allowed in current behavior
-  bool _isCategoryAllowed(AudioCategory category, AudioBehavior behavior) {
-    switch (category) {
-      case AudioCategory.sfx:
-        return behavior.allowSfx;
-      case AudioCategory.music:
-        return behavior.allowMusic;
-      case AudioCategory.voice:
-        return behavior.allowVoice;
-      case AudioCategory.ambient:
-        return behavior.allowAmbient;
+  @override
+  void playSound(String soundId) {
+    playSoundEffect(soundId);
+  }
+  
+  @override
+  void stopSound(String soundId) {
+    // FlameAudio doesn't provide easy sound stopping by ID
+    // This would need a more sophisticated implementation
+  }
+  
+  @override
+  void pauseAudio() {
+    pauseAll();
+  }
+  
+  @override
+  void resumeAudio() {
+    resumeAll();
+  }
+  
+  @override
+  void setVolume(double volume) {
+    setMasterVolume(volume);
+  }
+  
+  /// Preload sound effects for better performance
+  Future<void> _preloadSounds() async {
+    try {
+      // Preload critical sound effects
+      await FlameAudio.audioCache.load(_soundEffects['jump']!);
+      await FlameAudio.audioCache.load(_soundEffects['hit']!);
+      await FlameAudio.audioCache.load(_soundEffects['break']!);
+    } catch (e) {
+      // Handle missing audio files gracefully
+      print('Warning: Could not preload some audio files: $e');
     }
   }
-
-  /// Update a single audio component
-  void _updateAudioComponent(AudioComponent audioComponent, double dt, AudioBehavior behavior) {
-    if (!audioComponent.isPlaying || audioComponent.soundId == null) {
+  
+  /// Play a sound effect
+  void playSoundEffect(String soundName, {Vector2? position, double volume = 1.0}) {
+    if (!_isEnabled) return;
+    
+    final soundPath = _soundEffects[soundName];
+    if (soundPath == null) {
+      print('Warning: Sound effect "$soundName" not found');
       return;
     }
     
-    // Calculate spatial volume if position is set
-    double effectiveVolume = audioComponent.volume;
-    if (audioComponent.spatialPosition != null) {
-      effectiveVolume = audioComponent.calculateSpatialVolume(_listenerPosition);
-    }
-    
-    // Apply category volume, behavior multiplier, and mute state
-    effectiveVolume *= _categoryVolumes[audioComponent.category] ?? 1.0;
-    effectiveVolume *= behavior.volumeMultiplier;
-    if (_isMuted) effectiveVolume = 0.0;
-    
-    // Play or update the audio
-    _playAudioComponent(audioComponent, effectiveVolume);
-  }
-
-  /// Play audio for a component
-  void _playAudioComponent(AudioComponent audioComponent, double volume) {
-    if (audioComponent.soundId == null) return;
-    
-    final audioId = audioComponent.soundId!;
-    final category = audioComponent.category;
-    
-    // Check if we can play more sounds in this category
-    if ((_currentSoundCount[category] ?? 0) >= (_maxSimultaneousSounds[category] ?? 1)) {
-      return; // Skip if too many sounds are playing
-    }
-    
     try {
-      final audioPath = _assetManager.getAudioPath(audioId);
+      final effectiveVolume = _masterVolume * _sfxVolume * volume;
       
-      if (audioComponent.isLooping && category == AudioCategory.music) {
-        _playBackgroundMusic(audioPath, volume);
+      if (position != null) {
+        // Spatial audio (simplified - would need proper 3D audio in real implementation)
+        _playSpatialSound(soundPath, position, effectiveVolume);
       } else {
-        _playSoundEffect(audioId, audioPath, volume, category);
+        FlameAudio.play(soundPath, volume: effectiveVolume);
       }
-      
-      // Increment sound count
-      _currentSoundCount[category] = (_currentSoundCount[category] ?? 0) + 1;
-      
     } catch (e) {
-      // Handle audio loading errors gracefully
-      if (kDebugMode) {
-        print('Failed to play audio: $audioId, error: $e');
-      }
+      print('Warning: Could not play sound effect "$soundName": $e');
     }
-  }
-
-  /// Play a sound effect
-  void _playSoundEffect(String audioId, String audioPath, double volume, AudioCategory category) {
-    FlameAudio.play(audioPath, volume: volume).then((_) {
-      // Decrement sound count when finished
-      _currentSoundCount[category] = math.max(0, (_currentSoundCount[category] ?? 1) - 1);
-    }).catchError((error) {
-      if (kDebugMode) {
-        print('Error playing sound effect $audioId: $error');
-      }
-      _currentSoundCount[category] = math.max(0, (_currentSoundCount[category] ?? 1) - 1);
-    });
-  }
-
-  /// Play background music
-  void _playBackgroundMusic(String audioPath, double volume) async {
-    try {
-      // Stop current music if playing
-      if (_currentMusicId != null) {
-        FlameAudio.bgm.stop();
-      }
-      
-      await FlameAudio.bgm.play(audioPath, volume: volume);
-      _currentMusicId = audioPath;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error playing background music: $e');
-      }
-      _currentSoundCount[AudioCategory.music] = 0;
-    }
-  }
-
-  /// Clean up finished one-shot audio components
-  void _cleanupFinishedAudio() {
-    final audioComponents = getComponents<AudioComponent>();
-    
-    for (final audioComponent in audioComponents) {
-      if (audioComponent.isOneShot && !audioComponent.isPlaying) {
-        audioComponent.removeFromParent();
-      }
-    }
-  }
-
-  /// Set the listener position for spatial audio calculations
-  void setListenerPosition(Vector2 position) {
-    _listenerPosition = position.clone();
-  }
-
-  /// Play a one-shot sound effect at a specific position
-  void playSpatialSfx(String audioId, Vector2 position, {double volume = 1.0}) {
-    final behavior = _getCurrentAudioBehavior();
-    if (!behavior.allowSfx) return;
-    
-    final audioComponent = AudioComponent(
-      soundId: audioId,
-      volume: volume,
-      spatialPosition: position,
-      isOneShot: true,
-      category: AudioCategory.sfx,
-    );
-    
-    audioComponent.play(audioId);
-    
-    // Add to game temporarily
-    findGame()?.add(audioComponent);
-  }
-
-  /// Play a non-spatial sound effect
-  void playSfx(String audioId, {double volume = 1.0}) {
-    final behavior = _getCurrentAudioBehavior();
-    if (!behavior.allowSfx) return;
-    
-    final audioComponent = AudioComponent(
-      soundId: audioId,
-      volume: volume,
-      isOneShot: true,
-      category: AudioCategory.sfx,
-    );
-    
-    audioComponent.play(audioId);
-    
-    // Add to game temporarily
-    findGame()?.add(audioComponent);
-  }
-
-  /// Play background music
-  void playMusic(String audioId, {double volume = 0.7, bool loop = true}) {
-    final behavior = _getCurrentAudioBehavior();
-    if (!behavior.allowMusic) return;
-    
-    final audioComponent = AudioComponent(
-      soundId: audioId,
-      volume: volume,
-      isLooping: loop,
-      category: AudioCategory.music,
-    );
-    
-    audioComponent.play(audioId);
-    
-    // Add to game
-    findGame()?.add(audioComponent);
-  }
-
-  /// Stop all audio of a specific category
-  void stopCategory(AudioCategory category) {
-    _stopCategory(category);
   }
   
-  /// Internal method to stop all audio of a specific category
-  void _stopCategory(AudioCategory category) {
-    final audioComponents = getComponents<AudioComponent>();
+  /// Play spatial audio at a specific position
+  void _playSpatialSound(String soundPath, Vector2 position, double volume) {
+    // Simplified spatial audio - calculate volume based on distance from player
+    final players = _entityManager.getEntitiesOfType<PlayerEntity>();
+    if (players.isEmpty) {
+      FlameAudio.play(soundPath, volume: volume);
+      return;
+    }
     
-    for (final audioComponent in audioComponents) {
-      if (audioComponent.category == category) {
-        audioComponent.stop();
+    final player = players.first;
+    final playerPosition = player.positionComponent.position;
+    final distance = (position - playerPosition).length;
+    
+    // Reduce volume based on distance (max distance of 500 pixels)
+    final spatialVolume = (1.0 - (distance / 500.0).clamp(0.0, 1.0)) * volume;
+    
+    if (spatialVolume > 0.01) {
+      FlameAudio.play(soundPath, volume: spatialVolume);
+    }
+  }
+  
+  /// Play background music
+  void playMusic(String musicName, {bool loop = true}) {
+    if (!_isEnabled) return;
+    
+    final musicPath = _music[musicName];
+    if (musicPath == null) {
+      print('Warning: Music "$musicName" not found');
+      return;
+    }
+    
+    // Stop current music if different
+    if (_currentMusic != musicName) {
+      stopMusic();
+    }
+    
+    try {
+      final effectiveVolume = _masterVolume * _musicVolume;
+      
+      if (loop) {
+        FlameAudio.bgm.play(musicPath, volume: effectiveVolume);
+      } else {
+        FlameAudio.play(musicPath, volume: effectiveVolume);
       }
+      
+      _currentMusic = musicName;
+    } catch (e) {
+      print('Warning: Could not play music "$musicName": $e');
     }
-    
-    if (category == AudioCategory.music) {
+  }
+  
+  /// Stop background music
+  void stopMusic() {
+    try {
       FlameAudio.bgm.stop();
-      _currentMusicId = null;
-    }
-    
-    _currentSoundCount[category] = 0;
-  }
-
-  /// Stop all audio
-  void stopAll() {
-    final audioComponents = getComponents<AudioComponent>();
-    
-    for (final audioComponent in audioComponents) {
-      audioComponent.stop();
-    }
-    
-    FlameAudio.bgm.stop();
-    FlameAudio.audioCache.clearAll();
-    _currentMusicId = null;
-    
-    // Reset all sound counts
-    for (final category in AudioCategory.values) {
-      _currentSoundCount[category] = 0;
+      _currentMusic = null;
+    } catch (e) {
+      print('Warning: Could not stop music: $e');
     }
   }
-
+  
+  /// Pause all audio
+  void pauseAll() {
+    try {
+      FlameAudio.bgm.pause();
+    } catch (e) {
+      print('Warning: Could not pause audio: $e');
+    }
+  }
+  
+  /// Resume all audio
+  void resumeAll() {
+    try {
+      FlameAudio.bgm.resume();
+    } catch (e) {
+      print('Warning: Could not resume audio: $e');
+    }
+  }
+  
+  /// Set master volume (0.0 to 1.0)
+  void setMasterVolume(double volume) {
+    _masterVolume = volume.clamp(0.0, 1.0);
+    _updateMusicVolume();
+  }
+  
+  /// Set sound effects volume (0.0 to 1.0)
+  void setSfxVolume(double volume) {
+    _sfxVolume = volume.clamp(0.0, 1.0);
+  }
+  
+  /// Set music volume (0.0 to 1.0)
+  void setMusicVolume(double volume) {
+    _musicVolume = volume.clamp(0.0, 1.0);
+    _updateMusicVolume();
+  }
+  
+  /// Update music volume
+  void _updateMusicVolume() {
+    if (_currentMusic != null) {
+      // Note: FlameAudio doesn't support runtime volume changes easily
+      // In a real implementation, you'd need to restart the music with new volume
+      // final effectiveVolume = _masterVolume * _musicVolume;
+    }
+  }
+  
+  /// Enable or disable audio
+  void setEnabled(bool enabled) {
+    _isEnabled = enabled;
+    
+    if (!enabled) {
+      stopMusic();
+    }
+  }
+  
+  /// Set muted state
+  void setMuted(bool muted) {
+    setEnabled(!muted);
+  }
+  
   /// Set volume for a specific audio category
   void setCategoryVolume(AudioCategory category, double volume) {
-    _categoryVolumes[category] = volume.clamp(0.0, 1.0);
-  }
-
-  /// Get volume for a specific audio category
-  double getCategoryVolume(AudioCategory category) {
-    return _categoryVolumes[category] ?? 1.0;
-  }
-
-  /// Set global mute state
-  void setMuted(bool muted) {
-    _isMuted = muted;
-    
-    if (muted) {
-      // Pause all audio when muted
-      FlameAudio.bgm.pause();
-    } else {
-      // Resume music when unmuted
-      FlameAudio.bgm.resume();
+    switch (category) {
+      case AudioCategory.sfx:
+        setSfxVolume(volume);
+        break;
+      case AudioCategory.music:
+        setMusicVolume(volume);
+        break;
     }
   }
-
-  /// Get global mute state
-  bool get isMuted => _isMuted;
-
-  /// Preload commonly used audio assets
-  Future<void> _preloadAudioAssets() async {
-    try {
-      await FlameAudio.audioCache.loadAll([
-        'audio/sfx/jump.mp3',
-        'audio/sfx/ball_launch.mp3',
-        'audio/sfx/ball_bounce.mp3',
-        'audio/sfx/tile_break.mp3',
-        'audio/sfx/tile_hit.mp3',
-      ]);
-    } catch (e) {
-      if (kDebugMode) {
-        print('Failed to preload audio assets: $e');
-      }
-    }
+  
+  /// Play player jump sound
+  void playJumpSound(Vector2? position) {
+    playSoundEffect('jump', position: position);
   }
+  
+  /// Play player land sound
+  void playLandSound(Vector2? position) {
+    playSoundEffect('land', position: position);
+  }
+  
+  /// Play ball hit sound
+  void playHitSound(Vector2? position) {
+    playSoundEffect('hit', position: position);
+  }
+  
+  /// Play tile break sound
+  void playBreakSound(Vector2? position) {
+    playSoundEffect('break', position: position);
+  }
+  
+  /// Play ball strike sound
+  void playStrikeSound(Vector2? position) {
+    playSoundEffect('strike', position: position);
+  }
+  
+  /// Play ball fizzle sound (when ball disappears)
+  void playFizzleSound(Vector2? position) {
+    playSoundEffect('fizzle', position: position);
+  }
+  
+  /// Play spring boing sound
+  void playBoingSound(Vector2? position) {
+    playSoundEffect('boing', position: position);
+  }
+  
+  /// Play death sound
+  void playDeathSound() {
+    playSoundEffect('death');
+  }
+  
+  // Getters
+  
+  /// Check if audio is enabled
+  bool get isEnabled => _isEnabled;
+  
+  /// Get master volume
+  double get masterVolume => _masterVolume;
+  
+  /// Get sound effects volume
+  double get sfxVolume => _sfxVolume;
+  
+  /// Get music volume
+  double get musicVolume => _musicVolume;
+  
+  /// Get currently playing music
+  String? get currentMusic => _currentMusic;
+  
+  /// Check if music is playing
+  bool get isMusicPlaying => _currentMusic != null;
 
   @override
   void dispose() {
+    stopMusic();
     super.dispose();
-    
-    _gameStateManager?.removeStateChangeCallback(_onGameStateChanged);
-    
-    // Clean up all audio resources
-    FlameAudio.bgm.stop();
-    _activeAudioPlayers.clear();
-    FlameAudio.audioCache.clearAll();
-    _currentMusicId = null;
-    _stateBehaviors.clear();
-    _savedVolumes = null;
   }
-}
-
-/// Defines audio behavior for different game states
-class AudioBehavior {
-  final bool allowSfx;
-  final bool allowMusic;
-  final bool allowVoice;
-  final bool allowAmbient;
-  final double volumeMultiplier;
-  
-  const AudioBehavior({
-    required this.allowSfx,
-    required this.allowMusic,
-    required this.allowVoice,
-    required this.allowAmbient,
-    required this.volumeMultiplier,
-  });
 }

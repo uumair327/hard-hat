@@ -60,8 +60,12 @@ abstract class ILevelManager extends GameSystem {
   Future<void> loadLevel(int levelId);
   Future<void> restartLevel();
   dynamic get currentLevel;
+  bool get isLevelLoaded;
+  int get currentLevelId;
+  Map<String, dynamic> get levelTiles;
   void Function(dynamic level)? onLevelComplete;
   void Function(dynamic level)? onLevelLoaded;
+  void Function(dynamic failure)? onLevelLoadError;
 }
 
 /// Abstract interface for save system
@@ -96,4 +100,15 @@ abstract class ITileStateSystem extends GameSystem {
   void updateTileStates(double dt);
   void queueStateTransition(TileEntity tile, TileState newState, {double delay = 0.0});
   List<TileEntity> getTilesInState(TileState state);
+}
+
+/// Abstract interface for pause menu manager
+abstract class IPauseMenuManager {
+  void showPauseMenu();
+  void hidePauseMenu();
+  void togglePauseMenu();
+  bool get isShown;
+  void setRestartCallback(void Function() callback);
+  void setQuitCallback(void Function() callback);
+  void dispose();
 }

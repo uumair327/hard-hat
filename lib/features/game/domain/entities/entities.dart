@@ -1,6 +1,6 @@
 // Game Entities barrel export
 
-export 'ball_entity.dart';
+export 'ball.dart';
 export 'game_entity.dart';
 export 'level.dart';
 export 'player_entity.dart';

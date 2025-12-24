@@ -1,14 +1,17 @@
 import 'package:hard_hat/features/game/domain/systems/game_state_manager.dart';
 import 'package:hard_hat/features/game/domain/systems/audio_state_manager.dart';
+import 'package:hard_hat/features/game/domain/systems/audio_system.dart';
 
 /// Context for state strategies
 class GameStateContext {
   final AudioStateManager audioStateManager;
   final List<Function(GameState, GameState?)> stateChangeCallbacks;
+  final AudioSystem? audioSystem;
   
   GameStateContext({
     required this.audioStateManager,
     required this.stateChangeCallbacks,
+    this.audioSystem,
   });
 }
 
@@ -40,6 +43,9 @@ class PlayingStateStrategy implements GameStateStrategy {
   @override
   void onEnter(GameStateContext context) {
     context.audioStateManager.resumeAudio();
+    
+    // Play game music
+    context.audioSystem?.playMusic('game');
   }
 
   @override
@@ -82,6 +88,9 @@ class MenuStateStrategy implements GameStateStrategy {
     context.audioStateManager.fadeOut(
       duration: const Duration(milliseconds: 500),
     );
+    
+    // Play menu music
+    context.audioSystem?.playMusic('menu');
   }
 
   @override
@@ -101,8 +110,8 @@ class LevelCompleteStateStrategy implements GameStateStrategy {
 
   @override
   void onEnter(GameStateContext context) {
-    // Play level complete sound, show UI effects, etc.
-    // This can be extended without modifying other states
+    // Play level complete sound and music
+    context.audioSystem?.playMusic('victory');
   }
 
   @override

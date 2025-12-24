@@ -296,7 +296,7 @@ class LevelTransitionSystem extends GameSystem {
     // If this is the first segment, set it as current
     if (_currentSegment == null) {
       _currentSegment = segmentId;
-      _cameraSystem.camera.setBoundaries(topLeft, bottomRight);
+      _cameraSystem.setBounds(topLeft, bottomRight);
     }
   }
 

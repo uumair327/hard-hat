@@ -3,8 +3,11 @@ import 'package:hard_hat/features/game/domain/domain.dart';
 
 /// System responsible for player physics calculations
 /// Separates physics logic from player entity (proper ECS pattern)
-class PlayerPhysicsSystem extends GameSystem {
+class PlayerPhysicsSystem extends GameSystem implements IPlayerPhysicsSystem {
   late EntityManager _entityManager;
+  
+  // References to other systems for integration
+  IAudioSystem? _audioSystem;
   
   // Physics constants
   static const double gravity = 980.0; // pixels/second²
@@ -28,6 +31,11 @@ class PlayerPhysicsSystem extends GameSystem {
   void setEntityManager(EntityManager entityManager) {
     _entityManager = entityManager;
   }
+  
+  /// Set audio system for integration
+  void setAudioSystem(IAudioSystem audioSystem) {
+    _audioSystem = audioSystem;
+  }
 
   @override
   void update(double dt) {
@@ -43,6 +51,10 @@ class PlayerPhysicsSystem extends GameSystem {
     final inputComponent = player.inputComponent;
     final velocityComponent = player.velocityComponent;
     final positionComponent = player.positionComponent;
+    
+    // Store previous ground state to detect landing
+    final wasOnGround = player.isOnGround;
+    final previousVelocityY = velocityComponent.velocity.y;
     
     // Update physics based on current state
     switch (player.currentState) {
@@ -64,6 +76,14 @@ class PlayerPhysicsSystem extends GameSystem {
       case PlayerState.launching:
         _updateLaunchingPhysics(player, inputComponent, velocityComponent, dt);
         break;
+      case PlayerState.coyoteTime:
+        _updateCoyoteTimePhysics(player, inputComponent, velocityComponent, dt);
+        break;
+      case PlayerState.jumpQueued:
+      case PlayerState.death:
+      case PlayerState.elevator:
+        // TODO: Implement these states later
+        break;
     }
     
     // Apply gravity (except when on ground and not jumping)
@@ -76,6 +96,23 @@ class PlayerPhysicsSystem extends GameSystem {
     
     // Update position based on velocity
     _updatePosition(positionComponent, velocityComponent, dt);
+    
+    // Detect landing and play sound
+    if (!wasOnGround && player.isOnGround && previousVelocityY > 50.0) {
+      _playLandSound(player);
+    }
+  }
+  
+  /// Play landing sound when player hits ground
+  void _playLandSound(PlayerEntity player) {
+    if (_audioSystem != null) {
+      final playerPosition = player.positionComponent.position;
+      if (_audioSystem is AudioSystem) {
+        (_audioSystem as AudioSystem).playLandSound(playerPosition);
+      } else {
+        _audioSystem!.playSound('land');
+      }
+    }
   }
 
   /// Update physics for idle state
@@ -155,6 +192,11 @@ class PlayerPhysicsSystem extends GameSystem {
   void _updateLaunchingPhysics(PlayerEntity player, PlayerInputComponent input, VelocityComponent velocity, double dt) {
     // Apply recoil force from launch
     if (player.stateTimer < 0.1) { // Apply recoil for first 100ms
+      // Play strike sound on first frame of launch
+      if (player.stateTimer < dt) {
+        _playStrikeSound(player);
+      }
+      
       final recoilForce = _calculateLaunchRecoil(player);
       velocity.velocity.x += recoilForce.x * dt;
       velocity.velocity.y += recoilForce.y * dt;
@@ -166,6 +208,29 @@ class PlayerPhysicsSystem extends GameSystem {
       if (player.stateTimer > 0.1) {
         velocity.velocity.y = 0.0;
       }
+    } else {
+      velocity.velocity.x *= airFriction;
+    }
+  }
+  
+  /// Play strike sound when player launches ball
+  void _playStrikeSound(PlayerEntity player) {
+    if (_audioSystem != null) {
+      final playerPosition = player.positionComponent.position;
+      if (_audioSystem is AudioSystem) {
+        (_audioSystem as AudioSystem).playStrikeSound(playerPosition);
+      } else {
+        _audioSystem!.playSound('strike');
+      }
+    }
+  }
+
+  /// Update physics for coyote time state
+  void _updateCoyoteTimePhysics(PlayerEntity player, PlayerInputComponent input, VelocityComponent velocity, double dt) {
+    // Similar to falling physics but allow jump input
+    if (input.canMove) {
+      final targetVelocity = input.movementDirection * moveSpeed;
+      velocity.velocity.x = _lerpDouble(velocity.velocity.x, targetVelocity, 0.1);
     } else {
       velocity.velocity.x *= airFriction;
     }
@@ -198,16 +263,47 @@ class PlayerPhysicsSystem extends GameSystem {
     return Vector2(-50.0, 0.0); // Placeholder
   }
 
+  @override
+  void updatePlayerPhysics(double dt) {
+    update(dt);
+  }
+
   /// Apply jump force to player
+  @override
   void applyJumpForce(PlayerEntity player) {
     final velocityComponent = player.velocityComponent;
     velocityComponent.velocity.y = jumpForce;
+    
+    // Play jump sound through audio system
+    if (_audioSystem != null) {
+      final playerPosition = player.positionComponent.position;
+      if (_audioSystem is AudioSystem) {
+        (_audioSystem as AudioSystem).playJumpSound(playerPosition);
+      } else {
+        _audioSystem!.playSound('jump');
+      }
+    }
   }
 
   /// Apply external force to player (e.g., from explosions, springs)
-  void applyExternalForce(PlayerEntity player, Vector2 force) {
+  @override
+  void applyExternalForce(PlayerEntity player, dynamic force) {
     final velocityComponent = player.velocityComponent;
-    velocityComponent.velocity += force;
+    if (force is Vector2) {
+      velocityComponent.velocity += force;
+      
+      // Play boing sound for spring-like forces
+      if (force.y < -100) { // Upward force indicates spring
+        if (_audioSystem != null) {
+          final playerPosition = player.positionComponent.position;
+          if (_audioSystem is AudioSystem) {
+            (_audioSystem as AudioSystem).playBoingSound(playerPosition);
+          } else {
+            _audioSystem!.playSound('boing');
+          }
+        }
+      }
+    }
   }
 
   /// Set player velocity directly
@@ -243,11 +339,6 @@ class PlayerPhysicsSystem extends GameSystem {
   /// Linear interpolation helper
   double _lerpDouble(double a, double b, double t) {
     return a + (b - a) * t;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 

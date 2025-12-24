@@ -1,581 +1,226 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'package:hard_hat/features/game/domain/domain.dart';
-import 'package:hard_hat/features/game/domain/services/particle_pool.dart';
-import 'package:hard_hat/core/services/sprite_batch.dart';
-import 'package:hard_hat/core/services/render_performance.dart';
 
-/// System responsible for rendering sprites and visual elements with batching optimization
-class RenderSystem extends GameSystem {
-  RenderSystem({
-    bool enableBatching = true,
-    int maxBatchSize = 1000,
-    bool enableParticlePooling = true,
-  }) : _batchManager = SpriteBatchManager(
-         enableBatching: enableBatching,
-         maxBatchSize: maxBatchSize,
-       ),
-       _particlePoolingEnabled = enableParticlePooling;
-
-  @override
-  int get priority => 1000; // Execute last for rendering
-
-  final SpriteBatchManager _batchManager;
-  final RenderPerformanceMonitor _performanceMonitor = RenderPerformanceMonitor();
-  final Map<int, List<RenderableEntity>> _renderLayers = {};
-  final Map<int, List<Particle>> _particleLayers = {};
-  bool _batchingEnabled = true;
-  final bool _particlePoolingEnabled;
+/// Render system for drawing entities to the screen
+class RenderSystem extends GameSystem implements IRenderSystem {
+  late EntityManager _entityManager;
+  late CameraSystem _cameraSystem;
   
-  /// Global particle pool manager
-  GlobalParticlePoolManager? _particlePoolManager;
+  // Render layers for proper draw order
+  final Map<int, List<GameEntity>> _renderLayers = {};
+  
+  @override
+  int get priority => 9; // Process last to render everything
 
   @override
   Future<void> initialize() async {
-    // Initialize particle pool manager if enabled and not already initialized
-    if (_particlePoolingEnabled) {
-      _particlePoolManager = GlobalParticlePoolManager();
-      // Only initialize if not already initialized by ParticleSystem
-      try {
-        _particlePoolManager?.initialize(
-          particlePoolSize: 1000,
-          emitterPoolSize: 100,
-        );
-      } catch (e) {
-        // Already initialized by another system (like ParticleSystem)
-        // This is expected and fine
-      }
-    }
+    // Render system initialization
   }
 
-  @override
-  void updateSystem(double dt) {
-    // Update particle pools if enabled and initialized
-    if (_particlePoolingEnabled && _particlePoolManager != null) {
-      try {
-        _particlePoolManager?.update(dt);
-      } catch (e) {
-        // Pool manager not initialized, skip update
-      }
-    }
-    
-    // Prepare render data
-    _prepareRenderData();
-  }
-
-  @override
-  void renderSystem(Canvas canvas) {
-    _performanceMonitor.startFrame();
-    
-    if (_batchingEnabled) {
-      // Use sprite batching for optimized rendering
-      _renderWithBatching(canvas);
-    } else {
-      // Use traditional layer-based rendering
-      _renderWithLayers(canvas);
-    }
-    
-    // Render particles with optimization
-    _renderParticles(canvas);
-    
-    _performanceMonitor.endFrame();
-  }
-
-  /// Prepare render data by collecting all renderable entities
-  void _prepareRenderData() {
-    _renderLayers.clear();
-    _particleLayers.clear();
-    _batchManager.clear();
-    
-    // Get all entities with renderable components
-    final renderableEntities = getComponents<Component>()
-        .where((entity) => 
-            entity.children.any((c) => c is GamePositionComponent) &&
-            entity.children.any((c) => c is GameSpriteComponent))
-        .map((entity) => RenderableEntity(
-            entity: entity,
-            position: entity.children.whereType<GamePositionComponent>().first,
-            sprite: entity.children.whereType<GameSpriteComponent>().first,
-          ))
-        .toList();
-
-    if (_batchingEnabled) {
-      // Add entities to sprite batching system
-      for (final renderable in renderableEntities) {
-        _addToBatch(renderable);
-      }
-    } else {
-      // Group by render layer for traditional rendering
-      for (final renderable in renderableEntities) {
-        final layer = renderable.sprite.renderLayer;
-        _renderLayers.putIfAbsent(layer, () => []);
-        _renderLayers[layer]!.add(renderable);
-      }
-    }
-    
-    // Prepare particle render data
-    _prepareParticleData();
+  /// Set entity manager
+  void setEntityManager(EntityManager entityManager) {
+    _entityManager = entityManager;
   }
   
-  /// Prepare particle render data by collecting all particles
-  void _prepareParticleData() {
-    // Get all particle components
-    final particleComponents = getComponents<ParticleComponent>();
+  /// Set camera system for viewport calculations
+  void setCameraSystem(CameraSystem cameraSystem) {
+    _cameraSystem = cameraSystem;
+  }
+
+  @override
+  void update(double dt) {
+    renderEntities(dt);
+  }
+  
+  @override
+  void renderEntities(double dt) {
+    _sortEntitiesByRenderLayer();
+    _renderEntities(dt);
+  }
+  
+  @override
+  void enableBatching(bool enabled) {
+    // Batching implementation would go here
+  }
+  
+  @override
+  void setMaxBatchSize(int size) {
+    // Max batch size implementation would go here
+  }
+  
+  /// Sort entities by render layer for proper draw order
+  void _sortEntitiesByRenderLayer() {
+    _renderLayers.clear();
     
-    for (final component in particleComponents) {
-      for (final particle in component.particles) {
-        if (particle.isActive) {
-          final layer = RenderLayer.particles.value;
-          _particleLayers.putIfAbsent(layer, () => []);
-          _particleLayers[layer]!.add(particle);
-        }
-      }
+    final entities = _entityManager.getAllEntities();
+    
+    for (final entity in entities) {
+      if (!entity.hasEntityComponent<GameSpriteComponent>()) continue;
+      
+      final sprite = entity.getEntityComponent<GameSpriteComponent>();
+      if (sprite == null) continue;
+      
+      final layer = sprite.renderLayer;
+      _renderLayers.putIfAbsent(layer, () => []).add(entity);
     }
-    
-    // Also get particles from global pool if enabled
-    if (_particlePoolingEnabled && _particlePoolManager != null) {
-      for (final particle in _particlePoolManager!.particlePool.activeParticles) {
-        if (particle.isActive) {
-          final layer = RenderLayer.particles.value;
-          _particleLayers.putIfAbsent(layer, () => []);
-          _particleLayers[layer]!.add(particle);
-        }
-      }
-    }
   }
-
-  /// Add a renderable entity to the sprite batch
-  void _addToBatch(RenderableEntity entity) {
-    final sprite = entity.sprite.sprite;
-    if (sprite == null) return;
-
-    final renderLayer = _mapToRenderLayer(entity.sprite.renderLayer);
-    
-    final batchItem = SpriteBatchItem(
-      sprite: sprite,
-      position: entity.position.position,
-      size: entity.sprite.size,
-      rotation: entity.position.angle,
-      scale: 1.0, // Use default scale for now
-      paint: entity.sprite.paint,
-      anchor: entity.sprite.anchor,
-      renderLayer: renderLayer,
-    );
-
-    _batchManager.addSprite(batchItem);
-  }
-
-  /// Map integer render layer to RenderLayer enum
-  RenderLayer _mapToRenderLayer(int layer) {
-    if (layer < 50) return RenderLayer.background;
-    if (layer < 150) return RenderLayer.tiles;
-    if (layer < 250) return RenderLayer.interactive;
-    if (layer < 350) return RenderLayer.entities;
-    if (layer < 450) return RenderLayer.projectiles;
-    if (layer < 550) return RenderLayer.particles;
-    return RenderLayer.ui;
-  }
-
-  /// Render using sprite batching system
-  void _renderWithBatching(Canvas canvas) {
-    final batches = _batchManager.getSortedBatches();
-    _performanceMonitor.recordDrawCall(); // One draw call per batch group
-    
-    for (final batch in batches) {
-      _performanceMonitor.recordSprites(batch.items.length);
-    }
-    
-    _batchManager.renderBatches(canvas);
-  }
-
-  /// Render using traditional layer-based system
-  void _renderWithLayers(Canvas canvas) {
-    // Render entities by layer (lower numbers render first)
+  
+  /// Render entities in layer order
+  void _renderEntities(double dt) {
+    // Sort layers by key (lower numbers render first)
     final sortedLayers = _renderLayers.keys.toList()..sort();
     
     for (final layer in sortedLayers) {
-      final entities = _renderLayers[layer] ?? [];
-      for (final entity in entities) {
-        _performanceMonitor.recordDrawCall();
-        _performanceMonitor.recordSprites(1);
-        _renderEntity(canvas, entity);
-      }
+      final entities = _renderLayers[layer]!;
+      _renderLayer(entities, dt);
     }
   }
-
-  /// Render an individual entity (traditional method)
-  void _renderEntity(Canvas canvas, RenderableEntity entity) {
-    final sprite = entity.sprite.sprite;
-    final position = entity.position.position;
-    final size = entity.sprite.size;
-    final paint = entity.sprite.paint;
-
-    if (sprite != null) {
-      canvas.save();
+  
+  /// Render a specific layer of entities
+  void _renderLayer(List<GameEntity> entities, double dt) {
+    for (final entity in entities) {
+      _renderEntity(entity, dt);
+    }
+  }
+  
+  /// Render an individual entity
+  void _renderEntity(GameEntity entity, double dt) {
+    final sprite = entity.getEntityComponent<GameSpriteComponent>();
+    final position = entity.getEntityComponent<GamePositionComponent>();
+    
+    if (sprite == null || position == null) return;
+    
+    // Check if entity is visible in camera bounds
+    if (!_isEntityVisible(entity)) return;
+    
+    // Convert world position to screen position
+    final screenPosition = _cameraSystem.worldToScreen(position.position);
+    
+    // Render the sprite (this would be handled by Flame's rendering system)
+    _drawSprite(sprite, screenPosition, dt);
+  }
+  
+  /// Check if entity is visible in camera bounds
+  bool _isEntityVisible(GameEntity entity) {
+    final position = entity.getEntityComponent<GamePositionComponent>();
+    if (position == null) return false;
+    
+    return _cameraSystem.isVisible(position.position, position.size);
+  }
+  
+  /// Draw sprite at screen position (placeholder for Flame rendering)
+  void _drawSprite(GameSpriteComponent sprite, Vector2 screenPosition, double dt) {
+    // In a real Flame implementation, this would be handled by Flame's rendering system
+    // This is just a placeholder to show the render system structure
+    
+    // Update sprite position for Flame rendering
+    sprite.position = screenPosition;
+    
+    // Apply camera zoom
+    final scale = _cameraSystem.zoom;
+    sprite.scale = Vector2.all(scale);
+    
+    // Apply opacity
+    if (sprite.opacity < 1.0) {
+      // Handle transparency (would be done in Flame's render method)
+    }
+  }
+  
+  /// Render debug information
+  void renderDebugInfo(Canvas canvas, Size size) {
+    if (!isDebugMode) return;
+    
+    _renderEntityBounds(canvas);
+    _renderCollisionBoxes(canvas);
+    _renderCameraBounds(canvas);
+  }
+  
+  /// Render entity bounding boxes for debugging
+  void _renderEntityBounds(Canvas canvas) {
+    final entities = _entityManager.getAllEntities();
+    final paint = Paint()
+      ..color = Colors.green.withValues(alpha: 0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    
+    for (final entity in entities) {
+      final position = entity.getEntityComponent<GamePositionComponent>();
+      if (position == null) continue;
       
-      // Apply transformations
-      final anchorOffset = _getAnchorOffset(entity.sprite.anchor, size);
-      canvas.translate(
-        position.x - anchorOffset.x,
-        position.y - anchorOffset.y,
+      final screenPos = _cameraSystem.worldToScreen(position.position);
+      final size = position.size * _cameraSystem.zoom;
+      
+      canvas.drawRect(
+        Rect.fromLTWH(screenPos.x, screenPos.y, size.x, size.y),
+        paint,
       );
+    }
+  }
+  
+  /// Render collision boxes for debugging
+  void _renderCollisionBoxes(Canvas canvas) {
+    final entities = _entityManager.getAllEntities();
+    final paint = Paint()
+      ..color = Colors.red.withValues(alpha: 0.7)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    
+    for (final entity in entities) {
+      final collision = entity.getEntityComponent<GameCollisionComponent>();
+      if (collision == null) continue;
       
-      if (entity.position.angle != 0) {
-        canvas.translate(size.x / 2, size.y / 2);
-        canvas.rotate(entity.position.angle);
-        canvas.translate(-size.x / 2, -size.y / 2);
-      }
+      final screenPos = _cameraSystem.worldToScreen(collision.position);
+      final size = collision.size * _cameraSystem.zoom;
       
-      // Scale is handled by the sprite component itself
-      
-      // Render sprite
-      sprite.render(
-        canvas,
-        size: size,
-        overridePaint: paint,
+      canvas.drawRect(
+        Rect.fromLTWH(screenPos.x, screenPos.y, size.x, size.y),
+        paint,
       );
-      
-      canvas.restore();
-    }
-  }
-
-  /// Get anchor offset for positioning
-  Vector2 _getAnchorOffset(Anchor anchor, Vector2 size) {
-    switch (anchor) {
-      case Anchor.topLeft:
-        return Vector2.zero();
-      case Anchor.topCenter:
-        return Vector2(size.x / 2, 0);
-      case Anchor.topRight:
-        return Vector2(size.x, 0);
-      case Anchor.centerLeft:
-        return Vector2(0, size.y / 2);
-      case Anchor.center:
-        return Vector2(size.x / 2, size.y / 2);
-      case Anchor.centerRight:
-        return Vector2(size.x, size.y / 2);
-      case Anchor.bottomLeft:
-        return Vector2(0, size.y);
-      case Anchor.bottomCenter:
-        return Vector2(size.x / 2, size.y);
-      case Anchor.bottomRight:
-        return Vector2(size.x, size.y);
-      default:
-        return Vector2.zero();
-    }
-  }
-
-  /// Enable/disable sprite batching for performance
-  void setBatchingEnabled(bool enabled) {
-    _batchingEnabled = enabled;
-  }
-
-  /// Get batching enabled state
-  bool get isBatchingEnabled => _batchingEnabled;
-
-  /// Optimize batches for better performance
-  void optimizeBatches() {
-    _batchManager.optimizeBatches();
-  }
-
-  /// Get rendering statistics
-  Map<String, dynamic> getRenderStats() {
-    final batchStats = _batchManager.getStats();
-    final perfStats = _performanceMonitor.getDetailedStats();
-    final particleStats = getParticleStats();
-    
-    return {
-      ...batchStats,
-      ...perfStats,
-      'renderLayers': _renderLayers.length,
-      'particleLayers': _particleLayers.length,
-      'totalEntities': _renderLayers.values.fold(0, (sum, entities) => sum + entities.length),
-      'totalParticles': _particleLayers.values.fold(0, (sum, particles) => sum + particles.length),
-      'particles': particleStats,
-    };
-  }
-
-  /// Render particles with optimization
-  void _renderParticles(Canvas canvas) {
-    if (_particleLayers.isEmpty) return;
-    
-    // Render particles by layer (particles should render on top)
-    final sortedLayers = _particleLayers.keys.toList()..sort();
-    
-    for (final layer in sortedLayers) {
-      final particles = _particleLayers[layer] ?? [];
-      
-      if (particles.isNotEmpty) {
-        _renderParticleLayer(canvas, particles);
-      }
     }
   }
   
-  /// Render a layer of particles with batching optimization
-  void _renderParticleLayer(Canvas canvas, List<Particle> particles) {
-    // Group particles by type and sprite for batching
-    final Map<String, List<Particle>> particleGroups = {};
+  /// Render camera bounds for debugging
+  void _renderCameraBounds(Canvas canvas) {
+    final bounds = _cameraSystem.getCameraBounds();
+    final paint = Paint()
+      ..color = Colors.blue.withValues(alpha: 0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0;
     
-    for (final particle in particles) {
-      final key = '${particle.type}_${particle.sprite?.hashCode ?? 'null'}';
-      particleGroups.putIfAbsent(key, () => []);
-      particleGroups[key]!.add(particle);
-    }
-    
-    // Render each group
-    for (final group in particleGroups.values) {
-      _renderParticleGroup(canvas, group);
-    }
-  }
-  
-  /// Render a group of similar particles
-  void _renderParticleGroup(Canvas canvas, List<Particle> particles) {
-    if (particles.isEmpty) return;
-    
-    final firstParticle = particles.first;
-    
-    if (firstParticle.sprite != null) {
-      // Render sprite-based particles
-      _renderSpriteParticles(canvas, particles);
-    } else {
-      // Render shape-based particles
-      _renderShapeParticles(canvas, particles);
-    }
-    
-    _performanceMonitor.recordDrawCall();
-    _performanceMonitor.recordSprites(particles.length);
-  }
-  
-  /// Render sprite-based particles
-  void _renderSpriteParticles(Canvas canvas, List<Particle> particles) {
-    for (final particle in particles) {
-      if (particle.sprite == null) continue;
-      
-      canvas.save();
-      
-      // Apply transformations
-      canvas.translate(particle.position.x, particle.position.y);
-      
-      if (particle.rotation != 0) {
-        canvas.rotate(particle.rotation);
-      }
-      
-      if (particle.scale != 1.0) {
-        canvas.scale(particle.scale);
-      }
-      
-      // Apply alpha
-      final paint = particle.getCurrentPaint();
-      
-      // Render sprite
-      particle.sprite!.render(
-        canvas,
-        size: particle.size,
-        overridePaint: paint,
-      );
-      
-      canvas.restore();
-    }
-  }
-  
-  /// Render shape-based particles (circles, rectangles)
-  void _renderShapeParticles(Canvas canvas, List<Particle> particles) {
-    for (final particle in particles) {
-      canvas.save();
-      
-      // Apply transformations
-      canvas.translate(particle.position.x, particle.position.y);
-      
-      if (particle.rotation != 0) {
-        canvas.rotate(particle.rotation);
-      }
-      
-      if (particle.scale != 1.0) {
-        canvas.scale(particle.scale);
-      }
-      
-      final paint = particle.getCurrentPaint();
-      
-      // Render based on particle type
-      switch (particle.type) {
-        case ParticleType.impact:
-          // Render as star shape
-          _drawStar(canvas, particle.size, paint);
-          break;
-          
-        case ParticleType.destruction:
-          // Render as irregular chunks
-          _drawChunk(canvas, particle.size, paint);
-          break;
-          
-        case ParticleType.movement:
-        case ParticleType.dust:
-          // Render as small circles
-          _drawCircle(canvas, particle.size, paint);
-          break;
-          
-        case ParticleType.explosion:
-          // Render as expanding circles
-          _drawExpandingCircle(canvas, particle.size, paint, particle.age / particle.lifetime);
-          break;
-          
-        case ParticleType.spark:
-          // Render as lines
-          _drawSpark(canvas, particle.size, paint);
-          break;
-      }
-      
-      canvas.restore();
-    }
-  }
-  
-  /// Draw a star shape for impact particles
-  void _drawStar(Canvas canvas, Vector2 size, Paint paint) {
-    final path = Path();
-    final radius = size.x / 2;
-    final innerRadius = radius * 0.5;
-    
-    for (int i = 0; i < 10; i++) {
-      final angle = (i * math.pi / 5);
-      final r = (i % 2 == 0) ? radius : innerRadius;
-      final x = r * math.cos(angle);
-      final y = r * math.sin(angle);
-      
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-    path.close();
-    
-    canvas.drawPath(path, paint);
-  }
-  
-  /// Draw a chunk shape for destruction particles
-  void _drawChunk(Canvas canvas, Vector2 size, Paint paint) {
-    final rect = Rect.fromCenter(
-      center: Offset.zero,
-      width: size.x,
-      height: size.y,
-    );
-    canvas.drawRect(rect, paint);
-  }
-  
-  /// Draw a circle for dust/movement particles
-  void _drawCircle(Canvas canvas, Vector2 size, Paint paint) {
-    final radius = size.x / 2;
-    canvas.drawCircle(Offset.zero, radius, paint);
-  }
-  
-  /// Draw an expanding circle for explosion particles
-  void _drawExpandingCircle(Canvas canvas, Vector2 size, Paint paint, double progress) {
-    final radius = (size.x / 2) * (1.0 + progress);
-    paint.style = PaintingStyle.stroke;
-    paint.strokeWidth = 2.0 * (1.0 - progress);
-    canvas.drawCircle(Offset.zero, radius, paint);
-  }
-  
-  /// Draw a spark line
-  void _drawSpark(Canvas canvas, Vector2 size, Paint paint) {
-    paint.style = PaintingStyle.stroke;
-    paint.strokeWidth = 2.0;
-    canvas.drawLine(
-      Offset(-size.x / 2, 0),
-      Offset(size.x / 2, 0),
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, bounds.width * _cameraSystem.zoom, bounds.height * _cameraSystem.zoom),
       paint,
     );
   }
   
-  /// Create particle effect at position
-  ParticleComponent? createParticleEffect({
-    required ParticleType type,
-    required Vector2 position,
-    int? particleCount,
-    ParticleEmitterConfig? customConfig,
-  }) {
-    if (!_particlePoolingEnabled) return null;
+  /// Get entities in render order
+  List<GameEntity> getEntitiesInRenderOrder() {
+    final result = <GameEntity>[];
+    final sortedLayers = _renderLayers.keys.toList()..sort();
     
-    // Select appropriate config
-    ParticleEmitterConfig config;
-    switch (type) {
-      case ParticleType.impact:
-        config = customConfig ?? ParticleEmitterConfig.impact;
-        break;
-      case ParticleType.destruction:
-        config = customConfig ?? ParticleEmitterConfig.destruction;
-        break;
-      case ParticleType.movement:
-        config = customConfig ?? ParticleEmitterConfig.movement;
-        break;
-      default:
-        config = customConfig ?? ParticleEmitterConfig.impact;
+    for (final layer in sortedLayers) {
+      result.addAll(_renderLayers[layer]!);
     }
     
-    // Get emitter from pool
-    final emitter = _particlePoolManager!.emitterPool.getEmitter(
-      config: config,
-      position: position,
-      isContinuous: false,
-      maxBurstParticles: particleCount ?? 20,
-    );
-    
-    // Emit initial burst
-    emitter.emitBurst(particleCount ?? 20);
-    
-    return emitter;
+    return result;
   }
   
-  /// Enable/disable particle pooling
-  void setParticlePoolingEnabled(bool enabled) {
-    // Note: This can't change the pooling state after initialization
-    // It's here for consistency with other enable/disable methods
+  /// Get entities in a specific render layer
+  List<GameEntity> getEntitiesInLayer(int layer) {
+    return _renderLayers[layer] ?? [];
   }
   
-  /// Get particle pooling enabled state
-  bool get isParticlePoolingEnabled => _particlePoolingEnabled;
+  /// Set debug mode
+  bool isDebugMode = false;
   
-  /// Get particle pool statistics
-  Map<String, dynamic> getParticleStats() {
-    if (!_particlePoolingEnabled) {
-      return {'poolingEnabled': false};
-    }
-    
-    return {
-      'poolingEnabled': true,
-      ...(_particlePoolManager?.getStats() ?? {}),
-    };
+  void setDebugMode(bool debug) {
+    isDebugMode = debug;
   }
-
-  /// Get performance monitor
-  RenderPerformanceMonitor get performanceMonitor => _performanceMonitor;
 
   @override
   void dispose() {
     _renderLayers.clear();
-    _particleLayers.clear();
-    _batchManager.clear();
-    
-    if (_particlePoolingEnabled && _particlePoolManager != null) {
-      try {
-        _particlePoolManager!.dispose();
-      } catch (e) {
-        // Pool manager not initialized or already disposed
-      }
-    }
+    super.dispose();
   }
-}
-
-/// Helper class to group renderable components
-class RenderableEntity {
-  final Component entity;
-  final GamePositionComponent position;
-  final GameSpriteComponent sprite;
-
-  RenderableEntity({
-    required this.entity,
-    required this.position,
-    required this.sprite,
-  });
 }

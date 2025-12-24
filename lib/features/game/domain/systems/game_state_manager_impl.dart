@@ -3,6 +3,7 @@ import 'package:hard_hat/features/game/domain/interfaces/game_state_manager_inte
 import 'package:hard_hat/features/game/domain/systems/game_state_manager.dart';
 import 'package:hard_hat/features/game/domain/strategies/game_state_strategy.dart';
 import 'package:hard_hat/features/game/domain/systems/audio_state_manager.dart';
+import 'package:hard_hat/features/game/domain/systems/audio_system.dart';
 
 @LazySingleton(as: IGameStateManager)
 class GameStateManagerImpl implements IGameStateManager {
@@ -12,10 +13,18 @@ class GameStateManagerImpl implements IGameStateManager {
   GameState _currentState = GameState.menu;
   GameState? _previousState;
   final List<Function(GameState, GameState?)> _stateChangeCallbacks = [];
+  
+  // Reference to audio system for music management
+  AudioSystem? _audioSystem;
 
   GameStateManagerImpl(
     this._audioStateManager,
   ) : _stateStrategies = GameStateStrategyFactory.createAllStrategies();
+  
+  /// Set audio system for music management
+  void setAudioSystem(AudioSystem audioSystem) {
+    _audioSystem = audioSystem;
+  }
 
   @override
   GameState get currentState => _currentState;
@@ -37,6 +46,7 @@ class GameStateManagerImpl implements IGameStateManager {
     final context = GameStateContext(
       audioStateManager: _audioStateManager,
       stateChangeCallbacks: _stateChangeCallbacks,
+      audioSystem: _audioSystem,
     );
 
     // Exit old state

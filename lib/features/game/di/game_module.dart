@@ -26,17 +26,13 @@ abstract class GameModule {
   InputSystem get inputSystem => InputSystem();
 
   @LazySingleton(as: IAudioSystem)
-  AudioSystem audioSystem(AssetManager assetManager) => AudioSystem(assetManager);
+  AudioSystem get audioSystem => AudioSystem();
 
   @LazySingleton(as: ICameraSystem)
   CameraSystem get cameraSystem => CameraSystem();
 
   @LazySingleton(as: IRenderSystem)
-  RenderSystem get renderSystem => RenderSystem(
-    enableBatching: true,
-    maxBatchSize: 1000,
-    enableParticlePooling: true,
-  );
+  RenderSystem get renderSystem => RenderSystem();
 
   @LazySingleton(as: IParticleSystem)
   ParticleSystem get particleSystem => ParticleSystem();

@@ -1,8 +1,9 @@
 import 'package:hard_hat/features/game/domain/domain.dart';
+import 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart';
 
 /// System responsible for managing player state transitions
 /// Separates state machine logic from player entity (proper ECS pattern)
-class PlayerStateSystem extends GameSystem {
+class PlayerStateSystem extends GameSystem implements IPlayerStateSystem {
   late EntityManager _entityManager;
   
   @override
@@ -54,6 +55,13 @@ class PlayerStateSystem extends GameSystem {
         return _processAimingState(player, input);
       case PlayerState.launching:
         return _processLaunchingState(player, input);
+      case PlayerState.coyoteTime:
+        return _processCoyoteTimeState(player, input);
+      case PlayerState.jumpQueued:
+      case PlayerState.death:
+      case PlayerState.elevator:
+        // TODO: Implement these states later
+        return player.currentState;
     }
   }
 
@@ -150,6 +158,21 @@ class PlayerStateSystem extends GameSystem {
     return PlayerState.launching;
   }
 
+  /// Process coyote time state
+  PlayerState _processCoyoteTimeState(PlayerEntity player, PlayerInputComponent input) {
+    // Allow jumping during coyote time
+    if (input.isJumpPressed) {
+      return PlayerState.jumping;
+    }
+    
+    // Transition to falling after coyote time expires
+    if (player.stateTimer > 0.1) { // Coyote time duration
+      return PlayerState.falling;
+    }
+    
+    return PlayerState.coyoteTime;
+  }
+
   /// Change player state
   void _changePlayerState(PlayerEntity player, PlayerState newState) {
     final oldState = player.currentState;
@@ -188,6 +211,14 @@ class PlayerStateSystem extends GameSystem {
       case PlayerState.launching:
         // No special exit logic
         break;
+      case PlayerState.coyoteTime:
+        // No special exit logic
+        break;
+      case PlayerState.jumpQueued:
+      case PlayerState.death:
+      case PlayerState.elevator:
+        // TODO: Implement these states later
+        break;
     }
   }
 
@@ -212,6 +243,14 @@ class PlayerStateSystem extends GameSystem {
       case PlayerState.launching:
         // State-specific logic handled by PlayerEntity itself
         break;
+      case PlayerState.coyoteTime:
+        // State-specific logic handled by PlayerEntity itself
+        break;
+      case PlayerState.jumpQueued:
+      case PlayerState.death:
+      case PlayerState.elevator:
+        // TODO: Implement these states later
+        break;
     }
   }
 
@@ -219,6 +258,11 @@ class PlayerStateSystem extends GameSystem {
   void _onStateChanged(PlayerEntity player, PlayerState oldState, PlayerState newState) {
     // State change events can be handled here or delegated to other systems
     // For now, we'll keep it simple and let the PlayerEntity handle its own state changes
+  }
+
+  @override
+  void updatePlayerStates(double dt) {
+    update(dt);
   }
 
   /// Force a player to a specific state (for testing/debugging)

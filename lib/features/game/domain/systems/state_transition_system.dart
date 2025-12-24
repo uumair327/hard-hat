@@ -3,9 +3,10 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import '../systems/game_system.dart';
 import '../systems/game_state_manager.dart';
+import '../interfaces/game_system_interfaces.dart';
 
 /// System that handles state transition animations and effects
-class StateTransitionSystem extends GameSystem {
+class StateTransitionSystem extends GameSystem implements IStateTransitionSystem {
   /// Game state manager for monitoring state changes
   GameStateManager? _gameStateManager;
   
@@ -129,6 +130,17 @@ class StateTransitionSystem extends GameSystem {
   /// Get current transition progress (0.0 to 1.0)
   double get transitionProgress => _currentTransition?.progress ?? 0.0;
   
+  @override
+  void processStateTransitions(double dt) {
+    updateSystem(dt);
+  }
+
+  @override
+  void queueStateTransition(dynamic entity, dynamic newState) {
+    // This is a simplified implementation for the interface
+    // The actual state transitions are handled internally
+  }
+
   @override
   void dispose() {
     _gameStateManager?.removeStateChangeCallback(_onGameStateChanged);
