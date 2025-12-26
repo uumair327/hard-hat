@@ -8,10 +8,12 @@ import 'package:crypto/crypto.dart';
 import '../../../../core/errors/failures.dart';
 import '../entities/save_data.dart';
 import '../repositories/save_repository.dart';
+import '../interfaces/game_system_interfaces.dart';
+import 'game_system.dart';
 
 /// SaveSystem provides atomic save operations with corruption detection and recovery
 /// Implements requirements 8.1, 8.2, 8.3, 8.4, 8.5
-class SaveSystem {
+class SaveSystem extends GameSystem implements ISaveSystem {
   final SaveRepository _saveRepository;
   static const String _saveFileName = 'save_data.json';
   static const String _backupFileName = 'save_data_backup.json';
@@ -23,9 +25,102 @@ class SaveSystem {
   
   SaveSystem(this._saveRepository);
 
-  /// Initialize the save system and load existing data
+  @override
+  int get priority => -100; // Execute after entity manager
+
+  @override
+  Future<void> initialize() async {
+    // Initialize the save system and load existing data
+    // Requirement 8.2: Load previous progress on game start
+    try {
+      final result = await _loadSaveDataWithRecovery();
+      
+      if (result.isRight()) {
+        // Successfully loaded from file
+        final saveData = result.getOrElse(() => throw Exception('Unexpected null'));
+        _cachedSaveData = saveData;
+        _startAutoSave();
+      } else {
+        // Fallback to repository if direct file access fails
+        final repositoryResult = await _saveRepository.getSaveData();
+        
+        if (repositoryResult.isRight()) {
+          final saveData = repositoryResult.getOrElse(() => null);
+          if (saveData != null) {
+            _cachedSaveData = saveData;
+            _startAutoSave();
+          } else {
+            // Repository returned null, create default save data
+            final defaultSaveData = await _createDefaultSaveData();
+            _cachedSaveData = defaultSaveData;
+            _startAutoSave();
+          }
+        } else {
+          // Create default save data if everything fails
+          final defaultSaveData = await _createDefaultSaveData();
+          _cachedSaveData = defaultSaveData;
+          _startAutoSave();
+        }
+      }
+    } catch (e) {
+      // Create default save data if everything fails
+      final defaultSaveData = await _createDefaultSaveData();
+      _cachedSaveData = defaultSaveData;
+      _startAutoSave();
+    }
+  }
+
+  @override
+  void updateSystem(double dt) {
+    // Auto-save is handled by timer, no per-frame updates needed
+  }
+
+  /// Save progress data with atomic operations (ISaveSystem interface)
+  /// Requirement 8.1: Persist progress data to local storage immediately
+  @override
+  Future<void> saveProgress({required int currentLevel, Set<int>? unlockedLevels}) async {
+    final result = await saveProgressWithResult(
+      currentLevel: currentLevel,
+      unlockedLevels: unlockedLevels,
+    );
+    
+    result.fold(
+      (failure) {
+        String message = 'Save failed';
+        if (failure is SaveFailure) {
+          message = 'Save failed: ${failure.message}';
+        }
+        throw Exception(message);
+      },
+      (_) => {}, // Success, do nothing
+    );
+  }
+
+  /// Load progress data (ISaveSystem interface)
+  @override
+  Future<dynamic> loadProgress() async {
+    final result = await getSaveData();
+    return result.fold(
+      (failure) {
+        String message = 'Load failed';
+        if (failure is SaveFailure) {
+          message = 'Load failed: ${failure.message}';
+        } else if (failure is LevelLoadFailure) {
+          message = 'Load failed: ${failure.message}';
+        }
+        throw Exception(message);
+      },
+      (saveData) => saveData,
+    );
+  }
+
+  /// Get current save data (ISaveSystem interface)
+  @override
+  dynamic get currentSaveData => _cachedSaveData;
+
+  /// Initialize the save system and load existing data (legacy method)
   /// Requirement 8.2: Load previous progress on game start
-  Future<Either<Failure, SaveData>> initialize() async {
+  Future<Either<Failure, SaveData>> initializeWithResult() async {
     try {
       final result = await _loadSaveDataWithRecovery();
       
@@ -79,9 +174,9 @@ class SaveSystem {
     );
   }
 
-  /// Save progress data with atomic operations
+  /// Save progress data with atomic operations (with result)
   /// Requirement 8.1: Persist progress data to local storage immediately
-  Future<Either<Failure, void>> saveProgress({
+  Future<Either<Failure, void>> saveProgressWithResult({
     int? currentLevel,
     Set<int>? unlockedLevels,
   }) async {
@@ -284,10 +379,12 @@ class SaveSystem {
   }
 
   /// Clean up resources
+  @override
   void dispose() {
     _autoSaveTimer?.cancel();
     _autoSaveTimer = null;
     _cachedSaveData = null;
+    super.dispose();
   }
 
   /// Delete all save data
@@ -316,9 +413,6 @@ class SaveSystem {
       return Left(SaveFailure('Failed to delete save data: $e'));
     }
   }
-
-  /// Get current save data synchronously (cached)
-  SaveData? get currentSaveData => _cachedSaveData;
 
   /// Check if save data has unsaved changes
   bool get isDirty => _isDirty;

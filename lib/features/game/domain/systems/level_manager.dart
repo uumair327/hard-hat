@@ -7,13 +7,13 @@ import '../entities/tile.dart';
 import '../entities/player_entity.dart';
 import '../repositories/level_repository.dart';
 import '../interfaces/entity_manager_interface.dart';
+import '../interfaces/game_system_interfaces.dart';
 import 'game_system.dart';
-import 'entity_manager.dart';
 
 /// System responsible for managing level loading, tile instantiation, and objective detection
-class LevelManager extends GameSystem {
+class LevelManager extends GameSystem implements ILevelManager {
   final LevelRepository _levelRepository;
-  final EntityManager _entityManager;
+  final IEntityManager _entityManager;
   
   /// Currently loaded level
   Level? _currentLevel;
@@ -22,13 +22,16 @@ class LevelManager extends GameSystem {
   final Map<String, TileEntity> _levelTiles = {};
   
   /// Level completion callback
-  void Function(Level level)? onLevelComplete;
+  @override
+  void Function(dynamic level)? onLevelComplete;
   
   /// Level loading callback
-  void Function(Level level)? onLevelLoaded;
+  @override
+  void Function(dynamic level)? onLevelLoaded;
   
   /// Level loading error callback
-  void Function(Failure failure)? onLevelLoadError;
+  @override
+  void Function(dynamic failure)? onLevelLoadError;
   
   /// Objective detection settings
   static const double objectiveDetectionRadius = 16.0;
@@ -41,7 +44,7 @@ class LevelManager extends GameSystem {
     required LevelRepository levelRepository,
     required IEntityManager entityManager,
   }) : _levelRepository = levelRepository,
-       _entityManager = entityManager as EntityManager;
+       _entityManager = entityManager;
 
   @override
   int get priority => -500; // Execute after entity manager but before other systems
@@ -52,6 +55,7 @@ class LevelManager extends GameSystem {
   }
 
   /// Load a level by ID
+  @override
   Future<void> loadLevel(int levelId) async {
     try {
       // Clear current level first
@@ -72,6 +76,15 @@ class LevelManager extends GameSystem {
       );
     } catch (e) {
       onLevelLoadError?.call(LevelLoadFailure('Unexpected error loading level $levelId: $e'));
+    }
+  }
+
+  /// Restart the current level
+  @override
+  Future<void> restartLevel() async {
+    if (_currentLevel != null) {
+      final levelId = _currentLevel!.id;
+      await loadLevel(levelId);
     }
   }
 
@@ -224,10 +237,12 @@ class LevelManager extends GameSystem {
   }
 
   /// Get the currently loaded level
-  Level? get currentLevel => _currentLevel;
+  @override
+  dynamic get currentLevel => _currentLevel;
   
   /// Get all level tiles
-  Map<String, TileEntity> get levelTiles => Map.unmodifiable(_levelTiles);
+  @override
+  Map<String, dynamic> get levelTiles => Map<String, dynamic>.from(_levelTiles);
   
   /// Get tile at specific grid position
   TileEntity? getTileAtPosition(Vector2 position) {
@@ -274,10 +289,12 @@ class LevelManager extends GameSystem {
   Vector2? get playerSpawn => _currentLevel?.playerSpawn;
   
   /// Check if level is loaded
+  @override
   bool get isLevelLoaded => _currentLevel != null;
   
   /// Get level ID
-  int? get currentLevelId => _currentLevel?.id;
+  @override
+  int get currentLevelId => _currentLevel?.id ?? 0;
   
   /// Get level name
   String? get currentLevelName => _currentLevel?.name;

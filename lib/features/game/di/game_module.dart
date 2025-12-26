@@ -1,10 +1,14 @@
 import 'package:injectable/injectable.dart';
+import 'package:flame/cache.dart';
 import 'package:hard_hat/features/game/domain/domain.dart';
-import 'package:hard_hat/core/services/asset_manager.dart';
 import 'package:hard_hat/core/services/audio_manager.dart';
 
 @module
 abstract class GameModule {
+  // Flame Images cache
+  @lazySingleton
+  Images get images => Images();
+
   // Entity Manager
   @LazySingleton(as: IEntityManager)
   EntityManagerImpl get entityManager => EntityManagerImpl();
@@ -67,11 +71,64 @@ abstract class GameModule {
   // Audio State Manager
   @lazySingleton
   AudioStateManager audioStateManager(
-    AudioSystem audioSystem,
+    IAudioSystem audioSystem,
     AudioManager audioManager,
-  ) => AudioStateManager(audioSystem, audioManager);
+  ) => AudioStateManager(audioSystem as AudioSystem, audioManager);
 
   // Focus Detector (Singleton)
   @lazySingleton
   FocusDetector get focusDetector => FocusDetector.instance;
+
+  // Orchestrators
+  @lazySingleton
+  ECSOrchestrator ecsOrchestrator(
+    IEntityManager entityManager,
+    IMovementSystem movementSystem,
+    ICollisionSystem collisionSystem,
+    IInputSystem inputSystem,
+    IAudioSystem audioSystem,
+    ICameraSystem cameraSystem,
+    IRenderSystem renderSystem,
+    IParticleSystem particleSystem,
+    IStateTransitionSystem stateTransitionSystem,
+    IPlayerStateSystem playerStateSystem,
+    IPlayerPhysicsSystem playerPhysicsSystem,
+    ITileDamageSystem tileDamageSystem,
+    ITileStateSystem tileStateSystem,
+  ) => ECSOrchestrator(
+    entityManager: entityManager as EntityManager,
+    movementSystem: movementSystem,
+    collisionSystem: collisionSystem,
+    inputSystem: inputSystem,
+    audioSystem: audioSystem,
+    cameraSystem: cameraSystem,
+    renderSystem: renderSystem,
+    particleSystem: particleSystem,
+    stateTransitionSystem: stateTransitionSystem,
+    playerStateSystem: playerStateSystem,
+    playerPhysicsSystem: playerPhysicsSystem,
+    tileDamageSystem: tileDamageSystem,
+    tileStateSystem: tileStateSystem,
+  );
+
+  @lazySingleton
+  GameStateOrchestrator gameStateOrchestrator(
+    IGameStateManager gameStateManager,
+    FocusDetector focusDetector,
+  ) => GameStateOrchestrator(
+    gameStateManager: gameStateManager,
+    pauseMenuManager: null, // Will be set later when pause menu service is available
+    focusDetector: focusDetector,
+  );
+
+  @lazySingleton
+  LevelOrchestrator levelOrchestrator(
+    ILevelManager levelManager,
+    ISaveSystem saveSystem,
+    IEntityManager entityManager,
+  ) => LevelOrchestrator(
+    levelManager: levelManager,
+    saveSystem: saveSystem,
+    entityManager: entityManager,
+  );
 }

@@ -1,12 +1,21 @@
 import 'package:hard_hat/features/game/domain/interfaces/entity_manager_interface.dart';
 import 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart';
 import 'package:hard_hat/features/game/domain/systems/game_system.dart';
+import 'package:hard_hat/features/game/domain/systems/entity_manager.dart';
+import 'package:hard_hat/features/game/domain/systems/input_system.dart';
+import 'package:hard_hat/features/game/domain/systems/collision_system.dart';
+import 'package:hard_hat/features/game/domain/systems/player_physics_system.dart';
+import 'package:hard_hat/features/game/domain/systems/tile_damage_system.dart';
+import 'package:hard_hat/features/game/domain/systems/audio_system.dart';
+import 'package:hard_hat/features/game/domain/systems/camera_system.dart';
+import 'package:hard_hat/features/game/domain/systems/particle_system.dart';
+import 'package:hard_hat/features/game/domain/systems/render_system.dart';
 
 /// ECS System Orchestrator - manages all game systems
 /// Follows SRP - only responsible for ECS system coordination
 class ECSOrchestrator {
   final List<GameSystem> _systems = [];
-  final IEntityManager _entityManager;
+  final EntityManager _entityManager;
   final IMovementSystem? _movementSystem;
   final ICollisionSystem? _collisionSystem;
   final IInputSystem? _inputSystem;
@@ -23,7 +32,7 @@ class ECSOrchestrator {
   bool _isInitialized = false;
 
   ECSOrchestrator({
-    required IEntityManager entityManager,
+    required EntityManager entityManager,
     IMovementSystem? movementSystem,
     ICollisionSystem? collisionSystem,
     IInputSystem? inputSystem,
@@ -90,45 +99,49 @@ class ECSOrchestrator {
   void _connectSystems() {
     // Set entity manager for all systems that need it
     for (final system in _systems) {
-      if (system is InputSystem) {
-        system.setEntityManager(_entityManager);
-      } else if (system is CollisionSystem) {
-        system.setEntityManager(_entityManager);
+      // Use concrete type checks with proper imports
+      if (system.runtimeType.toString() == 'InputSystem') {
+        (system as InputSystem).setEntityManager(_entityManager);
+      } else if (system.runtimeType.toString() == 'CollisionSystem') {
+        final collisionSystem = system as CollisionSystem;
+        collisionSystem.setEntityManager(_entityManager);
         // Connect collision system to other systems
         if (_tileDamageSystem != null) {
-          system.setTileDamageSystem(_tileDamageSystem!);
+          collisionSystem.setTileDamageSystem(_tileDamageSystem);
         }
         if (_particleSystem != null) {
-          system.setParticleSystem(_particleSystem!);
+          collisionSystem.setParticleSystem(_particleSystem);
         }
         if (_audioSystem != null) {
-          system.setAudioSystem(_audioSystem!);
+          collisionSystem.setAudioSystem(_audioSystem);
         }
         if (_cameraSystem != null) {
-          system.setCameraSystem(_cameraSystem!);
+          collisionSystem.setCameraSystem(_cameraSystem);
         }
-      } else if (system is PlayerPhysicsSystem) {
-        system.setEntityManager(_entityManager);
+      } else if (system.runtimeType.toString() == 'PlayerPhysicsSystem') {
+        final playerPhysicsSystem = system as PlayerPhysicsSystem;
+        playerPhysicsSystem.setEntityManager(_entityManager);
         // Connect player physics to audio system
         if (_audioSystem != null) {
-          system.setAudioSystem(_audioSystem!);
+          playerPhysicsSystem.setAudioSystem(_audioSystem);
         }
-      } else if (system is TileDamageSystem) {
+      } else if (system.runtimeType.toString() == 'TileDamageSystem') {
+        final tileDamageSystem = system as TileDamageSystem;
         // Connect tile damage system to particle and audio systems
         if (_particleSystem != null) {
-          system.setParticleSystem(_particleSystem!);
+          tileDamageSystem.setParticleSystem(_particleSystem);
         }
         if (_audioSystem != null) {
-          system.setAudioSystem(_audioSystem!);
+          tileDamageSystem.setAudioSystem(_audioSystem);
         }
-      } else if (system is AudioSystem) {
-        system.setEntityManager(_entityManager);
-      } else if (system is CameraSystem) {
-        system.setEntityManager(_entityManager);
-      } else if (system is ParticleSystem) {
-        system.setEntityManager(_entityManager);
-      } else if (system is RenderSystem) {
-        system.setEntityManager(_entityManager);
+      } else if (system.runtimeType.toString() == 'AudioSystem') {
+        (system as AudioSystem).setEntityManager(_entityManager);
+      } else if (system.runtimeType.toString() == 'CameraSystem') {
+        (system as CameraSystem).setEntityManager(_entityManager);
+      } else if (system.runtimeType.toString() == 'ParticleSystem') {
+        (system as ParticleSystem).setEntityManager(_entityManager);
+      } else if (system.runtimeType.toString() == 'RenderSystem') {
+        (system as RenderSystem).setEntityManager(_entityManager);
       }
     }
   }
@@ -150,7 +163,7 @@ class ECSOrchestrator {
   }
 
   /// Get entity manager
-  IEntityManager get entityManager => _entityManager;
+  EntityManager get entityManager => _entityManager;
 
   /// Check if initialized
   bool get isInitialized => _isInitialized;

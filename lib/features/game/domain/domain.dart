@@ -25,7 +25,10 @@ export 'services/services.dart';
 export 'strategies/strategies.dart';
 
 // Systems
-export 'systems/systems.dart' hide GameState;
+export 'systems/systems.dart' hide InputCommand;
+
+// Input
+export 'input/input_event.dart';
 
 // Use Cases
 export 'usecases/usecases.dart';

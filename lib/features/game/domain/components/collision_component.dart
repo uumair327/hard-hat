@@ -10,6 +10,7 @@ enum GameCollisionType {
   spring,
   elevator,
   sensor,
+  hazard,
 }
 
 /// Component that manages collision detection and response for entities
@@ -18,6 +19,15 @@ class GameCollisionComponent extends PositionComponent with HasCollisionDetectio
   final GameCollisionType type;
   final Set<GameCollisionType> collidesWith;
   final bool isSensor;
+  
+  /// Whether this collision component is currently active
+  bool isActive = true;
+  
+  /// Whether this collision component is static (doesn't move)
+  bool isStatic = false;
+  
+  /// Collision layer for layer-based filtering
+  int layer = 0;
   
   /// Callback function for collision events
   void Function(GameCollisionComponent other)? onCollision;
@@ -30,6 +40,9 @@ class GameCollisionComponent extends PositionComponent with HasCollisionDetectio
     required this.type,
     Set<GameCollisionType>? collidesWith,
     this.isSensor = false,
+    this.isActive = true,
+    this.isStatic = false,
+    this.layer = 0,
     this.onCollision,
     this.onCollisionEnd,
     Vector2? position,

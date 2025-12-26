@@ -2,7 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
 import 'package:hard_hat/features/game/domain/systems/input_system.dart';
 import 'package:hard_hat/features/game/domain/input/input_component.dart';
-import 'package:hard_hat/features/game/domain/input/input_event.dart';
+import 'package:hard_hat/features/game/domain/input/input_event.dart' as input_events;
+import 'package:hard_hat/features/game/domain/input/input_event.dart' show MovementInputEvent, JumpInputEvent, AimInputEvent, LaunchInputEvent, KeyboardMapping;
 import 'package:hard_hat/features/game/domain/entities/player_entity.dart';
 
 void main() {
@@ -45,7 +46,7 @@ void main() {
       // Create movement input event
       final movementEvent = MovementInputEvent(
         direction: 1.0,
-        source: InputSource.keyboard,
+        source: input_events.InputSource.keyboard,
         timestamp: DateTime.now(),
       );
       
@@ -56,7 +57,7 @@ void main() {
       inputSystem.updateSystem(0.016); // 60 FPS
       
       // The input should be processed in the next frame
-      expect(inputComponent.lastInputSource, equals(InputSource.keyboard));
+      expect(inputComponent.lastInputSource, equals(input_events.InputSource.keyboard));
     });
 
     test('should handle input state changes', () {
@@ -96,13 +97,13 @@ void main() {
       
       // Test that keyboard has higher priority than touch
       expect(
-        handler.shouldPrioritize(InputSource.keyboard, InputSource.touch),
+        handler.shouldPrioritize(input_events.InputSource.keyboard, input_events.InputSource.touch),
         isTrue,
       );
       
       // Test that touch has higher priority than gamepad
       expect(
-        handler.shouldPrioritize(InputSource.touch, InputSource.gamepad),
+        handler.shouldPrioritize(input_events.InputSource.touch, input_events.InputSource.gamepad),
         isTrue,
       );
     });
@@ -172,24 +173,24 @@ void main() {
     test('should create movement input event correctly', () {
       final event = MovementInputEvent(
         direction: 1.0,
-        source: InputSource.keyboard,
+        source: input_events.InputSource.keyboard,
         timestamp: DateTime.now(),
       );
       
       expect(event.direction, equals(1.0));
-      expect(event.source, equals(InputSource.keyboard));
+      expect(event.source, equals(input_events.InputSource.keyboard));
       expect(event.timestamp, isA<DateTime>());
     });
 
     test('should create jump input event correctly', () {
       final event = JumpInputEvent(
         isPressed: true,
-        source: InputSource.keyboard,
+        source: input_events.InputSource.keyboard,
         timestamp: DateTime.now(),
       );
       
       expect(event.isPressed, isTrue);
-      expect(event.source, equals(InputSource.keyboard));
+      expect(event.source, equals(input_events.InputSource.keyboard));
     });
 
     test('should create aim input event correctly', () {
@@ -197,14 +198,14 @@ void main() {
         isAiming: true,
         aimX: 100.0,
         aimY: 200.0,
-        source: InputSource.touch,
+        source: input_events.InputSource.touch,
         timestamp: DateTime.now(),
       );
       
       expect(event.isAiming, isTrue);
       expect(event.aimX, equals(100.0));
       expect(event.aimY, equals(200.0));
-      expect(event.source, equals(InputSource.touch));
+      expect(event.source, equals(input_events.InputSource.touch));
     });
 
     test('should create launch input event correctly', () {
@@ -212,14 +213,14 @@ void main() {
         directionX: 0.5,
         directionY: -0.5,
         power: 0.8,
-        source: InputSource.touch,
+        source: input_events.InputSource.touch,
         timestamp: DateTime.now(),
       );
       
       expect(event.directionX, equals(0.5));
       expect(event.directionY, equals(-0.5));
       expect(event.power, equals(0.8));
-      expect(event.source, equals(InputSource.touch));
+      expect(event.source, equals(input_events.InputSource.touch));
     });
   });
 
@@ -227,22 +228,22 @@ void main() {
     test('should map keys to commands correctly', () {
       expect(
         KeyboardMapping.getCommand(LogicalKeyboardKey.keyA),
-        equals(InputCommand.moveLeft),
+        equals(input_events.InputCommand.moveLeft),
       );
       
       expect(
         KeyboardMapping.getCommand(LogicalKeyboardKey.keyD),
-        equals(InputCommand.moveRight),
+        equals(input_events.InputCommand.moveRight),
       );
       
       expect(
         KeyboardMapping.getCommand(LogicalKeyboardKey.space),
-        equals(InputCommand.jump),
+        equals(input_events.InputCommand.jump),
       );
       
       expect(
         KeyboardMapping.getCommand(LogicalKeyboardKey.escape),
-        equals(InputCommand.pause),
+        equals(input_events.InputCommand.pause),
       );
     });
 

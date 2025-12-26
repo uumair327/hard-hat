@@ -33,6 +33,7 @@ class TileDamageSystem extends GameSystem implements ITileDamageSystem {
   }
 
   /// Queue a damage event for processing
+  @override
   void queueDamage(TileEntity tile, int damage, {String? source}) {
     _damageEvents.add(TileDamageEvent(
       tile: tile,
@@ -90,6 +91,24 @@ class TileDamageSystem extends GameSystem implements ITileDamageSystem {
   void _triggerDamageEffects(TileEntity tile, TileDamageEvent event) {
     // Spawn damage particles using the tile's position
     final tilePosition = tile.positionComponent.position + Vector2(16, 16); // Center of tile
+    
+    if (_particleSystem != null) {
+      if (_particleSystem is ParticleSystem) {
+        final particleSystem = _particleSystem as ParticleSystem;
+        
+        // Spawn lighter particles for damage (not destruction)
+        particleSystem.spawnMaterialParticles(
+          tilePosition,
+          tile.type,
+          tile.currentState,
+          count: _getParticleCountForTile(tile.type) ~/ 3, // Fewer particles for damage
+        );
+      } else {
+        _particleSystem!.spawnParticles('dust', tilePosition);
+      }
+    }
+    
+    // Trigger tile's particle spawn callback for backward compatibility
     tile.onParticleSpawn?.call(tile, tilePosition);
     
     // Play damage sound
@@ -100,6 +119,24 @@ class TileDamageSystem extends GameSystem implements ITileDamageSystem {
   void _triggerHeavyDamageEffects(TileEntity tile, TileDamageEvent event) {
     // Spawn more particles
     final tilePosition = tile.positionComponent.position + Vector2(16, 16); // Center of tile
+    
+    if (_particleSystem != null) {
+      if (_particleSystem is ParticleSystem) {
+        final particleSystem = _particleSystem as ParticleSystem;
+        
+        // Spawn moderate particles for heavy damage
+        particleSystem.spawnMaterialParticles(
+          tilePosition,
+          tile.type,
+          tile.currentState,
+          count: (_getParticleCountForTile(tile.type) * 0.6).round(), // More particles than light damage
+        );
+      } else {
+        _particleSystem!.spawnParticles('destruction', tilePosition);
+      }
+    }
+    
+    // Trigger tile's particle spawn callback for backward compatibility
     tile.onParticleSpawn?.call(tile, tilePosition);
     
     // Play heavy damage sound
@@ -112,19 +149,41 @@ class TileDamageSystem extends GameSystem implements ITileDamageSystem {
     final tilePosition = tile.positionComponent.position + Vector2(16, 16); // Center of tile
     
     if (_particleSystem != null) {
-      // Spawn material-specific destruction particles
-      switch (tile.type) {
-        case TileType.scaffolding:
-          _particleSystem!.spawnParticles('destruction', tilePosition);
-          break;
-        case TileType.timber:
-          _particleSystem!.spawnParticles('destruction', tilePosition);
-          break;
-        case TileType.bricks:
-          _particleSystem!.spawnParticles('destruction', tilePosition);
-          break;
-        default:
-          _particleSystem!.spawnParticles('destruction', tilePosition);
+      // Use the enhanced particle system methods for better integration
+      if (_particleSystem is ParticleSystem) {
+        final particleSystem = _particleSystem as ParticleSystem;
+        
+        // Spawn material-specific destruction particles
+        particleSystem.spawnMaterialParticles(
+          tilePosition,
+          tile.type,
+          tile.currentState,
+          count: _getParticleCountForTile(tile.type),
+        );
+        
+        // Spawn synchronized particles with audio
+        particleSystem.spawnSynchronizedParticles(
+          tilePosition,
+          'destruction',
+          _getDestructionSoundForTile(tile.type),
+          count: _getParticleCountForTile(tile.type),
+          audioSystem: _audioSystem,
+        );
+      } else {
+        // Fallback to basic particle spawning
+        switch (tile.type) {
+          case TileType.scaffolding:
+            _particleSystem!.spawnParticles('metal_sparks', tilePosition);
+            break;
+          case TileType.timber:
+            _particleSystem!.spawnParticles('wood_chips', tilePosition);
+            break;
+          case TileType.bricks:
+            _particleSystem!.spawnParticles('brick_dust', tilePosition);
+            break;
+          default:
+            _particleSystem!.spawnParticles('destruction', tilePosition);
+        }
       }
     }
     
@@ -141,19 +200,8 @@ class TileDamageSystem extends GameSystem implements ITileDamageSystem {
             (_audioSystem as AudioSystem).playBreakSound(tilePosition);
         }
       } else {
-        switch (tile.type) {
-          case TileType.scaffolding:
-            _audioSystem!.playSound('scaffolding_break');
-            break;
-          case TileType.timber:
-            _audioSystem!.playSound('timber_break');
-            break;
-          case TileType.bricks:
-            _audioSystem!.playSound('brick_break');
-            break;
-          default:
-            _audioSystem!.playSound('tile_break');
-        }
+        final soundName = _getDestructionSoundForTile(tile.type);
+        _audioSystem!.playSound(soundName);
       }
     }
     
@@ -162,6 +210,34 @@ class TileDamageSystem extends GameSystem implements ITileDamageSystem {
     
     // Note: Tile removal is handled by the tile's own state machine
     // No need to manually mark for removal here
+  }
+  
+  /// Get particle count based on tile type
+  int _getParticleCountForTile(TileType tileType) {
+    switch (tileType) {
+      case TileType.scaffolding:
+        return 15; // Metal scaffolding - moderate particles
+      case TileType.timber:
+        return 20; // Wood - more particles (chips and splinters)
+      case TileType.bricks:
+        return 25; // Bricks - most particles (dust and chunks)
+      default:
+        return 15;
+    }
+  }
+  
+  /// Get destruction sound name for tile type
+  String _getDestructionSoundForTile(TileType tileType) {
+    switch (tileType) {
+      case TileType.scaffolding:
+        return 'scaffolding_break';
+      case TileType.timber:
+        return 'timber_break';
+      case TileType.bricks:
+        return 'brick_break';
+      default:
+        return 'tile_break';
+    }
   }
 
   @override

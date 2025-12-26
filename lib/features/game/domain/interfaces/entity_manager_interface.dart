@@ -6,8 +6,14 @@ abstract class IEntityManager {
   /// Add an entity to the manager
   void addEntity(GameEntity entity);
   
+  /// Register an entity (alias for addEntity for backward compatibility)
+  void registerEntity(GameEntity entity) => addEntity(entity);
+  
   /// Remove an entity by ID
   void removeEntity(String id);
+  
+  /// Unregister an entity (alias for removeEntity for backward compatibility)
+  void unregisterEntity(String id) => removeEntity(id);
   
   /// Get entity by ID
   GameEntity? getEntity(String id);

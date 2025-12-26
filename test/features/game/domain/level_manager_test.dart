@@ -4,16 +4,15 @@ import 'package:dartz/dartz.dart';
 import 'package:flame/components.dart';
 
 import 'package:hard_hat/features/game/domain/systems/level_manager.dart';
-import 'package:hard_hat/features/game/domain/systems/entity_manager.dart';
+import 'package:hard_hat/features/game/domain/interfaces/entity_manager_interface.dart';
 import 'package:hard_hat/features/game/domain/repositories/level_repository.dart';
 import 'package:hard_hat/features/game/domain/entities/level.dart';
-import 'package:hard_hat/features/game/domain/entities/tile.dart';
 import 'package:hard_hat/features/game/domain/entities/game_entity.dart';
 import 'package:hard_hat/features/game/domain/entities/player_entity.dart';
 import 'package:hard_hat/core/errors/failures.dart';
 
 class MockLevelRepository extends Mock implements LevelRepository {}
-class MockEntityManager extends Mock implements EntityManager {}
+class MockEntityManager extends Mock implements IEntityManager {}
 class FakeGameEntity extends Fake implements GameEntity {}
 
 void main() {
@@ -32,7 +31,7 @@ void main() {
       
       // Mock getEntitiesOfType to return empty list by default
       when(() => mockEntityManager.getEntitiesOfType<PlayerEntity>())
-          .thenReturn(const Iterable<PlayerEntity>.empty());
+          .thenReturn(<PlayerEntity>[]);
       
       levelManager = LevelManager(
         levelRepository: mockLevelRepository,
@@ -47,6 +46,7 @@ void main() {
         final testLevel = Level(
           id: levelId,
           name: 'Test Level',
+          description: 'A test level for unit testing',
           size: Vector2(800, 600),
           tiles: [],
           playerSpawn: Vector2(50, 500),
@@ -97,6 +97,7 @@ void main() {
         final testLevel = Level(
           id: levelId,
           name: 'Test Level',
+          description: 'A test level for properties testing',
           size: Vector2(800, 600),
           tiles: [],
           playerSpawn: Vector2(50, 500),
@@ -128,6 +129,7 @@ void main() {
         final testLevel1 = Level(
           id: levelId1,
           name: 'Test Level 1',
+          description: 'First test level',
           size: Vector2(800, 600),
           tiles: [],
           playerSpawn: Vector2(50, 500),
@@ -138,6 +140,7 @@ void main() {
         final testLevel2 = Level(
           id: levelId2,
           name: 'Test Level 2',
+          description: 'Second test level',
           size: Vector2(1200, 800),
           tiles: [],
           playerSpawn: Vector2(100, 700),

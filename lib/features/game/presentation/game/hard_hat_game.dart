@@ -25,25 +25,42 @@ class HardHatGame extends FlameGame with HasCollisionDetection, HasKeyboardHandl
   Future<void> onLoad() async {
     super.onLoad();
     
-    // Initialize presentation layer services
-    await _initializePresentationLayer();
-    
-    // Initialize domain layer through controller
-    await _initializeDomainLayer();
-    
-    // Add instruction text
-    add(TextComponent(
-      text: 'Use WASD or Arrow Keys to move, Space to jump, ESC to pause',
-      position: Vector2(size.x / 2, 50),
-      anchor: Anchor.center,
-      textRenderer: TextPaint(
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
+    try {
+      // Initialize presentation layer services
+      await _initializePresentationLayer();
+      
+      // Initialize domain layer through controller
+      await _initializeDomainLayer();
+      
+      // Add instruction text
+      add(TextComponent(
+        text: 'Use WASD or Arrow Keys to move, Space to jump, ESC to pause',
+        position: Vector2(size.x / 2, 50),
+        anchor: Anchor.center,
+        textRenderer: TextPaint(
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-    ));
+      ));
+    } catch (e) {
+      print('Error initializing game: $e');
+      // Add error message to screen
+      add(TextComponent(
+        text: 'Error initializing game: $e',
+        position: Vector2(size.x / 2, size.y / 2),
+        anchor: Anchor.center,
+        textRenderer: TextPaint(
+          style: const TextStyle(
+            fontSize: 18,
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ));
+    }
   }
 
   /// Initialize presentation layer services
@@ -148,17 +165,17 @@ class HardHatGame extends FlameGame with HasCollisionDetection, HasKeyboardHandl
 
   // System access for testing - get systems directly from DI container
   IEntityManager get entityManager => manual_di.getIt<IEntityManager>();
-  IInputSystem? get inputSystem => manual_di.getIt<InputSystem>();
-  IAudioSystem? get audioSystem => manual_di.getIt<AudioSystem>();
+  IInputSystem? get inputSystem => manual_di.getIt<IInputSystem>();
+  IAudioSystem? get audioSystem => manual_di.getIt<IAudioSystem>();
   IGameStateManager get gameStateManager => manual_di.getIt<IGameStateManager>();
-  ICameraSystem? get cameraSystem => manual_di.getIt<CameraSystem>();
-  IRenderSystem? get renderSystem => manual_di.getIt<RenderSystem>();
-  IParticleSystem? get particleSystem => null; // Not implemented yet
-  IStateTransitionSystem? get stateTransitionSystem => null; // Not implemented yet
+  ICameraSystem? get cameraSystem => manual_di.getIt<ICameraSystem>();
+  IRenderSystem? get renderSystem => manual_di.getIt<IRenderSystem>();
+  IParticleSystem? get particleSystem => manual_di.getIt<IParticleSystem>();
+  IStateTransitionSystem? get stateTransitionSystem => manual_di.getIt<IStateTransitionSystem>();
   ILevelManager? get levelManager => null; // Not implemented yet
   ISaveSystem? get saveSystem => null; // Not implemented yet
-  IMovementSystem? get movementSystem => manual_di.getIt<MovementSystem>();
-  ICollisionSystem? get collisionSystem => manual_di.getIt<CollisionSystem>();
+  IMovementSystem? get movementSystem => manual_di.getIt<IMovementSystem>();
+  ICollisionSystem? get collisionSystem => manual_di.getIt<ICollisionSystem>();
   IPauseMenuManager? get pauseMenuManager => manual_di.getIt.isRegistered<IPauseMenuManager>() ? manual_di.getIt<IPauseMenuManager>() : null;
 
   @override

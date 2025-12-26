@@ -1,12 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:hard_hat/features/game/domain/domain.dart';
-
-/// Audio categories for volume control
-enum AudioCategory {
-  sfx,
-  music,
-}
+import 'package:hard_hat/features/game/domain/components/audio_component.dart';
 
 /// Audio system for managing game sounds and music
 class AudioSystem extends GameSystem implements IAudioSystem {
@@ -144,8 +139,67 @@ class AudioSystem extends GameSystem implements IAudioSystem {
     }
   }
   
+  /// Play a sound effect with volume parameter
+  void playSfx(String soundPath, {double volume = 1.0}) {
+    if (!_isEnabled) return;
+    
+    try {
+      final effectiveVolume = _masterVolume * _sfxVolume * volume;
+      FlameAudio.play(soundPath, volume: effectiveVolume);
+    } catch (e) {
+      print('Warning: Could not play sound effect "$soundPath": $e');
+    }
+  }
+  
+  /// Play spatial sound effect at a specific position
+  void playSpatialSfx(String soundPath, Vector2 position, {double volume = 1.0}) {
+    if (!_isEnabled) return;
+    
+    try {
+      final effectiveVolume = _masterVolume * _sfxVolume * volume;
+      _playSpatialSound(soundPath, position, effectiveVolume);
+    } catch (e) {
+      print('Warning: Could not play spatial sound effect "$soundPath": $e');
+    }
+  }
+  
+  /// Stop all audio
+  void stopAll() {
+    try {
+      FlameAudio.bgm.stop();
+      _currentMusic = null;
+    } catch (e) {
+      print('Warning: Could not stop all audio: $e');
+    }
+  }
+  
+  /// Stop audio by category
+  void stopCategory(AudioCategory category) {
+    switch (category) {
+      case AudioCategory.music:
+        stopMusic();
+        break;
+      case AudioCategory.sfx:
+        // FlameAudio doesn't provide easy SFX stopping
+        // In a real implementation, you'd track active SFX
+        break;
+      case AudioCategory.voice:
+        // Voice audio not implemented yet
+        break;
+      case AudioCategory.ambient:
+        // Ambient audio not implemented yet
+        break;
+    }
+  }
+  
+  /// Set listener position for spatial audio
+  void setListenerPosition(Vector2 position) {
+    // Store listener position for spatial audio calculations
+    // In a real implementation, this would be used for 3D audio
+  }
+  
   /// Play background music
-  void playMusic(String musicName, {bool loop = true}) {
+  void playMusic(String musicName, {bool loop = true, double volume = 1.0}) {
     if (!_isEnabled) return;
     
     final musicPath = _music[musicName];
@@ -160,7 +214,7 @@ class AudioSystem extends GameSystem implements IAudioSystem {
     }
     
     try {
-      final effectiveVolume = _masterVolume * _musicVolume;
+      final effectiveVolume = _masterVolume * _musicVolume * volume;
       
       if (loop) {
         FlameAudio.bgm.play(musicPath, volume: effectiveVolume);
@@ -250,6 +304,12 @@ class AudioSystem extends GameSystem implements IAudioSystem {
         break;
       case AudioCategory.music:
         setMusicVolume(volume);
+        break;
+      case AudioCategory.voice:
+        // Voice volume not implemented yet
+        break;
+      case AudioCategory.ambient:
+        // Ambient volume not implemented yet
         break;
     }
   }

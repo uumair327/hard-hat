@@ -7,6 +7,7 @@ import '../entities/tile.dart'; // Import TileType from tile entity
 import '../../presentation/game/hard_hat_game.dart';
 import 'game_system.dart';
 import '../interfaces/game_system_interfaces.dart';
+import 'entity_manager.dart';
 
 /// System responsible for managing all particle effects in the game
 /// Handles particle spawning, lifecycle management, and rendering with object pooling
@@ -16,6 +17,9 @@ class ParticleSystem extends GameSystem implements IParticleSystem {
   
   /// List of active particle emitters
   final List<ParticleComponent> _activeEmitters = [];
+  
+  /// Entity manager for accessing game entities
+  late EntityManager _entityManager;
   
   /// Render layers for different particle types
   static const Map<ParticleType, int> _renderLayers = {
@@ -29,6 +33,11 @@ class ParticleSystem extends GameSystem implements IParticleSystem {
   
   @override
   int get priority => 100; // Execute after physics but before rendering
+  
+  /// Set entity manager for accessing game entities
+  void setEntityManager(EntityManager entityManager) {
+    _entityManager = entityManager;
+  }
   
   @override
   Future<void> initialize() async {
@@ -172,6 +181,55 @@ class ParticleSystem extends GameSystem implements IParticleSystem {
     emitter.emitBurst(count);
   }
   
+  /// Spawn material-specific particles based on tile type
+  /// Enhanced version with more detailed particle effects
+  void spawnMaterialParticles(
+    Vector2 position,
+    TileType tileType,
+    TileState tileState, {
+    int count = 15,
+  }) {
+    final config = _getMaterialSpecificConfig(tileType, tileState);
+    final emitter = _poolManager.emitterPool.getEmitter(
+      config: config,
+      position: position.clone(),
+      maxBurstParticles: count,
+    );
+    
+    _activeEmitters.add(emitter);
+    emitter.emitBurst(count);
+  }
+  
+  /// Spawn synchronized particles with audio feedback
+  /// This method coordinates with the audio system for synchronized effects
+  void spawnSynchronizedParticles(
+    Vector2 position,
+    String particleType,
+    String audioType, {
+    int count = 10,
+    IAudioSystem? audioSystem,
+  }) {
+    // Spawn particles first
+    spawnParticles(particleType, position);
+    
+    // Trigger audio if system is available
+    if (audioSystem != null) {
+      switch (audioType) {
+        case 'destruction':
+          audioSystem.playSound('break_sound');
+          break;
+        case 'impact':
+          audioSystem.playSound('hit_sound');
+          break;
+        case 'movement':
+          audioSystem.playSound('land_sound');
+          break;
+        default:
+          audioSystem.playSound(audioType);
+      }
+    }
+  }
+  
   /// Spawn movement particles for player steps
   /// Used when the player character moves
   void spawnMovementParticles(Vector2 position) {
@@ -279,6 +337,51 @@ class ParticleSystem extends GameSystem implements IParticleSystem {
         
       default:
         return ParticleEmitterConfig.destruction;
+    }
+  }
+  
+  /// Get material-specific particle configuration based on tile type and state
+  ParticleEmitterConfig _getMaterialSpecificConfig(TileType tileType, TileState tileState) {
+    final baseConfig = _getDestructionConfig(tileType);
+    
+    // Modify particle count and intensity based on tile state
+    switch (tileState) {
+      case TileState.damaged:
+        // Light damage - fewer particles
+        return ParticleEmitterConfig(
+          emissionRate: baseConfig.emissionRate * 0.5,
+          maxParticles: (baseConfig.maxParticles * 0.6).round(),
+          minLifetime: baseConfig.minLifetime * 0.8,
+          maxLifetime: baseConfig.maxLifetime * 0.8,
+          minVelocity: baseConfig.minVelocity * 0.7,
+          maxVelocity: baseConfig.maxVelocity * 0.7,
+          startColor: baseConfig.startColor,
+          endColor: baseConfig.endColor,
+          type: ParticleType.dust,
+          pattern: ParticlePattern.burst,
+        );
+        
+      case TileState.heavilyDamaged:
+        // Heavy damage - more particles
+        return ParticleEmitterConfig(
+          emissionRate: baseConfig.emissionRate * 0.8,
+          maxParticles: (baseConfig.maxParticles * 0.8).round(),
+          minLifetime: baseConfig.minLifetime,
+          maxLifetime: baseConfig.maxLifetime,
+          minVelocity: baseConfig.minVelocity * 0.9,
+          maxVelocity: baseConfig.maxVelocity * 0.9,
+          startColor: baseConfig.startColor,
+          endColor: baseConfig.endColor,
+          type: ParticleType.destruction,
+          pattern: ParticlePattern.explosion,
+        );
+        
+      case TileState.destroying:
+        // Full destruction - maximum particles
+        return baseConfig;
+        
+      default:
+        return baseConfig;
     }
   }
   

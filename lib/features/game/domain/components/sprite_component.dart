@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 /// Component that manages sprite rendering with layers and effects
 class GameSpriteComponent extends SpriteComponent {
   int renderLayer;
+  double depth;
+  bool isVisible;
+  double opacity;
   Paint? customPaint;
   
   GameSpriteComponent({
@@ -12,6 +15,9 @@ class GameSpriteComponent extends SpriteComponent {
     super.size,
     super.anchor,
     this.renderLayer = 0,
+    this.depth = 0.0,
+    this.isVisible = true,
+    this.opacity = 1.0,
     this.customPaint,
   });
 
@@ -44,8 +50,19 @@ class GameSpriteComponent extends SpriteComponent {
 
   /// Sets the opacity of the sprite
   @override
-  void setOpacity(double opacity, {Object? paintId}) {
-    paint = Paint()..color = Colors.white.withValues(alpha: opacity.clamp(0.0, 1.0));
+  void setOpacity(double newOpacity, {Object? paintId}) {
+    opacity = newOpacity.clamp(0.0, 1.0);
+    paint = Paint()..color = Colors.white.withValues(alpha: opacity);
+  }
+  
+  /// Sets the visibility of the sprite
+  void setVisible(bool visible) {
+    isVisible = visible;
+  }
+  
+  /// Sets the depth for z-ordering
+  void setDepth(double newDepth) {
+    depth = newDepth;
   }
 
   /// Flips the sprite horizontally

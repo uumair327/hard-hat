@@ -95,6 +95,7 @@ class PauseInputEvent extends InputEvent {
 /// Represents the source of an input event
 enum InputSource {
   keyboard,
+  mouse,
   touch,
   gamepad,
 }

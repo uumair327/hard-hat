@@ -33,6 +33,8 @@ class BallEntity extends GameEntity {
   void Function(Vector2 direction)? onCameraShakeRequest;
   void Function()? onForceQuitAiming;
   void Function(TileEntity? tile, Vector2 position, Vector2 normal)? onTileHit;
+  void Function(BallEntity ball)? onRecycle;
+  void Function(BallEntity ball, String tileId)? onTileDestroyed;
   
   BallEntity({
     required super.id,
@@ -40,6 +42,8 @@ class BallEntity extends GameEntity {
     this.onCameraShakeRequest,
     this.onForceQuitAiming,
     this.onTileHit,
+    this.onRecycle,
+    this.onTileDestroyed,
   }) {
     // Initialize components
     _positionComponent = GamePositionComponent(
@@ -329,4 +333,40 @@ class BallEntity extends GameEntity {
   
   /// Get ball radius
   double get radius => ballRadius;
+  
+  /// Reset ball to initial state
+  void reset({Vector2? position}) {
+    _changeState(BallState.idle);
+    _tracking = false;
+    _velocityComponent.velocity = Vector2.zero();
+    
+    if (position != null) {
+      _positionComponent.updatePosition(position);
+      _spriteComponent.position = position;
+    }
+    
+    // Reset sprite opacity
+    _spriteComponent.setOpacity(1.0);
+  }
+  
+  /// Launch ball in a direction
+  void launch(Vector2 direction, {double? speed}) {
+    _directionVector = direction.normalized();
+    _changeState(BallState.flying);
+    _tracking = false;
+    
+    final launchSpeed = speed ?? ballSpeed;
+    _velocityComponent.velocity = _directionVector * launchSpeed;
+  }
+  
+  /// Force recycle the ball
+  void forceRecycle() {
+    _changeState(BallState.dead);
+    onRecycle?.call(this);
+  }
+  
+  /// Check if ball should be recycled
+  bool get shouldRecycle {
+    return _currentState == BallState.dead && _stateTimer > 0.5;
+  }
 }

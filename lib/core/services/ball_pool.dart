@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import '../../features/game/domain/entities/ball_entity.dart';
+import '../../features/game/domain/entities/ball.dart';
 import 'object_pool.dart';
 
 /// Specialized object pool for ball entities
@@ -30,6 +30,7 @@ class BallPool extends GenericObjectPool<BallEntity> {
   ) {
     return BallEntity(
       id: 'ball_${DateTime.now().millisecondsSinceEpoch}_${_ballCounter++}',
+      position: Vector2.zero(),
       onRecycle: onRecycled,
       onTileDestroyed: onTileDestroyed,
     );

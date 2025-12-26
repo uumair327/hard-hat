@@ -1,8 +1,6 @@
-import 'package:injectable/injectable.dart';
 import 'package:hard_hat/features/game/domain/interfaces/entity_manager_interface.dart';
 import 'package:hard_hat/features/game/domain/entities/game_entity.dart';
 
-@LazySingleton(as: IEntityManager)
 class EntityManagerImpl implements IEntityManager {
   final Map<String, GameEntity> _entities = {};
 
@@ -10,10 +8,20 @@ class EntityManagerImpl implements IEntityManager {
   void addEntity(GameEntity entity) {
     _entities[entity.id] = entity;
   }
+  
+  @override
+  void registerEntity(GameEntity entity) {
+    addEntity(entity);
+  }
 
   @override
   void removeEntity(String id) {
     _entities.remove(id);
+  }
+  
+  @override
+  void unregisterEntity(String id) {
+    removeEntity(id);
   }
 
   @override

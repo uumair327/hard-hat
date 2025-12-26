@@ -118,7 +118,7 @@ class LevelTransitionSystem extends GameSystem {
     await _loadProgression();
     
     // Set up level manager callbacks
-    _levelManager.onLevelComplete = _onLevelComplete;
+    _levelManager.onLevelComplete = (dynamic level) => _onLevelComplete(level as Level);
   }
 
   /// Load progression data from save repository

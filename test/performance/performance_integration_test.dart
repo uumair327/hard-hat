@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flame/game.dart';
 import 'package:hard_hat/features/game/presentation/game/hard_hat_game.dart';
 import 'package:hard_hat/features/game/domain/entities/player_entity.dart';
-import 'package:hard_hat/features/game/domain/entities/ball_entity.dart';
+import 'package:hard_hat/features/game/domain/entities/ball.dart';
 import 'package:hard_hat/features/game/domain/entities/tile.dart';
 import 'package:hard_hat/core/di/injection_container.dart';
 import 'package:flame/components.dart';
@@ -142,7 +142,7 @@ void main() {
       
       // Update render system multiple times
       for (int i = 0; i < 60; i++) {
-        renderSystem.updateSystem(1.0 / 60.0);
+        renderSystem?.updateSystem(1.0 / 60.0);
       }
       
       final renderEnd = DateTime.now().millisecondsSinceEpoch;
@@ -203,8 +203,8 @@ void main() {
       
       // Update physics systems multiple times
       for (int i = 0; i < 60; i++) {
-        movementSystem.updateSystem(1.0 / 60.0);
-        collisionSystem.updateSystem(1.0 / 60.0);
+        movementSystem?.updateSystem(1.0 / 60.0);
+        collisionSystem?.updateSystem(1.0 / 60.0);
       }
       
       final physicsEnd = DateTime.now().millisecondsSinceEpoch;
@@ -239,7 +239,7 @@ void main() {
       
       // Update particle system many times
       for (int i = 0; i < 100; i++) {
-        particleSystem.updateSystem(1.0 / 60.0);
+        particleSystem?.updateSystem(1.0 / 60.0);
       }
       
       final particleEnd = DateTime.now().millisecondsSinceEpoch;
@@ -263,7 +263,7 @@ void main() {
       
       // Update audio system many times
       for (int i = 0; i < 100; i++) {
-        audioSystem.updateSystem(1.0 / 60.0);
+        audioSystem?.updateSystem(1.0 / 60.0);
       }
       
       final audioEnd = DateTime.now().millisecondsSinceEpoch;

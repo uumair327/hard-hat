@@ -1,7 +1,9 @@
+import 'package:injectable/injectable.dart';
 import 'package:hard_hat/features/game/domain/domain.dart';
 
 /// System responsible for managing entity lifecycle and registration
-class EntityManager extends GameSystem {
+@LazySingleton(as: IEntityManager)
+class EntityManager extends GameSystem implements IEntityManager {
   /// Map of all registered entities by their ID
   final Map<String, GameEntity> _entities = {};
   
@@ -12,6 +14,7 @@ class EntityManager extends GameSystem {
   int get priority => -1000; // Execute first
 
   /// Register an entity with the manager
+  @override
   void registerEntity(GameEntity entity) {
     _entities[entity.id] = entity;
     
@@ -26,7 +29,20 @@ class EntityManager extends GameSystem {
     }
   }
 
+  /// Add entity (alias for registerEntity for compatibility)
+  @override
+  void addEntity(GameEntity entity) {
+    registerEntity(entity);
+  }
+
+  /// Remove an entity by ID (alias for unregisterEntity for compatibility)
+  @override
+  void removeEntity(String entityId) {
+    unregisterEntity(entityId);
+  }
+
   /// Unregister an entity from the manager
+  @override
   void unregisterEntity(String entityId) {
     final entity = _entities.remove(entityId);
     if (entity != null) {
@@ -43,21 +59,25 @@ class EntityManager extends GameSystem {
   }
 
   /// Get an entity by its ID
+  @override
   GameEntity? getEntity(String entityId) {
     return _entities[entityId];
   }
 
   /// Get all entities of a specific type
-  Iterable<T> getEntitiesOfType<T extends GameEntity>() {
-    return _entitiesByType[T]?.cast<T>() ?? <T>[];
+  @override
+  List<T> getEntitiesOfType<T extends GameEntity>() {
+    return (_entitiesByType[T]?.cast<T>() ?? <T>[]).toList();
   }
 
   /// Get all registered entities
-  Iterable<GameEntity> getAllEntities() {
-    return _entities.values;
+  @override
+  List<GameEntity> getAllEntities() {
+    return _entities.values.toList();
   }
 
   /// Check if an entity exists
+  @override
   bool hasEntity(String entityId) {
     return _entities.containsKey(entityId);
   }
@@ -70,7 +90,12 @@ class EntityManager extends GameSystem {
   /// Get the total count of all entities
   int get totalEntityCount => _entities.length;
 
+  /// Get entity count (interface compatibility)
+  @override
+  int get entityCount => _entities.length;
+
   /// Clear all entities
+  @override
   void clearAllEntities() {
     final entityIds = _entities.keys.toList();
     for (final id in entityIds) {

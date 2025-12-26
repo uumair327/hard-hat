@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:hard_hat/features/game/domain/systems/particle_system.dart';
 import 'package:hard_hat/features/game/domain/components/particle_component.dart';
 import 'package:hard_hat/features/game/domain/services/particle_pool.dart';
+import 'package:hard_hat/features/game/domain/entities/tile.dart';
 import 'dart:math' as math;
 
 void main() {

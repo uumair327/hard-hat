@@ -32,14 +32,10 @@ class GameInjection {
     _sl.registerLazySingleton<IMovementSystem>(() => MovementSystem());
     _sl.registerLazySingleton<CollisionSystem>(() => CollisionSystem());
     _sl.registerLazySingleton<InputSystem>(() => InputSystem());
-    _sl.registerLazySingleton<AudioSystem>(() => AudioSystem(_sl()));
+    _sl.registerLazySingleton<AudioSystem>(() => AudioSystem());
     _sl.registerLazySingleton<GameStateManager>(() => GameStateManager(_sl()));
     _sl.registerLazySingleton<CameraSystem>(() => CameraSystem());
-    _sl.registerLazySingleton<RenderSystem>(() => RenderSystem(
-      enableBatching: true,
-      maxBatchSize: 1000,
-      enableParticlePooling: true,
-    ));
+    _sl.registerLazySingleton<RenderSystem>(() => RenderSystem());
     _sl.registerLazySingleton<ParticleSystem>(() => ParticleSystem());
     _sl.registerLazySingleton<StateTransitionSystem>(() => StateTransitionSystem());
     _sl.registerLazySingleton<LevelManager>(() => LevelManager(
