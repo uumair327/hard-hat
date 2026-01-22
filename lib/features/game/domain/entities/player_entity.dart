@@ -180,6 +180,9 @@ class PlayerEntity extends GameEntity {
 
   @override
   void updateEntity(double dt) {
+    // Skip expensive operations if delta time is too small
+    if (dt < 0.001) return;
+    
     _stateTimer += dt;
     _animationTimer += dt;
     
@@ -195,14 +198,18 @@ class PlayerEntity extends GameEntity {
     // Update position
     _updatePosition(dt);
     
-    // Update collision detection
+    // Update collision detection (simplified)
     _updateCollisions();
     
-    // Update animations
-    _updateAnimations(dt);
+    // Update animations (less frequently)
+    if (_animationTimer >= animationFrameTime) {
+      _updateAnimations(dt);
+    }
     
     // Update ball tracking during aiming
-    _updateBallTracking();
+    if (_currentState == PlayerState.aiming) {
+      _updateBallTracking();
+    }
     
     // Update sprite position
     _spriteComponent.position = _positionComponent.position;

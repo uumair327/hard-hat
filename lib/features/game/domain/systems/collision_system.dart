@@ -14,12 +14,12 @@ class CollisionSystem extends GameSystem implements ICollisionSystem {
   // Spatial partitioning for performance
   final Map<String, List<GameEntity>> _spatialGrid = {};
   final Map<String, List<GameEntity>> _previousSpatialGrid = {};
-  static const double gridSize = 64.0;
+  static const double gridSize = 256.0; // Further increased from 128.0 for even fewer grid cells
   
   // Performance optimization settings
   bool _spatialPartitioningEnabled = true;
   bool _broadPhaseOptimizationEnabled = true;
-  int _maxCollisionChecksPerFrame = 1000;
+  int _maxCollisionChecksPerFrame = 200; // Further reduced from 500 for better performance
   int _currentFrameCollisionChecks = 0;
   
   // Collision filtering and layers
@@ -648,21 +648,6 @@ class CollisionSystem extends GameSystem implements ICollisionSystem {
     final bBottom = b.position.y + b.size.y;
     
     return !(aRight < bLeft || aLeft > bRight || aBottom < bTop || aTop > bBottom);
-  }
-  
-  /// Handle collision between two entities
-  void _handleCollision(GameEntity entityA, GameEntity entityB) {
-    final collisionA = entityA.getEntityComponent<GameCollisionComponent>();
-    final collisionB = entityB.getEntityComponent<GameCollisionComponent>();
-    
-    if (collisionA == null || collisionB == null) return;
-    
-    // Handle specific collision types
-    _handleSpecificCollisions(entityA, entityB, collisionA, collisionB);
-    
-    // Trigger collision callbacks
-    collisionA.onCollision?.call(collisionB);
-    collisionB.onCollision?.call(collisionA);
   }
   
   /// Handle specific collision types with custom logic

@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 import '../../features/menu/presentation/pages/main_menu_page.dart';
-import '../../features/game/presentation/pages/game_page.dart';
+import '../../features/game/presentation/pages/simple_game_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 
 class AppRouter {
@@ -27,7 +27,7 @@ class AppRouter {
           return _buildPageWithTransition(
             context,
             state,
-            GamePage(levelId: levelId),
+            SimpleGamePage(levelId: levelId),
             transitionType: PageTransitionType.slideFromRight,
           );
         },

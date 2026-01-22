@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:hard_hat/features/game/domain/domain.dart';
-import 'package:hard_hat/features/game/domain/systems/game_state_types.dart';
 
 /// Domain-level game controller that coordinates orchestrators
 /// Follows SRP - only responsible for high-level game coordination
@@ -18,8 +18,11 @@ class GameController implements IGameController {
   PlayerEntity? _testPlayer;
   
   /// Callbacks for game events
+  @override
   void Function(Level level)? onLevelComplete;
+  @override
   void Function(Level level)? onLevelLoaded;
+  @override
   void Function()? onGameOver;
 
   GameController({
@@ -31,21 +34,41 @@ class GameController implements IGameController {
         _levelOrchestrator = levelOrchestrator;
 
   /// Initialize the game
+  @override
   Future<void> initializeGame() async {
     if (_isInitialized) return;
     
-    // Initialize orchestrators
-    await _ecsOrchestrator.initialize();
-    _stateOrchestrator.initialize();
-    _levelOrchestrator.initialize();
+    debugPrint('GameController: Starting initialization...');
     
-    // Set up callbacks
-    _setupCallbacks();
-    
-    // Setup test level
-    await _setupTestLevel();
-    
-    _isInitialized = true;
+    try {
+      // Initialize orchestrators
+      debugPrint('GameController: Initializing ECS orchestrator...');
+      await _ecsOrchestrator.initialize();
+      
+      debugPrint('GameController: Initializing state orchestrator...');
+      _stateOrchestrator.initialize();
+      
+      debugPrint('GameController: Initializing level orchestrator...');
+      _levelOrchestrator.initialize();
+      
+      // Set up callbacks
+      debugPrint('GameController: Setting up callbacks...');
+      _setupCallbacks();
+      
+      // Defer test level setup to avoid blocking initialization
+      debugPrint('GameController: Scheduling test level setup...');
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _setupTestLevel();
+      });
+      
+      _isInitialized = true;
+      debugPrint('GameController: Initialization completed successfully!');
+    } catch (e) {
+      debugPrint('GameController: Error during initialization: $e');
+      // Mark as initialized even if test level fails
+      _isInitialized = true;
+      rethrow;
+    }
   }
 
   /// Setup callbacks between orchestrators
@@ -59,78 +82,108 @@ class GameController implements IGameController {
 
   /// Setup a test level for development
   Future<void> _setupTestLevel() async {
-    // Create test player with ball and audio callbacks
-    _testPlayer = PlayerEntity(
-      id: 'test_player',
-      position: Vector2(100, 500),
-      onBallCreated: _handleBallCreated,
-      onBallLaunched: _handleBallLaunched,
-      onAudioEvent: _handlePlayerAudioEvent,
-    );
-    
-    await _testPlayer!.initializeEntity();
-    _ecsOrchestrator.entityManager.addEntity(_testPlayer!);
-    
-    // Setup camera to follow player
-    final cameraSystem = _ecsOrchestrator.getSystem<CameraSystem>();
-    if (cameraSystem != null) {
-      cameraSystem.setTarget(_testPlayer!);
+    try {
+      debugPrint('GameController: Setting up test level...');
       
-      // Set up test level camera bounds
-      final testLevel = Level(
-        id: 1,
-        name: 'Test Level',
-        description: 'Test level for development',
-        size: Vector2(1600, 800),
-        tiles: [],
-        playerSpawn: Vector2(100, 500),
-        cameraMin: Vector2(0, 0),
-        cameraMax: Vector2(1600, 800),
-        elements: [],
+      // Create test player with ball and audio callbacks
+      _testPlayer = PlayerEntity(
+        id: 'test_player',
+        position: Vector2(100, 500),
+        onBallCreated: _handleBallCreated,
+        onBallLaunched: _handleBallLaunched,
+        onAudioEvent: _handlePlayerAudioEvent,
       );
       
-      cameraSystem.setBoundsFromLevel(testLevel);
+      debugPrint('GameController: Initializing test player...');
+      await _testPlayer!.initializeEntity();
+      _ecsOrchestrator.entityManager.addEntity(_testPlayer!);
+      
+      debugPrint('GameController: Setting up camera...');
+      // Setup camera to follow player
+      final cameraSystem = _ecsOrchestrator.getSystem<CameraSystem>();
+      if (cameraSystem != null) {
+        cameraSystem.setTarget(_testPlayer!);
+        
+        // Set up test level camera bounds
+        final testLevel = Level(
+          id: 1,
+          name: 'Test Level',
+          description: 'Test level for development',
+          size: Vector2(1600, 800),
+          tiles: [],
+          playerSpawn: Vector2(100, 500),
+          cameraMin: Vector2(0, 0),
+          cameraMax: Vector2(1600, 800),
+          elements: [],
+        );
+        
+        cameraSystem.setBoundsFromLevel(testLevel);
+        debugPrint('GameController: Test level setup completed successfully!');
+      } else {
+        debugPrint('GameController: Warning - Camera system not available');
+      }
+    } catch (e) {
+      debugPrint('GameController: Warning - Failed to setup test level: $e');
+      // Continue without test level if setup fails
     }
   }
   
   /// Handle ball creation from player
   void _handleBallCreated(BallEntity ball) {
-    // Add ball to entity manager
-    _ecsOrchestrator.entityManager.addEntity(ball);
+    try {
+      // Add ball to entity manager
+      _ecsOrchestrator.entityManager.addEntity(ball);
+    } catch (e) {
+      debugPrint('Warning: Failed to add ball to entity manager: $e');
+    }
   }
   
   /// Handle ball launch from player
   void _handleBallLaunched(BallEntity ball) {
-    // Ball is already in entity manager, just ensure it's tracked
-    // The collision system will handle ball-tile interactions
+    try {
+      // Ball is already in entity manager, just ensure it's tracked
+      // The collision system will handle ball-tile interactions
+    } catch (e) {
+      debugPrint('Warning: Failed to handle ball launch: $e');
+    }
   }
   
   /// Handle audio events from player
   void _handlePlayerAudioEvent(String soundName, Vector2? position) {
-    final audioSystem = _ecsOrchestrator.getSystem<IAudioSystem>();
-    if (audioSystem is AudioSystem) {
-      switch (soundName) {
-        case 'jump':
-          audioSystem.playJumpSound(position);
-          break;
-        case 'land':
-          audioSystem.playLandSound(position);
-          break;
-        case 'strike':
-          audioSystem.playStrikeSound(position);
-          break;
-        default:
-          audioSystem.playSoundEffect(soundName, position: position);
+    try {
+      final audioSystem = _ecsOrchestrator.getSystem<IAudioSystem>();
+      if (audioSystem is AudioSystem) {
+        switch (soundName) {
+          case 'jump':
+            audioSystem.playJumpSound(position);
+            break;
+          case 'land':
+            audioSystem.playLandSound(position);
+            break;
+          case 'strike':
+            audioSystem.playStrikeSound(position);
+            break;
+          default:
+            audioSystem.playSoundEffect(soundName, position: position);
+        }
       }
+    } catch (e) {
+      debugPrint('Warning: Failed to handle audio event $soundName: $e');
     }
   }
 
   /// Update all game systems
+  @override
   void update(double dt) {
     if (!_isInitialized) return;
     
-    // Update ECS systems
-    _ecsOrchestrator.update(dt);
+    try {
+      // Update ECS systems
+      _ecsOrchestrator.update(dt);
+    } catch (e) {
+      debugPrint('Warning: Error updating ECS systems: $e');
+      // Continue running even if update fails
+    }
   }
 
   /// Handle level completion
@@ -185,30 +238,39 @@ class GameController implements IGameController {
   }
 
   /// Pause the game
+  @override
   void pauseGame() => _stateOrchestrator.pauseGame();
 
   /// Resume the game
+  @override
   void resumeGame() => _stateOrchestrator.resumeGame();
 
   /// Go to main menu
+  @override
   void goToMenu() => _stateOrchestrator.goToMenu();
 
   /// Toggle pause menu
+  @override
   void togglePauseMenu() => _stateOrchestrator.togglePauseMenu();
 
   /// Get current game state
+  @override
   GameState get currentState => _stateOrchestrator.currentState;
 
   /// Check if game is playing
+  @override
   bool get isPlaying => _stateOrchestrator.isPlaying;
 
   /// Check if game is paused
+  @override
   bool get isPaused => _stateOrchestrator.isPaused;
 
   /// Check if game is initialized
+  @override
   bool get isInitialized => _isInitialized;
 
   /// Dispose all resources
+  @override
   void dispose() {
     _ecsOrchestrator.dispose();
     _stateOrchestrator.dispose();

@@ -14,9 +14,7 @@ class HardHatApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<GameBloc>(
-          create: (context) => GetIt.instance<GameBloc>(),
-        ),
+        // Only register SettingsBloc for now
         BlocProvider<SettingsBloc>(
           create: (context) => GetIt.instance<SettingsBloc>(),
         ),

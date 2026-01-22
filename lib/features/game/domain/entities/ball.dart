@@ -121,7 +121,7 @@ class BallEntity extends GameEntity {
     );
     
     // Add highlight
-    final highlightPaint = Paint()..color = Colors.white.withValues(alpha: 0.6);
+    final highlightPaint = Paint()..color = Colors.white.withOpacity(0.6);
     canvas.drawCircle(
       Offset(ballRadius - 2, ballRadius - 2),
       ballRadius / 3,
@@ -135,6 +135,9 @@ class BallEntity extends GameEntity {
 
   @override
   void updateEntity(double dt) {
+    // Skip expensive operations if delta time is too small
+    if (dt < 0.001) return;
+    
     _stateTimer += dt;
     
     // Update state machine
@@ -156,7 +159,7 @@ class BallEntity extends GameEntity {
         break;
     }
     
-    // Update position based on velocity
+    // Update position based on velocity (only when flying)
     if (_currentState == BallState.flying) {
       final deltaPosition = _velocityComponent.velocity * dt;
       _positionComponent.updatePosition(_positionComponent.position + deltaPosition);
