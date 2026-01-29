@@ -18,6 +18,9 @@ export 'pool_manager.dart';
 
 // Level Management
 export 'godot_level_converter.dart';
+export 'level_data.dart';
+export 'level_loader.dart';
+export 'level_manager.dart';
 export 'level_validator.dart';
 
 // Performance
@@ -26,6 +29,10 @@ export 'performance_monitor.dart';
 export 'performance_optimization_report.dart';
 export 'performance_optimizer.dart';
 export 'render_performance.dart';
+
+// Save Management
+export 'save_data.dart';
+export 'save_manager.dart';
 
 // Sprite Management
 export 'sprite_atlas_integration.dart';

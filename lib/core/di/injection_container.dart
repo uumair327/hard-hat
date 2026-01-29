@@ -1,4 +1,6 @@
 import 'package:get_it/get_it.dart';
+import 'package:hard_hat/core/services/save_manager.dart';
+import 'package:hard_hat/core/services/level_manager.dart';
 import 'package:hard_hat/features/game/domain/systems/entity_manager.dart';
 import 'package:hard_hat/features/game/domain/systems/audio_system.dart';
 import 'package:hard_hat/features/game/domain/systems/render_system.dart';
@@ -13,6 +15,14 @@ final sl = GetIt.instance;
 
 /// Initialize all dependencies
 Future<void> initializeDependencies() async {
+  // Register SaveManager
+  final saveManager = SaveManager();
+  await saveManager.initialize();
+  sl.registerSingleton<ISaveManager>(saveManager);
+  
+  // Register LevelManager
+  sl.registerLazySingleton<ILevelManager>(() => LevelManager());
+  
   // Register EntityManager
   sl.registerLazySingleton<EntityManager>(() => EntityManager());
   
