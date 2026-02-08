@@ -38,3 +38,7 @@ export 'save_manager.dart';
 export 'sprite_atlas_integration.dart';
 export 'sprite_atlas.dart';
 export 'sprite_batch.dart';
+
+// Transition System
+export 'transition_system.dart';
+export 'transition_system_impl.dart';
