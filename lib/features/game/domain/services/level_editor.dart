@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 /// Level editor utility for creating and modifying game levels
@@ -51,7 +49,7 @@ class LevelEditor {
     bool? isDestructible,
   }) {
     final tileProperties = _getTileProperties(type);
-    
+
     final tile = {
       'position': {'x': x, 'y': y},
       'type': type,
@@ -75,7 +73,7 @@ class LevelEditor {
     double tolerance = 16.0,
   }) {
     final tiles = List<Map<String, dynamic>>.from(levelData['tiles'] ?? []);
-    
+
     tiles.removeWhere((tile) {
       final tileX = tile['position']['x'];
       final tileY = tile['position']['y'];
@@ -101,7 +99,9 @@ class LevelEditor {
       'properties': properties ?? _getDefaultElementProperties(type),
     };
 
-    final elements = List<Map<String, dynamic>>.from(levelData['elements'] ?? []);
+    final elements = List<Map<String, dynamic>>.from(
+      levelData['elements'] ?? [],
+    );
     elements.add(element);
     levelData['elements'] = elements;
 
@@ -125,7 +125,9 @@ class LevelEditor {
       },
     };
 
-    final segments = List<Map<String, dynamic>>.from(levelData['segments'] ?? []);
+    final segments = List<Map<String, dynamic>>.from(
+      levelData['segments'] ?? [],
+    );
     segments.add(segment);
     levelData['segments'] = segments;
 
@@ -145,7 +147,9 @@ class LevelEditor {
       'properties': properties ?? {},
     };
 
-    final objectives = List<Map<String, dynamic>>.from(levelData['objectives'] ?? []);
+    final objectives = List<Map<String, dynamic>>.from(
+      levelData['objectives'] ?? [],
+    );
     objectives.add(objective);
     levelData['objectives'] = objectives;
 
@@ -325,8 +329,17 @@ class LevelEditor {
 
     // Validate tile type
     final validTypes = [
-      'scaffolding', 'timber', 'timber_one_hit', 'bricks', 'bricks_one_hit',
-      'bricks_two_hits', 'beam', 'girder', 'support', 'spikes', 'shutter'
+      'scaffolding',
+      'timber',
+      'timber_one_hit',
+      'bricks',
+      'bricks_one_hit',
+      'bricks_two_hits',
+      'beam',
+      'girder',
+      'support',
+      'spikes',
+      'shutter',
     ];
     if (!validTypes.contains(tile['type'])) {
       errors.add('Tile $index has invalid type: ${tile['type']}');
@@ -336,7 +349,9 @@ class LevelEditor {
   }
 
   /// Find overlapping tiles
-  static List<Map<String, dynamic>> _findOverlappingTiles(Map<String, dynamic> levelData) {
+  static List<Map<String, dynamic>> _findOverlappingTiles(
+    Map<String, dynamic> levelData,
+  ) {
     final overlaps = <Map<String, dynamic>>[];
     final tiles = List<Map<String, dynamic>>.from(levelData['tiles'] ?? []);
 
@@ -344,10 +359,10 @@ class LevelEditor {
       for (int j = i + 1; j < tiles.length; j++) {
         final tile1 = tiles[i];
         final tile2 = tiles[j];
-        
+
         final pos1 = tile1['position'];
         final pos2 = tile2['position'];
-        
+
         if (pos1['x'] == pos2['x'] && pos1['y'] == pos2['y']) {
           overlaps.add({'tile1': i, 'tile2': j, 'position': pos1});
         }
@@ -360,20 +375,20 @@ class LevelEditor {
   /// Validate level bounds
   static List<String> _validateLevelBounds(Map<String, dynamic> levelData) {
     final errors = <String>[];
-    
+
     final size = levelData['size'];
     final playerSpawn = levelData['playerSpawn'];
-    
+
     if (size is Map && playerSpawn is Map) {
       final width = size['x'];
       final height = size['y'];
       final spawnX = playerSpawn['x'];
       final spawnY = playerSpawn['y'];
-      
+
       if (spawnX < 0 || spawnX > width) {
         errors.add('Player spawn X is outside level bounds');
       }
-      
+
       if (spawnY < 0 || spawnY > height) {
         errors.add('Player spawn Y is outside level bounds');
       }
@@ -387,7 +402,7 @@ class LevelEditor {
     final levelId = levelData['id'];
     final fileName = 'level_$levelId.json';
     final filePath = '$_levelsPath/$fileName';
-    
+
     // Note: In a real implementation, this would use proper file I/O
     // For now, we'll just log the operation
     if (kDebugMode) {
@@ -400,13 +415,13 @@ class LevelEditor {
     try {
       final fileName = 'level_$levelId.json';
       final filePath = '$_levelsPath/$fileName';
-      
+
       // Note: In a real implementation, this would use proper file I/O
       // For now, we'll return null
       if (kDebugMode) {
         print('Would load level $levelId from $filePath');
       }
-      
+
       return null;
     } catch (e) {
       if (kDebugMode) {
@@ -435,19 +450,18 @@ class LevelEditor {
 
   /// Get available element types
   static List<String> getAvailableElementTypes() {
-    return [
-      'elevator',
-      'spring',
-      'target',
-      'spikes',
-    ];
+    return ['elevator', 'spring', 'target', 'spikes'];
   }
 
   /// Generate level preview data
-  static Map<String, dynamic> generateLevelPreview(Map<String, dynamic> levelData) {
+  static Map<String, dynamic> generateLevelPreview(
+    Map<String, dynamic> levelData,
+  ) {
     final tiles = List<Map<String, dynamic>>.from(levelData['tiles'] ?? []);
-    final elements = List<Map<String, dynamic>>.from(levelData['elements'] ?? []);
-    
+    final elements = List<Map<String, dynamic>>.from(
+      levelData['elements'] ?? [],
+    );
+
     return {
       'id': levelData['id'],
       'name': levelData['name'],
@@ -462,39 +476,47 @@ class LevelEditor {
   /// Calculate level difficulty (1-5 scale)
   static int _calculateDifficulty(Map<String, dynamic> levelData) {
     final tiles = List<Map<String, dynamic>>.from(levelData['tiles'] ?? []);
-    final elements = List<Map<String, dynamic>>.from(levelData['elements'] ?? []);
-    
+    final elements = List<Map<String, dynamic>>.from(
+      levelData['elements'] ?? [],
+    );
+
     int difficulty = 1;
-    
+
     // Increase difficulty based on tile count
     if (tiles.length > 50) difficulty++;
     if (tiles.length > 100) difficulty++;
-    
+
     // Increase difficulty based on destructible tiles
-    final destructibleTiles = tiles.where((tile) => tile['isDestructible'] == true).length;
+    final destructibleTiles = tiles
+        .where((tile) => tile['isDestructible'] == true)
+        .length;
     if (destructibleTiles > 20) difficulty++;
-    
+
     // Increase difficulty based on interactive elements
     if (elements.length > 3) difficulty++;
-    
+
     return difficulty.clamp(1, 5);
   }
 
   /// Estimate completion time in minutes
   static int _estimateCompletionTime(Map<String, dynamic> levelData) {
     final tiles = List<Map<String, dynamic>>.from(levelData['tiles'] ?? []);
-    final elements = List<Map<String, dynamic>>.from(levelData['elements'] ?? []);
-    
+    final elements = List<Map<String, dynamic>>.from(
+      levelData['elements'] ?? [],
+    );
+
     // Base time
     int timeMinutes = 2;
-    
+
     // Add time based on tile complexity
-    final destructibleTiles = tiles.where((tile) => tile['isDestructible'] == true).length;
+    final destructibleTiles = tiles
+        .where((tile) => tile['isDestructible'] == true)
+        .length;
     timeMinutes += (destructibleTiles / 10).ceil();
-    
+
     // Add time based on elements
     timeMinutes += elements.length;
-    
+
     return timeMinutes.clamp(1, 30);
   }
 }

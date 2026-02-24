@@ -5,7 +5,7 @@
 export 'data/data.dart';
 
 // Domain Layer
-export 'domain/domain.dart' hide GameState;
+export 'domain/domain.dart' hide GameState, TransitionOverlay;
 
 // Presentation Layer
 export 'presentation/presentation.dart';

@@ -1,65 +1,65 @@
 import 'dart:async';
-import 'package:injectable/injectable.dart';
+
 import 'package:hard_hat/features/game/domain/systems/audio_system.dart';
 import 'package:hard_hat/features/game/domain/components/audio_component.dart';
 import 'package:hard_hat/core/services/audio_manager.dart';
 
 /// Manages audio state for pause/resume and settings persistence
-@lazySingleton
 class AudioStateManager {
   final AudioSystem _audioSystem;
   final AudioManager _audioManager;
-  
+
   /// Current game state
   GameAudioState _currentState = GameAudioState.playing;
-  
+
   /// Audio settings that persist across sessions
   AudioSettings _settings = AudioSettings();
-  
+
   /// Fade controller for smooth transitions
   Timer? _fadeTimer;
-  
+
   /// Callbacks for state changes
   final List<Function(GameAudioState)> _stateChangeCallbacks = [];
 
   AudioStateManager(this._audioSystem, this._audioManager) {
     // Connect audio manager to audio system
     _audioManager.setAudioSystem(_audioSystem);
-    
+
     // Apply initial settings
     _applySettings();
   }
 
   /// Current audio state
   GameAudioState get currentState => _currentState;
-  
+
   /// Current audio settings
   AudioSettings get settings => _settings;
 
   /// Pause all audio (for game pause)
   void pauseAudio() {
     if (_currentState == GameAudioState.paused) return;
-    
+
     _currentState = GameAudioState.paused;
     _audioSystem.setMuted(true);
     _audioManager.pauseAll();
-    
+
     _notifyStateChange();
   }
 
   /// Resume all audio (for game resume)
   void resumeAudio() {
     if (_currentState != GameAudioState.paused) return;
-    
+
     _currentState = GameAudioState.playing;
-    
+
     if (!_settings.isMuted) {
       _audioSystem.setMuted(false);
       _audioManager.resumeAll();
     }
-    
+
     _notifyStateChange();
   }
+
   /// Mute all audio
   void muteAudio() {
     _settings.isMuted = true;
@@ -71,12 +71,12 @@ class AudioStateManager {
   /// Unmute all audio
   void unmuteAudio() {
     _settings.isMuted = false;
-    
+
     if (_currentState == GameAudioState.playing) {
       _audioSystem.setMuted(false);
       _audioManager.setMuted(false);
     }
-    
+
     _notifyStateChange();
   }
 
@@ -99,23 +99,25 @@ class AudioStateManager {
   /// Fade music volume for smooth transitions
   Future<void> fadeMusicVolume(double targetVolume, Duration duration) async {
     _fadeTimer?.cancel();
-    
+
     final startVolume = _settings.musicVolume;
     final volumeDiff = targetVolume - startVolume;
     const steps = 20;
-    final stepDuration = Duration(milliseconds: duration.inMilliseconds ~/ steps);
+    final stepDuration = Duration(
+      milliseconds: duration.inMilliseconds ~/ steps,
+    );
     final volumeStep = volumeDiff / steps;
-    
+
     for (int i = 1; i <= steps; i++) {
       final newVolume = startVolume + (volumeStep * i);
       _audioSystem.setCategoryVolume(AudioCategory.music, newVolume);
-      
+
       await Future.delayed(stepDuration);
-      
+
       // Check if fade was cancelled
       if (_fadeTimer?.isActive == false) break;
     }
-    
+
     // Ensure final volume is set
     _settings.musicVolume = targetVolume;
     _audioSystem.setCategoryVolume(AudioCategory.music, targetVolume);
@@ -131,6 +133,7 @@ class AudioStateManager {
   Future<void> fadeOut({Duration duration = const Duration(seconds: 1)}) async {
     await fadeMusicVolume(0.0, duration);
   }
+
   /// Load audio settings from persistent storage
   Future<void> loadSettings(Map<String, dynamic> settingsData) async {
     _settings = AudioSettings.fromJson(settingsData);
@@ -147,7 +150,7 @@ class AudioStateManager {
     _audioSystem.setCategoryVolume(AudioCategory.sfx, _settings.sfxVolume);
     _audioSystem.setCategoryVolume(AudioCategory.music, _settings.musicVolume);
     _audioSystem.setMuted(_settings.isMuted);
-    
+
     _audioManager.setSfxVolume(_settings.sfxVolume);
     _audioManager.setMusicVolume(_settings.musicVolume);
     _audioManager.setMuted(_settings.isMuted);
@@ -178,11 +181,7 @@ class AudioStateManager {
 }
 
 /// Audio state enumeration
-enum GameAudioState {
-  playing,
-  paused,
-  muted,
-}
+enum GameAudioState { playing, paused, muted }
 
 /// Audio settings data class
 class AudioSettings {

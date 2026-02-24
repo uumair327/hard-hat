@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 import '../../features/menu/presentation/pages/main_menu_page.dart';
-import '../../features/game/presentation/pages/simple_game_page.dart';
+import '../../features/game/presentation/pages/game_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 
 class AppRouter {
@@ -23,11 +23,12 @@ class AppRouter {
         path: '/game',
         name: 'game',
         pageBuilder: (context, state) {
-          final levelId = int.tryParse(state.uri.queryParameters['level'] ?? '1') ?? 1;
+          final levelId =
+              int.tryParse(state.uri.queryParameters['level'] ?? '1') ?? 1;
           return _buildPageWithTransition(
             context,
             state,
-            SimpleGamePage(levelId: levelId),
+            GamePage(levelId: levelId),
             transitionType: PageTransitionType.slideFromRight,
           );
         },
@@ -51,11 +52,7 @@ class AppRouter {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.red,
-              ),
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
               Text(
                 'Page not found',
@@ -64,9 +61,9 @@ class AppRouter {
               const SizedBox(height: 8),
               Text(
                 state.matchedLocation,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
               ),
               const SizedBox(height: 24),
               ElevatedButton(
@@ -114,44 +111,37 @@ class AppRouter {
   ) {
     switch (type) {
       case PageTransitionType.fade:
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      
+        return FadeTransition(opacity: animation, child: child);
+
       case PageTransitionType.slideFromRight:
         return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(1.0, 0.0),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          )),
+          position:
+              Tween<Offset>(
+                begin: const Offset(1.0, 0.0),
+                end: Offset.zero,
+              ).animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
           child: child,
         );
-      
+
       case PageTransitionType.slideFromBottom:
         return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0.0, 1.0),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          )),
+          position:
+              Tween<Offset>(
+                begin: const Offset(0.0, 1.0),
+                end: Offset.zero,
+              ).animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
           child: child,
         );
-      
+
       case PageTransitionType.scale:
         return ScaleTransition(
-          scale: Tween<double>(
-            begin: 0.0,
-            end: 1.0,
-          ).animate(CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutBack,
-          )),
+          scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+            CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+          ),
           child: child,
         );
     }
@@ -159,9 +149,4 @@ class AppRouter {
 }
 
 /// Enum for different page transition types
-enum PageTransitionType {
-  fade,
-  slideFromRight,
-  slideFromBottom,
-  scale,
-}
+enum PageTransitionType { fade, slideFromRight, slideFromBottom, scale }

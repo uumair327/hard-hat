@@ -2,14 +2,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hard_hat/core/services/sprite_batch.dart';
 import 'package:flame/components.dart';
 import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
 
 // Mock sprite for testing
 Sprite createMockSprite() {
   // Create a simple 1x1 image for testing
   final recorder = ui.PictureRecorder();
   final canvas = ui.Canvas(recorder);
-  canvas.drawRect(const ui.Rect.fromLTWH(0, 0, 1, 1), ui.Paint()..color = const ui.Color(0xFFFFFFFF));
+  canvas.drawRect(
+    const ui.Rect.fromLTWH(0, 0, 1, 1),
+    ui.Paint()..color = const ui.Color(0xFFFFFFFF),
+  );
   final picture = recorder.endRecording();
   final image = picture.toImageSync(1, 1);
   return Sprite(image);
@@ -68,10 +70,7 @@ void main() {
     late SpriteBatchManager batchManager;
 
     setUp(() {
-      batchManager = SpriteBatchManager(
-        maxBatchSize: 10,
-        enableBatching: true,
-      );
+      batchManager = SpriteBatchManager(maxBatchSize: 10, enableBatching: true);
     });
 
     test('should initialize with correct settings', () {
@@ -113,7 +112,9 @@ void main() {
 
     test('should get batches for specific layer', () {
       // Act
-      final layerBatches = batchManager.getBatchesForLayer(RenderLayer.entities);
+      final layerBatches = batchManager.getBatchesForLayer(
+        RenderLayer.entities,
+      );
 
       // Assert
       expect(layerBatches, isA<List<SpriteBatch>>());

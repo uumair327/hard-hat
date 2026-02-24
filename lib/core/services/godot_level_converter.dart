@@ -33,7 +33,7 @@ class GodotLevelConverter {
   static Future<void> _convertLevel(int levelId, String levelName) async {
     try {
       final tscnFile = File(path.join(_godotLevelsPath, '$levelId.tscn'));
-      
+
       if (!await tscnFile.exists()) {
         if (kDebugMode) {
           print('Warning: Godot level file not found: ${tscnFile.path}');
@@ -43,8 +43,10 @@ class GodotLevelConverter {
 
       final tscnContent = await tscnFile.readAsString();
       final levelData = _parseTscnToLevelData(levelId, levelName, tscnContent);
-      
-      final jsonFile = File(path.join(_flutterLevelsPath, 'level_$levelId.json'));
+
+      final jsonFile = File(
+        path.join(_flutterLevelsPath, 'level_$levelId.json'),
+      );
       await jsonFile.parent.create(recursive: true);
       await jsonFile.writeAsString(_formatLevelJson(levelData));
 
@@ -94,15 +96,18 @@ class GodotLevelConverter {
   /// Extract GridMap data from .tscn content
   static Map<String, List<int>> _extractGridMapData(String tscnContent) {
     final gridMaps = <String, List<int>>{};
-    
+
     // Find GridMap sections
-    final gridMapRegex = RegExp(r'\[node name="(\w*GridMap).*?\].*?data = \{[^}]*"cells": PackedInt32Array\(([^)]+)\)', dotAll: true);
+    final gridMapRegex = RegExp(
+      r'\[node name="(\w*GridMap).*?\].*?data = \{[^}]*"cells": PackedInt32Array\(([^)]+)\)',
+      dotAll: true,
+    );
     final matches = gridMapRegex.allMatches(tscnContent);
 
     for (final match in matches) {
       final gridMapName = match.group(1) ?? 'GridMap';
       final cellsData = match.group(2) ?? '';
-      
+
       // Parse the packed int array
       final cells = cellsData
           .split(',')
@@ -120,27 +125,34 @@ class GodotLevelConverter {
   /// Extract segment data from .tscn content
   static List<Map<String, dynamic>> _extractSegments(String tscnContent) {
     final segments = <Map<String, dynamic>>[];
-    
+
     // Find segment nodes
-    final segmentRegex = RegExp(r'\[node name="(\d+)" type="Node3D" parent="Segments"\].*?transform = Transform3D\([^)]+\)', dotAll: true);
+    final segmentRegex = RegExp(
+      r'\[node name="(\d+)" type="Node3D" parent="Segments"\].*?transform = Transform3D\([^)]+\)',
+      dotAll: true,
+    );
     final matches = segmentRegex.allMatches(tscnContent);
 
     for (final match in matches) {
       final segmentId = int.tryParse(match.group(1) ?? '0') ?? 0;
-      
+
       // Extract transform data (simplified)
-      final transformMatch = RegExp(r'transform = Transform3D\([^,]+,[^,]+,[^,]+,[^,]+,[^,]+,[^,]+,[^,]+,[^,]+,[^,]+,\s*([^,]+),\s*([^,]+),\s*([^)]+)\)').firstMatch(match.group(0) ?? '');
-      
-      double x = 0, y = 0, z = 0;
+      final transformMatch = RegExp(
+        r'transform = Transform3D\([^,]+,[^,]+,[^,]+,[^,]+,[^,]+,[^,]+,[^,]+,[^,]+,[^,]+,\s*([^,]+),\s*([^,]+),\s*([^)]+)\)',
+      ).firstMatch(match.group(0) ?? '');
+
+      double x = 0, y = 0;
       if (transformMatch != null) {
         x = double.tryParse(transformMatch.group(1) ?? '0') ?? 0;
         y = double.tryParse(transformMatch.group(2) ?? '0') ?? 0;
-        z = double.tryParse(transformMatch.group(3) ?? '0') ?? 0;
       }
 
       segments.add({
         'id': segmentId,
-        'position': {'x': x * 32, 'y': -y * 32}, // Convert to 2D Flutter coordinates
+        'position': {
+          'x': x * 32,
+          'y': -y * 32,
+        }, // Convert to 2D Flutter coordinates
         'spawnPoint': {'x': (x - 9) * 32, 'y': -(y - 1) * 32},
       });
     }
@@ -149,22 +161,23 @@ class GodotLevelConverter {
   }
 
   /// Extract interactive elements from .tscn content
-  static List<Map<String, dynamic>> _extractInteractiveElements(String tscnContent) {
+  static List<Map<String, dynamic>> _extractInteractiveElements(
+    String tscnContent,
+  ) {
     final elements = <Map<String, dynamic>>[];
 
     // Extract elevator
-    final elevatorMatch = RegExp(r'\[node name="Elevator".*?transform = Transform3D\([^)]+,\s*([^,]+),\s*([^,]+),\s*([^)]+)\)').firstMatch(tscnContent);
+    final elevatorMatch = RegExp(
+      r'\[node name="Elevator".*?transform = Transform3D\([^)]+,\s*([^,]+),\s*([^,]+),\s*([^)]+)\)',
+    ).firstMatch(tscnContent);
     if (elevatorMatch != null) {
       final x = double.tryParse(elevatorMatch.group(1) ?? '0') ?? 0;
       final y = double.tryParse(elevatorMatch.group(2) ?? '0') ?? 0;
-      
+
       elements.add({
         'type': 'elevator',
         'position': {'x': x * 32, 'y': -y * 32},
-        'properties': {
-          'speed': 2.0,
-          'range': 160.0,
-        },
+        'properties': {'speed': 2.0, 'range': 160.0},
       });
     }
 
@@ -175,7 +188,9 @@ class GodotLevelConverter {
   }
 
   /// Convert GridMap data to tile list
-  static List<Map<String, dynamic>> _convertGridMapToTiles(Map<String, List<int>> gridMaps) {
+  static List<Map<String, dynamic>> _convertGridMapToTiles(
+    Map<String, List<int>> gridMaps,
+  ) {
     final tiles = <Map<String, dynamic>>[];
 
     for (final entry in gridMaps.entries) {
@@ -225,7 +240,10 @@ class GodotLevelConverter {
   }
 
   /// Map Godot tile ID to Flutter tile type
-  static Map<String, dynamic>? _mapTileIdToType(int tileId, String gridMapName) {
+  static Map<String, dynamic>? _mapTileIdToType(
+    int tileId,
+    String gridMapName,
+  ) {
     // Based on Godot mesh library IDs
     switch (tileId) {
       case 0: // Scaffolding
@@ -312,7 +330,9 @@ class GodotLevelConverter {
   }
 
   /// Extract player spawn point from segments
-  static Map<String, double> _extractPlayerSpawn(List<Map<String, dynamic>> segments) {
+  static Map<String, double> _extractPlayerSpawn(
+    List<Map<String, dynamic>> segments,
+  ) {
     if (segments.isNotEmpty) {
       final firstSegment = segments.first;
       return {
@@ -320,19 +340,31 @@ class GodotLevelConverter {
         'y': firstSegment['spawnPoint']['y'],
       };
     }
-    
+
     return {'x': 100.0, 'y': 500.0}; // Default spawn
   }
 
   /// Extract camera segments for level boundaries
-  static List<Map<String, dynamic>> _extractCameraSegments(List<Map<String, dynamic>> segments) {
-    return segments.map((segment) => {
-      'id': segment['id'],
-      'bounds': {
-        'min': {'x': segment['position']['x'] - 400, 'y': segment['position']['y'] - 300},
-        'max': {'x': segment['position']['x'] + 400, 'y': segment['position']['y'] + 300},
-      },
-    }).toList();
+  static List<Map<String, dynamic>> _extractCameraSegments(
+    List<Map<String, dynamic>> segments,
+  ) {
+    return segments
+        .map(
+          (segment) => {
+            'id': segment['id'],
+            'bounds': {
+              'min': {
+                'x': segment['position']['x'] - 400,
+                'y': segment['position']['y'] - 300,
+              },
+              'max': {
+                'x': segment['position']['x'] + 400,
+                'y': segment['position']['y'] + 300,
+              },
+            },
+          },
+        )
+        .toList();
   }
 
   /// Calculate level bounds based on tiles and segments
@@ -378,14 +410,14 @@ class GodotLevelConverter {
             'type': 'reach_elevator',
             'description': 'Reach the elevator to complete the level',
             'position': {'x': 79.5 * 32, 'y': -3 * 32},
-          }
+          },
         ];
       case 2:
         return [
           {
             'type': 'clear_path',
             'description': 'Clear the path and reach the end',
-          }
+          },
         ];
       case 3:
         return [
@@ -393,14 +425,11 @@ class GodotLevelConverter {
             'type': 'destroy_targets',
             'description': 'Destroy all target blocks',
             'count': 5,
-          }
+          },
         ];
       case 4:
         return [
-          {
-            'type': 'reach_top',
-            'description': 'Reach the top of the tower',
-          }
+          {'type': 'reach_top', 'description': 'Reach the top of the tower'},
         ];
       default:
         return [];
@@ -479,8 +508,13 @@ class GodotLevelConverter {
     if (tiles != null) {
       for (final tile in tiles) {
         if (tile is! Map<String, dynamic>) continue;
-        
-        final requiredTileFields = ['position', 'type', 'durability', 'isDestructible'];
+
+        final requiredTileFields = [
+          'position',
+          'type',
+          'durability',
+          'isDestructible',
+        ];
         for (final field in requiredTileFields) {
           if (!tile.containsKey(field)) {
             if (kDebugMode) {

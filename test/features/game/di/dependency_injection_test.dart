@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get_it/get_it.dart';
 import 'package:hard_hat/features/game/di/game_injection.dart';
 import 'package:hard_hat/features/game/domain/services/game_service_locator.dart';
-import 'package:hard_hat/features/game/domain/systems/entity_manager.dart';
 import 'package:hard_hat/features/game/domain/systems/movement_system.dart';
 import 'package:hard_hat/features/game/domain/systems/collision_system.dart';
 import 'package:hard_hat/features/game/domain/systems/render_system.dart';
@@ -27,10 +25,12 @@ void main() {
       // Assert
       expect(GameServiceLocator.hasGameSystem<MovementSystem>(), isTrue);
       expect(GameServiceLocator.hasGameSystem<CollisionSystem>(), isTrue);
-      
-      final retrievedMovementSystem = GameServiceLocator.getGameSystem<MovementSystem>();
-      final retrievedCollisionSystem = GameServiceLocator.getGameSystem<CollisionSystem>();
-      
+
+      final retrievedMovementSystem =
+          GameServiceLocator.getGameSystem<MovementSystem>();
+      final retrievedCollisionSystem =
+          GameServiceLocator.getGameSystem<CollisionSystem>();
+
       expect(retrievedMovementSystem, equals(movementSystem));
       expect(retrievedCollisionSystem, equals(collisionSystem));
     });
@@ -39,7 +39,7 @@ void main() {
       // Arrange
       final renderSystem = RenderSystem();
       GameServiceLocator.registerSystem<RenderSystem>(renderSystem);
-      
+
       expect(GameServiceLocator.hasGameSystem<RenderSystem>(), isTrue);
 
       // Act

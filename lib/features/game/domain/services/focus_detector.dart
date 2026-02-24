@@ -1,41 +1,39 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:injectable/injectable.dart';
 
 /// Service for detecting focus loss and triggering auto-pause
-@lazySingleton
 class FocusDetector {
   static FocusDetector? _instance;
   static FocusDetector get instance => _instance ??= FocusDetector._();
-  
+
   FocusDetector._();
 
   /// Callbacks for focus events
   final List<VoidCallback> _focusLostCallbacks = [];
   final List<VoidCallback> _focusGainedCallbacks = [];
-  
+
   /// Timer for delayed auto-pause
   Timer? _autoPauseTimer;
-  
+
   /// Duration to wait before auto-pausing
   final Duration autoPauseDelay = const Duration(milliseconds: 500);
-  
+
   /// Whether focus detection is currently active
   bool _isActive = false;
-  
+
   /// Current focus state
   bool _hasFocus = true;
 
   /// Initialize focus detection
   void initialize() {
     if (_isActive) return;
-    
+
     _isActive = true;
-    
+
     // Listen to app lifecycle changes
     WidgetsBinding.instance.addObserver(_AppLifecycleObserver(this));
-    
+
     // Listen to system navigation events
     SystemChannels.lifecycle.setMessageHandler(_handleLifecycleMessage);
   }
@@ -58,12 +56,12 @@ class FocusDetector {
   /// Called when the app loses focus
   void _onFocusLost() {
     if (!_hasFocus) return;
-    
+
     _hasFocus = false;
-    
+
     // Cancel any existing timer
     _autoPauseTimer?.cancel();
-    
+
     // Start auto-pause timer
     _autoPauseTimer = Timer(autoPauseDelay, () {
       for (final callback in _focusLostCallbacks) {
@@ -75,12 +73,12 @@ class FocusDetector {
   /// Called when the app gains focus
   void _onFocusGained() {
     if (_hasFocus) return;
-    
+
     _hasFocus = true;
-    
+
     // Cancel auto-pause timer if focus is regained quickly
     _autoPauseTimer?.cancel();
-    
+
     for (final callback in _focusGainedCallbacks) {
       callback();
     }

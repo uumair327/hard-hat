@@ -20,7 +20,7 @@ export 'errors/errors.dart';
 export 'navigation/navigation.dart';
 
 // Services
-export 'services/services.dart';
+export 'services/services.dart' hide LevelLoadException;
 
 // Utils
 export 'utils/utils.dart';

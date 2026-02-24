@@ -1,8 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:math';
-import 'package:flutter/foundation.dart';
-
 /// Utility for validating and testing level data
 class LevelValidator {
   /// Validate level data structure and content
@@ -13,13 +8,13 @@ class LevelValidator {
 
     // Structural validation
     errors.addAll(_validateStructure(levelData));
-    
+
     // Content validation
     warnings.addAll(_validateContent(levelData));
-    
+
     // Gameplay validation
     suggestions.addAll(_validateGameplay(levelData));
-    
+
     // Performance validation
     warnings.addAll(_validatePerformance(levelData));
 
@@ -47,7 +42,7 @@ class LevelValidator {
     for (final entry in requiredFields.entries) {
       final field = entry.key;
       final expectedType = entry.value;
-      
+
       if (!levelData.containsKey(field)) {
         errors.add('Missing required field: $field');
         continue;
@@ -132,8 +127,17 @@ class LevelValidator {
 
     // Validate tile type
     final validTypes = [
-      'scaffolding', 'timber', 'timber_one_hit', 'bricks', 'bricks_one_hit',
-      'bricks_two_hits', 'beam', 'girder', 'support', 'spikes', 'shutter'
+      'scaffolding',
+      'timber',
+      'timber_one_hit',
+      'bricks',
+      'bricks_one_hit',
+      'bricks_two_hits',
+      'beam',
+      'girder',
+      'support',
+      'spikes',
+      'shutter',
     ];
     if (tile['type'] is String && !validTypes.contains(tile['type'])) {
       errors.add('Tile $index has invalid type: ${tile['type']}');
@@ -180,30 +184,30 @@ class LevelValidator {
   /// Validate player spawn location
   static List<String> _validatePlayerSpawn(Map<String, dynamic> levelData) {
     final warnings = <String>[];
-    
+
     final playerSpawn = levelData['playerSpawn'] as Map?;
     final tiles = levelData['tiles'] as List?;
-    
+
     if (playerSpawn == null || tiles == null) return warnings;
 
     final spawnX = playerSpawn['x'] as num?;
     final spawnY = playerSpawn['y'] as num?;
-    
+
     if (spawnX == null || spawnY == null) return warnings;
 
     // Check if spawn is inside a tile
     bool spawnInTile = false;
     for (final tile in tiles) {
       if (tile is! Map) continue;
-      
+
       final position = tile['position'] as Map?;
       if (position == null) continue;
-      
+
       final tileX = position['x'] as num?;
       final tileY = position['y'] as num?;
-      
+
       if (tileX == null || tileY == null) continue;
-      
+
       // Check if spawn point overlaps with tile (assuming 32x32 tiles)
       if ((spawnX - tileX).abs() < 32 && (spawnY - tileY).abs() < 32) {
         spawnInTile = true;
@@ -212,31 +216,37 @@ class LevelValidator {
     }
 
     if (spawnInTile) {
-      warnings.add('Player spawn point is inside a tile - player may get stuck');
+      warnings.add(
+        'Player spawn point is inside a tile - player may get stuck',
+      );
     }
 
     // Check if spawn has ground support
     bool hasGroundSupport = false;
     for (final tile in tiles) {
       if (tile is! Map) continue;
-      
+
       final position = tile['position'] as Map?;
       if (position == null) continue;
-      
+
       final tileX = position['x'] as num?;
       final tileY = position['y'] as num?;
-      
+
       if (tileX == null || tileY == null) continue;
-      
+
       // Check if there's a tile below spawn point
-      if ((spawnX - tileX).abs() < 32 && (tileY - spawnY) > 0 && (tileY - spawnY) < 64) {
+      if ((spawnX - tileX).abs() < 32 &&
+          (tileY - spawnY) > 0 &&
+          (tileY - spawnY) < 64) {
         hasGroundSupport = true;
         break;
       }
     }
 
     if (!hasGroundSupport) {
-      warnings.add('Player spawn point has no ground support - player may fall');
+      warnings.add(
+        'Player spawn point has no ground support - player may fall',
+      );
     }
 
     return warnings;
@@ -245,25 +255,25 @@ class LevelValidator {
   /// Validate level reachability
   static List<String> _validateReachability(Map<String, dynamic> levelData) {
     final warnings = <String>[];
-    
+
     final tiles = levelData['tiles'] as List?;
     final elements = levelData['elements'] as List?;
-    
+
     if (tiles == null) return warnings;
 
     // Simple reachability check - ensure there are platforms or ground tiles
     bool hasGroundLevel = false;
     bool hasPlatforms = false;
-    
+
     for (final tile in tiles) {
       if (tile is! Map) continue;
-      
+
       final position = tile['position'] as Map?;
       if (position == null) continue;
-      
+
       final tileY = position['y'] as num?;
       if (tileY == null) continue;
-      
+
       // Check for ground level tiles (bottom 20% of level)
       final size = levelData['size'] as Map?;
       if (size != null) {
@@ -272,7 +282,7 @@ class LevelValidator {
           hasGroundLevel = true;
         }
       }
-      
+
       // Check for platform tiles (not at ground level)
       if (tileY < (size?['y'] as num? ?? 600) * 0.8) {
         hasPlatforms = true;
@@ -287,7 +297,7 @@ class LevelValidator {
     if (elements != null) {
       for (final element in elements) {
         if (element is! Map) continue;
-        
+
         final type = element['type'] as String?;
         if (type == 'target' || type == 'elevator') {
           // Could add more sophisticated reachability analysis here
@@ -299,9 +309,11 @@ class LevelValidator {
   }
 
   /// Validate tile distribution and balance
-  static List<String> _validateTileDistribution(Map<String, dynamic> levelData) {
+  static List<String> _validateTileDistribution(
+    Map<String, dynamic> levelData,
+  ) {
     final warnings = <String>[];
-    
+
     final tiles = levelData['tiles'] as List?;
     if (tiles == null || tiles.isEmpty) return warnings;
 
@@ -312,18 +324,16 @@ class LevelValidator {
 
     for (final tile in tiles) {
       if (tile is! Map) continue;
-      
+
       final type = tile['type'] as String?;
       final isDestructible = tile['isDestructible'] as bool?;
-      
+
       if (type != null) {
         typeCounts[type] = (typeCounts[type] ?? 0) + 1;
       }
-      
+
       if (isDestructible == true) {
         destructibleCount++;
-      } else {
-        indestructibleCount++;
       }
     }
 
@@ -335,11 +345,13 @@ class LevelValidator {
     // Check destructible/indestructible balance
     final totalTiles = tiles.length;
     final destructibleRatio = destructibleCount / totalTiles;
-    
+
     if (destructibleRatio > 0.9) {
       warnings.add('Level has too many destructible tiles - may be too easy');
     } else if (destructibleRatio < 0.1) {
-      warnings.add('Level has too few destructible tiles - may be too difficult');
+      warnings.add(
+        'Level has too few destructible tiles - may be too difficult',
+      );
     }
 
     // Check for specific tile type issues
@@ -366,7 +378,9 @@ class LevelValidator {
 
     // Suggest interactive elements
     if (elements == null || elements.isEmpty) {
-      suggestions.add('Consider adding interactive elements (elevators, springs) for variety');
+      suggestions.add(
+        'Consider adding interactive elements (elevators, springs) for variety',
+      );
     }
 
     // Suggest difficulty progression
@@ -378,7 +392,9 @@ class LevelValidator {
 
     // Suggest visual landmarks
     if (tiles != null && tiles.length > 50) {
-      suggestions.add('Consider adding visual landmarks to help player navigation');
+      suggestions.add(
+        'Consider adding visual landmarks to help player navigation',
+      );
     }
 
     return suggestions;
@@ -393,12 +409,16 @@ class LevelValidator {
 
     // Check tile count
     if (tiles != null && tiles.length > 500) {
-      warnings.add('Level has many tiles (${tiles.length}) - may impact performance');
+      warnings.add(
+        'Level has many tiles (${tiles.length}) - may impact performance',
+      );
     }
 
     // Check element count
     if (elements != null && elements.length > 20) {
-      warnings.add('Level has many elements (${elements.length}) - may impact performance');
+      warnings.add(
+        'Level has many elements (${elements.length}) - may impact performance',
+      );
     }
 
     // Check level size
@@ -406,11 +426,14 @@ class LevelValidator {
     if (size != null) {
       final width = size['x'] as num?;
       final height = size['y'] as num?;
-      
+
       if (width != null && height != null) {
         final area = width * height;
-        if (area > 5000000) { // 5M square units
-          warnings.add('Level is very large - may impact performance and memory usage');
+        if (area > 5000000) {
+          // 5M square units
+          warnings.add(
+            'Level is very large - may impact performance and memory usage',
+          );
         }
       }
     }
@@ -456,22 +479,28 @@ class LevelValidator {
   }
 
   /// Check if player can move in a direction
-  static bool _canMoveInDirection(num x, num y, int dirX, int dirY, List tiles) {
+  static bool _canMoveInDirection(
+    num x,
+    num y,
+    int dirX,
+    int dirY,
+    List tiles,
+  ) {
     final newX = x + (dirX * 32);
     final newY = y + (dirY * 32);
 
     // Check for tile collision
     for (final tile in tiles) {
       if (tile is! Map) continue;
-      
+
       final position = tile['position'] as Map?;
       if (position == null) continue;
-      
+
       final tileX = position['x'] as num?;
       final tileY = position['y'] as num?;
-      
+
       if (tileX == null || tileY == null) continue;
-      
+
       if ((newX - tileX).abs() < 32 && (newY - tileY).abs() < 32) {
         return false; // Blocked by tile
       }
@@ -499,15 +528,16 @@ class LevelValidator {
     // Check specific objective types
     for (final objective in objectives) {
       if (objective is! Map) continue;
-      
+
       final type = objective['type'] as String?;
-      
+
       switch (type) {
         case 'reach_elevator':
           // Check if elevator exists
           if (elements != null) {
-            bool hasElevator = elements.any((element) => 
-              element is Map && element['type'] == 'elevator');
+            bool hasElevator = elements.any(
+              (element) => element is Map && element['type'] == 'elevator',
+            );
             if (!hasElevator) return false;
           }
           break;
@@ -515,8 +545,9 @@ class LevelValidator {
           // Check if destructible tiles exist
           final tiles = levelData['tiles'] as List?;
           if (tiles != null) {
-            bool hasDestructible = tiles.any((tile) =>
-              tile is Map && tile['isDestructible'] == true);
+            bool hasDestructible = tiles.any(
+              (tile) => tile is Map && tile['isDestructible'] == true,
+            );
             if (!hasDestructible) return false;
           }
           break;
@@ -551,28 +582,28 @@ class ValidationResult {
   String toString() {
     final buffer = StringBuffer();
     buffer.writeln('Validation Result: ${isValid ? 'VALID' : 'INVALID'}');
-    
+
     if (errors.isNotEmpty) {
       buffer.writeln('Errors (${errors.length}):');
       for (final error in errors) {
         buffer.writeln('  - $error');
       }
     }
-    
+
     if (warnings.isNotEmpty) {
       buffer.writeln('Warnings (${warnings.length}):');
       for (final warning in warnings) {
         buffer.writeln('  - $warning');
       }
     }
-    
+
     if (suggestions.isNotEmpty) {
       buffer.writeln('Suggestions (${suggestions.length}):');
       for (final suggestion in suggestions) {
         buffer.writeln('  - $suggestion');
       }
     }
-    
+
     return buffer.toString();
   }
 }
@@ -594,14 +625,14 @@ class PlayabilityResult {
     final buffer = StringBuffer();
     buffer.writeln('Playability: ${isPlayable ? 'PLAYABLE' : 'NOT PLAYABLE'}');
     buffer.writeln('Completion Possible: ${completionPossible ? 'YES' : 'NO'}');
-    
+
     if (issues.isNotEmpty) {
       buffer.writeln('Issues (${issues.length}):');
       for (final issue in issues) {
         buffer.writeln('  - $issue');
       }
     }
-    
+
     return buffer.toString();
   }
 }

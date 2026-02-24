@@ -13,9 +13,7 @@ import 'sprite_atlas.dart';
 /// Enhanced asset manager with caching, lazy loading, and sprite atlas support
 @lazySingleton
 class AssetManager {
-  AssetManager({
-    Images? images,
-  }) : _images = images ?? Images();
+  AssetManager() : _images = Images();
 
   final Images _images;
   final Map<String, SpriteSheet> _spriteSheets = {};
@@ -72,7 +70,10 @@ class AssetManager {
         case AssetType.data:
           return await _loadDataAsset(definition) as T;
         default:
-          throw AssetLoadingException(assetId, 'Unsupported asset type: ${definition.type}');
+          throw AssetLoadingException(
+            assetId,
+            'Unsupported asset type: ${definition.type}',
+          );
       }
     } on AssetNotFoundException {
       // Try fallback asset
@@ -102,9 +103,12 @@ class AssetManager {
     try {
       final imagePath = definition.path;
       final dataPath = definition.metadata['dataPath'] as String?;
-      
+
       if (dataPath == null) {
-        throw AssetCorruptedException(definition.id, 'Missing dataPath in metadata');
+        throw AssetCorruptedException(
+          definition.id,
+          'Missing dataPath in metadata',
+        );
       }
 
       // Load image and atlas data concurrently
@@ -141,7 +145,9 @@ class AssetManager {
   }
 
   /// Load data asset (JSON, etc.)
-  Future<Map<String, dynamic>> _loadDataAsset(AssetDefinition definition) async {
+  Future<Map<String, dynamic>> _loadDataAsset(
+    AssetDefinition definition,
+  ) async {
     try {
       final jsonString = await rootBundle.loadString(definition.path);
       return json.decode(jsonString) as Map<String, dynamic>;
@@ -155,7 +161,7 @@ class AssetManager {
     if (_audioCache.containsKey(definition.id)) {
       return _audioCache[definition.id]!;
     }
-    
+
     _audioCache[definition.id] = definition.path;
     return definition.path;
   }
@@ -167,7 +173,7 @@ class AssetManager {
       // Create a simple fallback sprite (this would need a fallback image)
       throw AssetNotFoundException(assetId);
     }
-    
+
     // For other types, throw the original exception
     throw AssetNotFoundException(assetId);
   }
@@ -178,12 +184,12 @@ class AssetManager {
     _images.clearCache();
     _spriteAtlases.remove(assetId);
     _audioCache.remove(assetId);
-    
+
     return await _loadAssetInternal<T>(assetId);
   }
 
   // Legacy methods for backward compatibility
-  
+
   /// Sprite loading with caching (legacy method)
   Future<Sprite> loadSprite(String path) async {
     final image = await _images.load(path);
@@ -191,17 +197,17 @@ class AssetManager {
   }
 
   /// Sprite sheet loading with caching (legacy method)
-  Future<SpriteSheet> loadSpriteSheet(String imagePath, Vector2 spriteSize) async {
+  Future<SpriteSheet> loadSpriteSheet(
+    String imagePath,
+    Vector2 spriteSize,
+  ) async {
     if (_spriteSheets.containsKey(imagePath)) {
       return _spriteSheets[imagePath]!;
     }
 
     final image = await _images.load(imagePath);
-    final spriteSheet = SpriteSheet(
-      image: image,
-      srcSize: spriteSize,
-    );
-    
+    final spriteSheet = SpriteSheet(image: image, srcSize: spriteSize);
+
     _spriteSheets[imagePath] = spriteSheet;
     return spriteSheet;
   }

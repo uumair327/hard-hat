@@ -9,17 +9,13 @@ abstract class GameModule {
   @lazySingleton
   Images get images => Images();
 
-  // Entity Manager
-  @LazySingleton(as: IEntityManager)
-  EntityManagerImpl get entityManager => EntityManagerImpl();
-
-  // Game State Manager  
+  // Game State Manager
   @LazySingleton(as: IGameStateManager)
-  GameStateManagerImpl gameStateManager(AudioStateManager audioStateManager) => 
+  GameStateManagerImpl gameStateManager(AudioStateManager audioStateManager) =>
       GameStateManagerImpl(audioStateManager);
 
   // Game Systems - Register concrete implementations for interfaces
-  
+
   @LazySingleton(as: IMovementSystem)
   MovementSystem get movementSystem => MovementSystem();
 
@@ -54,7 +50,8 @@ abstract class GameModule {
   );
 
   @LazySingleton(as: ISaveSystem)
-  SaveSystem saveSystem(SaveRepository saveRepository) => SaveSystem(saveRepository);
+  SaveSystem saveSystem(SaveRepository saveRepository) =>
+      SaveSystem(saveRepository);
 
   @LazySingleton(as: IPlayerStateSystem)
   PlayerStateSystem get playerStateSystem => PlayerStateSystem();
@@ -117,7 +114,8 @@ abstract class GameModule {
     FocusDetector focusDetector,
   ) => GameStateOrchestrator(
     gameStateManager: gameStateManager,
-    pauseMenuManager: null, // Will be set later when pause menu service is available
+    pauseMenuManager:
+        null, // Will be set later when pause menu service is available
     focusDetector: focusDetector,
   );
 

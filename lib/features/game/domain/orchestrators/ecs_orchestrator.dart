@@ -8,7 +8,7 @@ import 'package:hard_hat/features/game/domain/systems/player_physics_system.dart
 import 'package:hard_hat/features/game/domain/systems/tile_damage_system.dart';
 import 'package:hard_hat/features/game/domain/systems/audio_system.dart';
 import 'package:hard_hat/features/game/domain/systems/camera_system.dart';
-import 'package:hard_hat/features/game/domain/systems/particle_system.dart';
+
 import 'package:hard_hat/features/game/domain/systems/render_system.dart';
 
 /// ECS System Orchestrator - manages all game systems
@@ -31,7 +31,8 @@ class ECSOrchestrator {
 
   bool _isInitialized = false;
   int _frameCounter = 0;
-  static const int updateEveryNFrames = 2; // Update systems every 2 frames to reduce load
+  static const int updateEveryNFrames =
+      2; // Update systems every 2 frames to reduce load
 
   ECSOrchestrator({
     required EntityManager entityManager,
@@ -47,19 +48,19 @@ class ECSOrchestrator {
     IPlayerPhysicsSystem? playerPhysicsSystem,
     ITileDamageSystem? tileDamageSystem,
     ITileStateSystem? tileStateSystem,
-  })  : _entityManager = entityManager,
-        _movementSystem = movementSystem,
-        _collisionSystem = collisionSystem,
-        _inputSystem = inputSystem,
-        _audioSystem = audioSystem,
-        _cameraSystem = cameraSystem,
-        _renderSystem = renderSystem,
-        _particleSystem = particleSystem,
-        _stateTransitionSystem = stateTransitionSystem,
-        _playerStateSystem = playerStateSystem,
-        _playerPhysicsSystem = playerPhysicsSystem,
-        _tileDamageSystem = tileDamageSystem,
-        _tileStateSystem = tileStateSystem;
+  }) : _entityManager = entityManager,
+       _movementSystem = movementSystem,
+       _collisionSystem = collisionSystem,
+       _inputSystem = inputSystem,
+       _audioSystem = audioSystem,
+       _cameraSystem = cameraSystem,
+       _renderSystem = renderSystem,
+       _particleSystem = particleSystem,
+       _stateTransitionSystem = stateTransitionSystem,
+       _playerStateSystem = playerStateSystem,
+       _playerPhysicsSystem = playerPhysicsSystem,
+       _tileDamageSystem = tileDamageSystem,
+       _tileStateSystem = tileStateSystem;
 
   /// Initialize all ECS systems
   Future<void> initialize() async {
@@ -69,18 +70,18 @@ class ECSOrchestrator {
 
     // Add systems in update order (priority-based) - only if they exist
     final systemsToAdd = [
-      _inputSystem,           // Priority 10 - process input first
-      _playerStateSystem,     // Priority 3 - after input
-      _playerPhysicsSystem,   // Priority 4 - after state
-      _movementSystem,        // Priority 5 - after physics
-      _collisionSystem,       // Priority 6 - after movement
-      _tileDamageSystem,      // Priority 5 - after collision
-      _tileStateSystem,       // Priority 6 - after damage
+      _inputSystem, // Priority 10 - process input first
+      _playerStateSystem, // Priority 3 - after input
+      _playerPhysicsSystem, // Priority 4 - after state
+      _movementSystem, // Priority 5 - after physics
+      _collisionSystem, // Priority 6 - after movement
+      _tileDamageSystem, // Priority 5 - after collision
+      _tileStateSystem, // Priority 6 - after damage
       _stateTransitionSystem, // Priority 7 - after state changes
-      _particleSystem,        // Priority 8 - visual effects
-      _cameraSystem,          // Priority 9 - before rendering
-      _renderSystem,          // Priority 10 - render last
-      _audioSystem,           // Priority 11 - audio last
+      _particleSystem, // Priority 8 - visual effects
+      _cameraSystem, // Priority 9 - before rendering
+      _renderSystem, // Priority 10 - render last
+      _audioSystem, // Priority 11 - audio last
     ].where((system) => system != null).cast<GameSystem>();
 
     _systems.addAll(systemsToAdd);
@@ -95,14 +96,18 @@ class ECSOrchestrator {
     for (int i = 0; i < _systems.length; i++) {
       final system = _systems[i];
       try {
-        debugPrint('ECSOrchestrator: Initializing system ${i + 1}/${_systems.length}: ${system.runtimeType}');
+        debugPrint(
+          'ECSOrchestrator: Initializing system ${i + 1}/${_systems.length}: ${system.runtimeType}',
+        );
         await system.initialize();
       } catch (e) {
-        debugPrint('ECSOrchestrator: Warning - Failed to initialize ${system.runtimeType}: $e');
+        debugPrint(
+          'ECSOrchestrator: Warning - Failed to initialize ${system.runtimeType}: $e',
+        );
         // Continue with other systems
       }
     }
-    
+
     // Connect systems for integration
     debugPrint('ECSOrchestrator: Connecting systems...');
     _connectSystems();
@@ -110,7 +115,7 @@ class ECSOrchestrator {
     _isInitialized = true;
     debugPrint('ECSOrchestrator: Initialization completed successfully!');
   }
-  
+
   /// Connect systems together for integration
   void _connectSystems() {
     // Set entity manager for all systems that need it
@@ -152,14 +157,14 @@ class ECSOrchestrator {
           system.setEntityManager(_entityManager);
         } else if (system is CameraSystem) {
           system.setEntityManager(_entityManager);
-        } else if (system is ParticleSystem) {
-          system.setEntityManager(_entityManager);
         } else if (system is RenderSystem) {
           system.setEntityManager(_entityManager);
         }
       } catch (e) {
         // Log error but continue with other systems
-        debugPrint('Warning: Failed to connect system ${system.runtimeType}: $e');
+        debugPrint(
+          'Warning: Failed to connect system ${system.runtimeType}: $e',
+        );
       }
     }
   }
@@ -169,7 +174,7 @@ class ECSOrchestrator {
     if (!_isInitialized) return;
 
     _frameCounter++;
-    
+
     // Skip frames for non-critical systems to improve performance
     final shouldUpdateAllSystems = _frameCounter % updateEveryNFrames == 0;
 
