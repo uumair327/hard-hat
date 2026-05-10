@@ -1,0 +1,239 @@
+ERROR|COMPILE_TIME_ERROR|AMBIGUOUS_EXPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\core.dart|23|8|24|The name 'LevelLoadException' is defined in the libraries 'package:hard_hat/core/errors/exceptions.dart' and 'package:hard_hat/core/services/level_loader.dart'.
+ERROR|COMPILE_TIME_ERROR|URI_DOES_NOT_EXIST|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\di\\injection.dart|5|8|23|Target of URI doesn't exist: 'injection.config.dart'.
+ERROR|COMPILE_TIME_ERROR|UNDEFINED_METHOD|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\di\\injection.dart|16|9|4|The method 'init' isn't defined for the type 'GetIt'.
+ERROR|COMPILE_TIME_ERROR|AMBIGUOUS_EXPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\game.dart|11|8|32|The name 'TransitionOverlay' is defined in the libraries 'package:hard_hat/features/game/domain/systems/state_transition_system.dart' and 'package:hard_hat/features/game/presentation/overlays/transition_overlay.dart'.
+ERROR|COMPILE_TIME_ERROR|AMBIGUOUS_EXPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\lib.dart|8|8|24|The name 'SaveData' is defined in the libraries 'package:hard_hat/core/services/save_data.dart' and 'package:hard_hat/features/game/domain/entities/save_data.dart'.
+ERROR|COMPILE_TIME_ERROR|USE_OF_VOID_RESULT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\domain\\save_system_test.dart|53|16|6|This expression has a type of 'void' so its value can't be used.
+ERROR|COMPILE_TIME_ERROR|USE_OF_VOID_RESULT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\domain\\save_system_test.dart|54|9|6|This expression has a type of 'void' so its value can't be used.
+ERROR|COMPILE_TIME_ERROR|USE_OF_VOID_RESULT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\domain\\save_system_test.dart|73|16|6|This expression has a type of 'void' so its value can't be used.
+ERROR|COMPILE_TIME_ERROR|USE_OF_VOID_RESULT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\domain\\save_system_test.dart|74|9|6|This expression has a type of 'void' so its value can't be used.
+ERROR|COMPILE_TIME_ERROR|USE_OF_VOID_RESULT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\domain\\save_system_test.dart|147|16|6|This expression has a type of 'void' so its value can't be used.
+ERROR|COMPILE_TIME_ERROR|USE_OF_VOID_RESULT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\domain\\save_system_test.dart|148|9|6|This expression has a type of 'void' so its value can't be used.
+ERROR|COMPILE_TIME_ERROR|ARGUMENT_TYPE_NOT_ASSIGNABLE|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|14|33|13|The argument type 'EntityManagerImpl' can't be assigned to the parameter type 'EntityManager'. 
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\app\\hard_hat_app.dart|7|8|54|Unused import: '../../features/game/presentation/bloc/game_bloc.dart'.
+WARNING|STATIC_WARNING|UNUSED_LOCAL_VARIABLE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\godot_level_converter.dart|134|28|1|The value of the local variable 'z' isn't used.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\level_validator.dart|1|8|14|Unused import: 'dart:convert'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\level_validator.dart|2|8|9|Unused import: 'dart:io'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\level_validator.dart|3|8|11|Unused import: 'dart:math'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\level_validator.dart|4|8|33|Unused import: 'package:flutter/foundation.dart'.
+WARNING|STATIC_WARNING|UNUSED_LOCAL_VARIABLE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\level_validator.dart|311|9|19|The value of the local variable 'indestructibleCount' isn't used.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_optimization_report.dart|1|8|33|Unused import: 'package:flutter/foundation.dart'.
+WARNING|STATIC_WARNING|UNUSED_LOCAL_VARIABLE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_optimization_report.dart|266|17|14|The value of the local variable 'availableMatch' isn't used.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\render_performance.dart|1|8|12|Unused import: 'dart:async'.
+WARNING|STATIC_WARNING|UNUSED_FIELD|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\render_performance.dart|101|10|23|The value of the field '_currentFrameRenderTime' isn't used.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|5|8|67|Unused import: 'package:hard_hat/features/game/domain/systems/entity_manager.dart'.
+WARNING|STATIC_WARNING|UNNECESSARY_NULL_COMPARISON|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|33|54|7|The operand can't be 'null', so the condition is always 'true'.
+WARNING|STATIC_WARNING|UNNECESSARY_NULL_COMPARISON|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|56|54|7|The operand can't be 'null', so the condition is always 'true'.
+WARNING|STATIC_WARNING|UNNECESSARY_NULL_COMPARISON|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|57|50|7|The operand can't be 'null', so the condition is always 'true'.
+WARNING|STATIC_WARNING|UNNECESSARY_NULL_COMPARISON|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|58|50|7|The operand can't be 'null', so the condition is always 'true'.
+WARNING|STATIC_WARNING|UNUSED_FIELD|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\input\\input_handler.dart|316|10|11|The value of the field '_leftStickX' isn't used.
+WARNING|STATIC_WARNING|UNUSED_FIELD|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\input\\input_handler.dart|317|10|11|The value of the field '_leftStickY' isn't used.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\services\\level_editor.dart|1|8|14|Unused import: 'dart:convert'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\services\\level_editor.dart|2|8|9|Unused import: 'dart:io'.
+WARNING|STATIC_WARNING|UNNECESSARY_NON_NULL_ASSERTION|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\movement_system.dart|47|35|1|The '!' will have no effect because the receiver can't be null.
+WARNING|STATIC_WARNING|UNNECESSARY_NON_NULL_ASSERTION|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\movement_system.dart|77|37|1|The '!' will have no effect because the receiver can't be null.
+WARNING|STATIC_WARNING|UNNECESSARY_NON_NULL_ASSERTION|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\movement_system.dart|78|35|1|The '!' will have no effect because the receiver can't be null.
+WARNING|STATIC_WARNING|UNNECESSARY_NON_NULL_ASSERTION|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\movement_system.dart|84|27|1|The '!' will have no effect because the receiver can't be null.
+WARNING|STATIC_WARNING|UNNECESSARY_NON_NULL_ASSERTION|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\movement_system.dart|87|30|1|The '!' will have no effect because the receiver can't be null.
+WARNING|STATIC_WARNING|UNUSED_FIELD|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\particle_system.dart|22|22|14|The value of the field '_entityManager' isn't used.
+WARNING|STATIC_WARNING|UNUSED_ELEMENT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\render_system.dart|273|8|15|The declaration '_renderEntities' isn't referenced.
+WARNING|STATIC_WARNING|UNNECESSARY_NULL_COMPARISON|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\render_system.dart|345|22|7|The operand can't be 'null', so the condition is always 'true'.
+WARNING|STATIC_WARNING|UNUSED_ELEMENT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\render_system.dart|358|8|24|The declaration '_isEntityVisibleEnhanced' isn't referenced.
+WARNING|STATIC_WARNING|DEAD_CODE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\render_system.dart|383|5|98|Dead code.
+WARNING|STATIC_WARNING|UNUSED_ELEMENT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\presentation\\game\\hard_hat_game.dart|159|8|20|The declaration '_handleLevelComplete' isn't referenced.
+WARNING|STATIC_WARNING|UNUSED_ELEMENT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\presentation\\game\\hard_hat_game.dart|165|8|18|The declaration '_handleLevelLoaded' isn't referenced.
+WARNING|STATIC_WARNING|UNUSED_ELEMENT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\presentation\\game\\hard_hat_game.dart|171|8|15|The declaration '_handleGameOver' isn't referenced.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\core\\services\\sprite_batch_test.dart|5|8|31|Unused import: 'package:flutter/material.dart'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\di\\dependency_injection_test.dart|2|8|28|Unused import: 'package:get_it/get_it.dart'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\di\\dependency_injection_test.dart|5|8|67|Unused import: 'package:hard_hat/features/game/domain/systems/entity_manager.dart'.
+WARNING|STATIC_WARNING|UNUSED_LOCAL_VARIABLE|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\domain\\input_system_test.dart|47|13|13|The value of the local variable 'movementEvent' isn't used.
+WARNING|STATIC_WARNING|UNUSED_LOCAL_VARIABLE|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\domain\\particle_system_test.dart|187|13|8|The value of the local variable 'particle' isn't used.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\features\\game\\domain\\save_system_test.dart|1|8|9|Unused import: 'dart:io'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|2|8|31|Unused import: 'package:flutter/services.dart'.
+INFO|LINT|DEPEND_ON_REFERENCED_PACKAGES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\asset_converter.dart|3|8|24|The imported package 'path' isn't a dependency of the importing package.
+INFO|LINT|UNNECESSARY_BRACE_IN_STRING_INTERPS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\asset_converter.dart|222|49|12|Unnecessary braces in a string interpolation.
+INFO|LINT|UNNECESSARY_BRACE_IN_STRING_INTERPS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\asset_converter.dart|227|47|12|Unnecessary braces in a string interpolation.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\asset_manager.dart|262|9|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\asset_manager.dart|272|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\audio_manager.dart|78|9|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\audio_manager.dart|162|7|5|Don't invoke 'print' in production code.
+INFO|LINT|USE_SUPER_PARAMETERS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\audio_player_pool.dart|113|3|15|Parameters ''initialSize' and 'maxSize'' could be super parameters.
+INFO|LINT|USE_SUPER_PARAMETERS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\audio_player_pool.dart|213|3|18|Parameters ''initialSize' and 'maxSize'' could be super parameters.
+INFO|LINT|USE_SUPER_PARAMETERS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\ball_pool.dart|7|3|8|Parameters ''initialSize' and 'maxSize'' could be super parameters.
+INFO|LINT|DEPEND_ON_REFERENCED_PACKAGES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\godot_level_converter.dart|5|8|24|The imported package 'path' isn't a dependency of the importing package.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\level_loader.dart|57|9|5|Don't invoke 'print' in production code.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\memory_profiler.dart|402|28|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\memory_profiler.dart|403|33|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\memory_profiler.dart|404|33|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\memory_profiler.dart|410|25|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\memory_profiler.dart|411|30|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\memory_profiler.dart|412|30|11|Statements in an if should be enclosed in a block.
+INFO|LINT|PREFER_FINAL_FIELDS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|108|7|20|The private field _lastMemoryUsage could be 'final'.
+INFO|LINT|UNNECESSARY_BRACE_IN_STRING_INTERPS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|369|43|9|Unnecessary braces in a string interpolation.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|455|34|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|456|39|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|457|39|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|458|39|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|459|10|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|462|37|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|463|42|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|464|42|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|465|39|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|466|10|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|470|25|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|471|31|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|472|31|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|473|31|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|474|10|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|477|33|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|478|38|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|479|38|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|480|38|12|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|481|10|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|484|22|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|485|27|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|486|27|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|487|27|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\performance_monitor.dart|488|10|11|Statements in an if should be enclosed in a block.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\pool_manager.dart|203|5|5|Don't invoke 'print' in production code.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\render_performance.dart|384|22|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\render_performance.dart|385|27|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\render_performance.dart|386|27|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\render_performance.dart|387|27|11|Statements in an if should be enclosed in a block.
+INFO|LINT|CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\render_performance.dart|388|10|11|Statements in an if should be enclosed in a block.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\sprite_atlas_integration.dart|103|9|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\sprite_atlas_integration.dart|131|9|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\core\\services\\sprite_atlas_integration.dart|157|9|5|Don't invoke 'print' in production code.
+INFO|LINT|USE_SUPER_PARAMETERS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\components\\position_component.dart|7|3|21|Parameters ''position', 'size', 'angle', and 'anchor'' could be super parameters.
+INFO|LINT|ANNOTATE_OVERRIDES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\components\\sprite_component.dart|9|10|7|The member 'opacity' overrides an inherited member but isn't annotated with '@override'.
+INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\entities\\ball.dart|124|58|11|'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|32|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|33|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|42|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|56|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|57|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|58|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|78|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|82|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|89|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|93|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|111|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\examples\\dependency_injection_example.dart|113|7|5|Don't invoke 'print' in production code.
+INFO|LINT|UNNECESSARY_OVERRIDES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\input\\input_component.dart|132|8|16|Unnecessary override.
+INFO|LINT|PREFER_FINAL_FIELDS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\input\\input_remapper.dart|35|45|20|The private field _reverseMapping could be 'final'.
+INFO|LINT|DANGLING_LIBRARY_DOC_COMMENTS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\interfaces\\pause_interfaces.dart|2|1|55|Dangling library doc comment.
+INFO|HINT|UNNECESSARY_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|4|8|71|The import of 'package:hard_hat/features/game/domain/components/audio_component.dart' is unnecessary because all of the used elements are also provided by the import of 'package:hard_hat/features/game/domain/domain.dart'.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|93|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|103|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|117|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|150|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|162|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|172|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|207|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|227|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|237|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|246|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\audio_system.dart|255|7|5|Don't invoke 'print' in production code.
+INFO|LINT|PREFER_IS_NOT_OPERATOR|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\collision_system.dart|255|33|36|Use the 'is!' operator rather than negating the value of the 'is' operator.
+INFO|LINT|PREFER_INTERPOLATION_TO_COMPOSE_STRINGS|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\collision_system.dart|872|15|87|Use interpolation to compose strings and values.
+INFO|HINT|UNNECESSARY_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\player_state_system.dart|2|8|78|The import of 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart' is unnecessary because all of the used elements are also provided by the import of 'package:hard_hat/features/game/domain/domain.dart'.
+INFO|LINT|ANNOTATE_OVERRIDES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\player_state_system.dart|269|8|16|The member 'forcePlayerState' overrides an inherited member but isn't annotated with '@override'.
+INFO|LINT|ANNOTATE_OVERRIDES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\player_state_system.dart|277|22|17|The member 'getPlayersInState' overrides an inherited member but isn't annotated with '@override'.
+INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\state_transition_system.dart|244|48|10|'HasGameRef' is deprecated and shouldn't be used. Use HasGameReference instead. This mixin will be removed in a future version of Flame.
+INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\state_transition_system.dart|311|30|11|'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss.
+INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\state_transition_system.dart|322|30|11|'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss.
+INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\state_transition_system.dart|335|32|11|'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss.
+INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\state_transition_system.dart|348|28|11|'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss.
+INFO|HINT|UNNECESSARY_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\tile_damage_system.dart|3|8|78|The import of 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart' is unnecessary because all of the used elements are also provided by the import of 'package:hard_hat/features/game/domain/domain.dart'.
+INFO|HINT|UNNECESSARY_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\tile_state_system.dart|2|8|78|The import of 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart' is unnecessary because all of the used elements are also provided by the import of 'package:hard_hat/features/game/domain/domain.dart'.
+INFO|LINT|ANNOTATE_OVERRIDES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\tile_state_system.dart|26|8|20|The member 'queueStateTransition' overrides an inherited member but isn't annotated with '@override'.
+INFO|LINT|ANNOTATE_OVERRIDES|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\features\\game\\domain\\systems\\tile_state_system.dart|185|20|15|The member 'getTilesInState' overrides an inherited member but isn't annotated with '@override'.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\main_basic.dart|4|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\main_minimal.dart|58|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\main_minimal.dart|101|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\main_minimal.dart|105|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\lib\\main_minimal.dart|121|3|5|Don't invoke 'print' in production code.
+INFO|HINT|UNNECESSARY_IMPORT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|2|8|25|The import of 'package:flame/game.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flame/components.dart'.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|97|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|98|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|99|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|100|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|101|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|102|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|151|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|152|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|153|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|154|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|213|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|214|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|215|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|216|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|217|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|248|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|249|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|250|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|272|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|273|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|274|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|340|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|341|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|342|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|343|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|344|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|345|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|346|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|387|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|388|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|389|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|390|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test\\performance\\performance_integration_test.dart|391|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|9|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|19|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|30|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|33|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|45|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|48|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|63|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|66|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|72|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|75|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|78|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|85|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|87|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_camera_integration.dart|88|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|8|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|20|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|22|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|23|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|28|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|38|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|41|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|45|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|46|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|47|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|50|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|52|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|57|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|83|9|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|86|9|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|90|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|91|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|92|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|95|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|98|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|100|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|105|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|119|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|127|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|136|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|140|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|141|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|142|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|143|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|144|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|152|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|154|5|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|161|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|162|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|163|3|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Users\\uumai\\Downloads\\hard-hat\\test_verification.dart|164|3|5|Don't invoke 'print' in production code.

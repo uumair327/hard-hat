@@ -14,26 +14,10 @@ dependencies:
   # Game Engine
   flame: ^1.34.0
   
-  # Dependency Injection
-  get_it: ^7.6.4
-  injectable: ^2.3.2
-  
-  # Navigation
-  go_router: ^14.2.0
-  
-  # State Management
-  flutter_bloc: ^8.1.3
-  bloc: ^8.1.2
-  
   # Audio
   flame_audio: ^2.1.4
   
-  # Utilities
-  equatable: ^2.0.5
-  json_annotation: ^4.8.1
-  dartz: ^0.10.1
-  path_provider: ^2.1.1
-  crypto: ^3.0.3
+  # Persistence
   shared_preferences: ^2.2.2
   
   # UI
@@ -43,17 +27,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # Linting and Code Quality
+  # Linting
   flutter_lints: ^5.0.0
-  
-  # Code Generation
-  build_runner: ^2.4.7
-  json_serializable: ^6.7.1
-  injectable_generator: ^2.4.1
-  
-  # Testing
-  bloc_test: ^9.1.4
-  mocktail: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -63,19 +38,23 @@ flutter:
 
   # Game Assets (converted from Godot)
   assets:
-    # Sprite assets
+    # Game sprites
     - assets/images/sprites/game/player/
+    - assets/images/sprites/game/splash/
+    - assets/images/sprites/game/billboard/
     - assets/images/sprites/game/particles/
     - assets/images/sprites/game/hud/
     - assets/images/sprites/game/
     - assets/images/sprites/tiles/
+    
+    # UI sprites
     - assets/images/sprites/ui/
+    - assets/images/sprites/comic/
+    - assets/images/sprites/level_select/
+    - assets/images/sprites/logo/
+    - assets/images/sprites/misc/
     
     # Audio assets
     - assets/audio/music/
     - assets/audio/sfx/
     - assets/audio/loop/
-    
-    # Data assets
-    - assets/data/levels/
-    - assets/data/atlases/

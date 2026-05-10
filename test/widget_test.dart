@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:hard_hat/core/app/hard_hat_app.dart';
+import 'package:hard_hat/app.dart';
 
 void main() {
   testWidgets('Hard Hat app smoke test', (WidgetTester tester) async {

@@ -1,0 +1,240 @@
+Analyzing hard-hat...
+
+  error - lib\core\di\injection.dart:5:8 - Target of URI doesn't exist: 'injection.config.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist. - uri_does_not_exist
+  error - lib\core\di\injection.dart:16:9 - The method 'init' isn't defined for the type 'GetIt'. Try correcting the name to the name of an existing method, or defining a method named 'init'. - undefined_method
+  error - test\features\game\domain\save_system_test.dart:53:16 - This expression has a type of 'void' so its value can't be used. Try checking to see if you're using the correct API; there might be a function or call that returns void you didn't expect. Also check type parameters and variables which might also be void. - use_of_void_result
+  error - test\features\game\domain\save_system_test.dart:54:9 - This expression has a type of 'void' so its value can't be used. Try checking to see if you're using the correct API; there might be a function or call that returns void you didn't expect. Also check type parameters and variables which might also be void. - use_of_void_result
+  error - test\features\game\domain\save_system_test.dart:73:16 - This expression has a type of 'void' so its value can't be used. Try checking to see if you're using the correct API; there might be a function or call that returns void you didn't expect. Also check type parameters and variables which might also be void. - use_of_void_result
+  error - test\features\game\domain\save_system_test.dart:74:9 - This expression has a type of 'void' so its value can't be used. Try checking to see if you're using the correct API; there might be a function or call that returns void you didn't expect. Also check type parameters and variables which might also be void. - use_of_void_result
+  error - test\features\game\domain\save_system_test.dart:147:16 - This expression has a type of 'void' so its value can't be used. Try checking to see if you're using the correct API; there might be a function or call that returns void you didn't expect. Also check type parameters and variables which might also be void. - use_of_void_result
+  error - test\features\game\domain\save_system_test.dart:148:9 - This expression has a type of 'void' so its value can't be used. Try checking to see if you're using the correct API; there might be a function or call that returns void you didn't expect. Also check type parameters and variables which might also be void. - use_of_void_result
+  error - test_camera_integration.dart:14:33 - The argument type 'EntityManagerImpl' can't be assigned to the parameter type 'EntityManager'.  - argument_type_not_assignable
+warning - lib\core\app\hard_hat_app.dart:7:8 - Unused import: '../../features/game/presentation/bloc/game_bloc.dart'. Try removing the import directive. - unused_import
+warning - lib\core\services\godot_level_converter.dart:134:28 - The value of the local variable 'z' isn't used. Try removing the variable or using it. - unused_local_variable
+warning - lib\core\services\level_validator.dart:1:8 - Unused import: 'dart:convert'. Try removing the import directive. - unused_import
+warning - lib\core\services\level_validator.dart:2:8 - Unused import: 'dart:io'. Try removing the import directive. - unused_import
+warning - lib\core\services\level_validator.dart:3:8 - Unused import: 'dart:math'. Try removing the import directive. - unused_import
+warning - lib\core\services\level_validator.dart:4:8 - Unused import: 'package:flutter/foundation.dart'. Try removing the import directive. - unused_import
+warning - lib\core\services\level_validator.dart:311:9 - The value of the local variable 'indestructibleCount' isn't used. Try removing the variable or using it. - unused_local_variable
+warning - lib\core\services\performance_optimization_report.dart:1:8 - Unused import: 'package:flutter/foundation.dart'. Try removing the import directive. - unused_import
+warning - lib\core\services\performance_optimization_report.dart:266:17 - The value of the local variable 'availableMatch' isn't used. Try removing the variable or using it. - unused_local_variable
+warning - lib\core\services\render_performance.dart:1:8 - Unused import: 'dart:async'. Try removing the import directive. - unused_import
+warning - lib\core\services\render_performance.dart:101:10 - The value of the field '_currentFrameRenderTime' isn't used. Try removing the field, or using it. - unused_field
+warning - lib\features\game\domain\examples\dependency_injection_example.dart:5:8 - Unused import: 'package:hard_hat/features/game/domain/systems/entity_manager.dart'. Try removing the import directive. - unused_import
+warning - lib\features\game\domain\examples\dependency_injection_example.dart:33:54 - The operand can't be 'null', so the condition is always 'true'. Remove the condition. - unnecessary_null_comparison
+warning - lib\features\game\domain\examples\dependency_injection_example.dart:56:54 - The operand can't be 'null', so the condition is always 'true'. Remove the condition. - unnecessary_null_comparison
+warning - lib\features\game\domain\examples\dependency_injection_example.dart:57:50 - The operand can't be 'null', so the condition is always 'true'. Remove the condition. - unnecessary_null_comparison
+warning - lib\features\game\domain\examples\dependency_injection_example.dart:58:50 - The operand can't be 'null', so the condition is always 'true'. Remove the condition. - unnecessary_null_comparison
+warning - lib\features\game\domain\input\input_handler.dart:316:10 - The value of the field '_leftStickX' isn't used. Try removing the field, or using it. - unused_field
+warning - lib\features\game\domain\input\input_handler.dart:317:10 - The value of the field '_leftStickY' isn't used. Try removing the field, or using it. - unused_field
+warning - lib\features\game\domain\services\level_editor.dart:1:8 - Unused import: 'dart:convert'. Try removing the import directive. - unused_import
+warning - lib\features\game\domain\services\level_editor.dart:2:8 - Unused import: 'dart:io'. Try removing the import directive. - unused_import
+warning - lib\features\game\domain\systems\movement_system.dart:47:35 - The '!' will have no effect because the receiver can't be null. Try removing the '!' operator. - unnecessary_non_null_assertion
+warning - lib\features\game\domain\systems\movement_system.dart:77:37 - The '!' will have no effect because the receiver can't be null. Try removing the '!' operator. - unnecessary_non_null_assertion
+warning - lib\features\game\domain\systems\movement_system.dart:78:35 - The '!' will have no effect because the receiver can't be null. Try removing the '!' operator. - unnecessary_non_null_assertion
+warning - lib\features\game\domain\systems\movement_system.dart:84:27 - The '!' will have no effect because the receiver can't be null. Try removing the '!' operator. - unnecessary_non_null_assertion
+warning - lib\features\game\domain\systems\movement_system.dart:87:30 - The '!' will have no effect because the receiver can't be null. Try removing the '!' operator. - unnecessary_non_null_assertion
+warning - lib\features\game\domain\systems\particle_system.dart:22:22 - The value of the field '_entityManager' isn't used. Try removing the field, or using it. - unused_field
+warning - lib\features\game\domain\systems\render_system.dart:273:8 - The declaration '_renderEntities' isn't referenced. Try removing the declaration of '_renderEntities'. - unused_element
+warning - lib\features\game\domain\systems\render_system.dart:345:22 - The operand can't be 'null', so the condition is always 'true'. Remove the condition. - unnecessary_null_comparison
+warning - lib\features\game\domain\systems\render_system.dart:358:8 - The declaration '_isEntityVisibleEnhanced' isn't referenced. Try removing the declaration of '_isEntityVisibleEnhanced'. - unused_element
+warning - lib\features\game\domain\systems\render_system.dart:383:5 - Dead code. Try removing the code, or fixing the code before it so that it can be reached. - dead_code
+warning - lib\features\game\presentation\game\hard_hat_game.dart:159:8 - The declaration '_handleLevelComplete' isn't referenced. Try removing the declaration of '_handleLevelComplete'. - unused_element
+warning - lib\features\game\presentation\game\hard_hat_game.dart:165:8 - The declaration '_handleLevelLoaded' isn't referenced. Try removing the declaration of '_handleLevelLoaded'. - unused_element
+warning - lib\features\game\presentation\game\hard_hat_game.dart:171:8 - The declaration '_handleGameOver' isn't referenced. Try removing the declaration of '_handleGameOver'. - unused_element
+warning - test\core\services\sprite_batch_test.dart:5:8 - Unused import: 'package:flutter/material.dart'. Try removing the import directive. - unused_import
+warning - test\features\game\di\dependency_injection_test.dart:2:8 - Unused import: 'package:get_it/get_it.dart'. Try removing the import directive. - unused_import
+warning - test\features\game\di\dependency_injection_test.dart:5:8 - Unused import: 'package:hard_hat/features/game/domain/systems/entity_manager.dart'. Try removing the import directive. - unused_import
+warning - test\features\game\domain\input_system_test.dart:47:13 - The value of the local variable 'movementEvent' isn't used. Try removing the variable or using it. - unused_local_variable
+warning - test\features\game\domain\particle_system_test.dart:187:13 - The value of the local variable 'particle' isn't used. Try removing the variable or using it. - unused_local_variable
+warning - test\features\game\domain\save_system_test.dart:1:8 - Unused import: 'dart:io'. Try removing the import directive. - unused_import
+warning - test_verification.dart:2:8 - Unused import: 'package:flutter/services.dart'. Try removing the import directive. - unused_import
+   info - lib\core\services\asset_converter.dart:3:8 - The imported package 'path' isn't a dependency of the importing package. Try adding a dependency for 'path' in the 'pubspec.yaml' file. - depend_on_referenced_packages
+   info - lib\core\services\asset_converter.dart:222:49 - Unnecessary braces in a string interpolation. Try removing the braces. - unnecessary_brace_in_string_interps
+   info - lib\core\services\asset_converter.dart:227:47 - Unnecessary braces in a string interpolation. Try removing the braces. - unnecessary_brace_in_string_interps
+   info - lib\core\services\asset_manager.dart:262:9 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\core\services\asset_manager.dart:272:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\core\services\audio_manager.dart:78:9 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\core\services\audio_manager.dart:162:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\core\services\audio_player_pool.dart:113:3 - Parameters ''initialSize' and 'maxSize'' could be super parameters. Trying converting ''initialSize' and 'maxSize'' to super parameters. - use_super_parameters
+   info - lib\core\services\audio_player_pool.dart:213:3 - Parameters ''initialSize' and 'maxSize'' could be super parameters. Trying converting ''initialSize' and 'maxSize'' to super parameters. - use_super_parameters
+   info - lib\core\services\ball_pool.dart:7:3 - Parameters ''initialSize' and 'maxSize'' could be super parameters. Trying converting ''initialSize' and 'maxSize'' to super parameters. - use_super_parameters
+   info - lib\core\services\godot_level_converter.dart:5:8 - The imported package 'path' isn't a dependency of the importing package. Try adding a dependency for 'path' in the 'pubspec.yaml' file. - depend_on_referenced_packages
+   info - lib\core\services\level_loader.dart:57:9 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\core\services\memory_profiler.dart:402:28 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\memory_profiler.dart:403:33 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\memory_profiler.dart:404:33 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\memory_profiler.dart:410:25 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\memory_profiler.dart:411:30 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\memory_profiler.dart:412:30 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:108:7 - The private field _lastMemoryUsage could be 'final'. Try making the field 'final'. - prefer_final_fields
+   info - lib\core\services\performance_monitor.dart:369:43 - Unnecessary braces in a string interpolation. Try removing the braces. - unnecessary_brace_in_string_interps
+   info - lib\core\services\performance_monitor.dart:455:34 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:456:39 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:457:39 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:458:39 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:459:10 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:462:37 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:463:42 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:464:42 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:465:39 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:466:10 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:470:25 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:471:31 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:472:31 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:473:31 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:474:10 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:477:33 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:478:38 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:479:38 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:480:38 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:481:10 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:484:22 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:485:27 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:486:27 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:487:27 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\performance_monitor.dart:488:10 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\pool_manager.dart:203:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\core\services\render_performance.dart:384:22 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\render_performance.dart:385:27 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\render_performance.dart:386:27 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\render_performance.dart:387:27 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\render_performance.dart:388:10 - Statements in an if should be enclosed in a block. Try wrapping the statement in a block. - curly_braces_in_flow_control_structures
+   info - lib\core\services\sprite_atlas_integration.dart:103:9 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\core\services\sprite_atlas_integration.dart:131:9 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\core\services\sprite_atlas_integration.dart:157:9 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\components\position_component.dart:7:3 - Parameters ''position', 'size', 'angle', and 'anchor'' could be super parameters. Trying converting ''position', 'size', 'angle', and 'anchor'' to super parameters. - use_super_parameters
+   info - lib\features\game\domain\components\sprite_component.dart:9:10 - The member 'opacity' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\features\game\domain\entities\ball.dart:124:58 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:32:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:33:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:42:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:56:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:57:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:58:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:78:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:82:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:89:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:93:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:111:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\examples\dependency_injection_example.dart:113:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\input\input_component.dart:132:8 - Unnecessary override. Try adding behavior in the overriding member or removing the override. - unnecessary_overrides
+   info - lib\features\game\domain\input\input_remapper.dart:35:45 - The private field _reverseMapping could be 'final'. Try making the field 'final'. - prefer_final_fields
+   info - lib\features\game\domain\interfaces\pause_interfaces.dart:2:1 - Dangling library doc comment. Add a 'library' directive after the library comment. - dangling_library_doc_comments
+   info - lib\features\game\domain\systems\audio_system.dart:4:8 - The import of 'package:hard_hat/features/game/domain/components/audio_component.dart' is unnecessary because all of the used elements are also provided by the import of 'package:hard_hat/features/game/domain/domain.dart'. Try removing the import directive. - unnecessary_import
+   info - lib\features\game\domain\systems\audio_system.dart:93:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:103:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:117:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:150:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:162:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:172:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:207:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:227:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:237:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:246:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\audio_system.dart:255:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\features\game\domain\systems\collision_system.dart:255:33 - Use the 'is!' operator rather than negating the value of the 'is' operator. Try rewriting the condition to use the 'is!' operator. - prefer_is_not_operator
+   info - lib\features\game\domain\systems\collision_system.dart:872:15 - Use interpolation to compose strings and values. Try using string interpolation to build the composite string. - prefer_interpolation_to_compose_strings
+   info - lib\features\game\domain\systems\player_state_system.dart:2:8 - The import of 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart' is unnecessary because all of the used elements are also provided by the import of 'package:hard_hat/features/game/domain/domain.dart'. Try removing the import directive. - unnecessary_import
+   info - lib\features\game\domain\systems\player_state_system.dart:269:8 - The member 'forcePlayerState' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\features\game\domain\systems\player_state_system.dart:277:22 - The member 'getPlayersInState' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\features\game\domain\systems\state_transition_system.dart:244:48 - 'HasGameRef' is deprecated and shouldn't be used. Use HasGameReference instead. This mixin will be removed in a future version of Flame. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\features\game\domain\systems\state_transition_system.dart:311:30 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\features\game\domain\systems\state_transition_system.dart:322:30 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\features\game\domain\systems\state_transition_system.dart:335:32 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\features\game\domain\systems\state_transition_system.dart:348:28 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - lib\features\game\domain\systems\tile_damage_system.dart:3:8 - The import of 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart' is unnecessary because all of the used elements are also provided by the import of 'package:hard_hat/features/game/domain/domain.dart'. Try removing the import directive. - unnecessary_import
+   info - lib\features\game\domain\systems\tile_state_system.dart:2:8 - The import of 'package:hard_hat/features/game/domain/interfaces/game_system_interfaces.dart' is unnecessary because all of the used elements are also provided by the import of 'package:hard_hat/features/game/domain/domain.dart'. Try removing the import directive. - unnecessary_import
+   info - lib\features\game\domain\systems\tile_state_system.dart:26:8 - The member 'queueStateTransition' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\features\game\domain\systems\tile_state_system.dart:185:20 - The member 'getTilesInState' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\main_basic.dart:4:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\main_minimal.dart:58:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\main_minimal.dart:101:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\main_minimal.dart:105:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - lib\main_minimal.dart:121:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:2:8 - The import of 'package:flame/game.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flame/components.dart'. Try removing the import directive. - unnecessary_import
+   info - test\performance\performance_integration_test.dart:97:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:98:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:99:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:100:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:101:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:102:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:151:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:152:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:153:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:154:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:213:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:214:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:215:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:216:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:217:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:248:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:249:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:250:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:272:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:273:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:274:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:340:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:341:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:342:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:343:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:344:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:345:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:346:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:387:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:388:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:389:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:390:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test\performance\performance_integration_test.dart:391:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:9:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:19:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:30:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:33:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:45:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:48:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:63:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:66:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:72:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:75:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:78:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:85:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:87:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_camera_integration.dart:88:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:8:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:20:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:22:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:23:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:28:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:38:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:41:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:45:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:46:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:47:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:50:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:52:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:57:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:83:9 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:86:9 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:90:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:91:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:92:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:95:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:98:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:100:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:105:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:119:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:127:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:136:7 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:140:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:141:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:142:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:143:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:144:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:152:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:154:5 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:161:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:162:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:163:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+   info - test_verification.dart:164:3 - Don't invoke 'print' in production code. Try using a logging framework. - avoid_print
+
+236 issues found.

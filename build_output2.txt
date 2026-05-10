@@ -1,0 +1,50 @@
+  Generating the build script.
+  Reading the asset graph.
+  Checking for updates.
+  Updating the asset graph.
+  Building, incremental build.
+  0s json_serializable on 215 inputs; lib/core/app/app.dart
+  0s json_serializable on 215 inputs: 1 skipped; lib/core/app/hard_hat_app.dart
+  1s json_serializable on 215 inputs: 215 skipped
+  0s source_gen:combining_builder on 215 inputs; lib/core/app/app.dart
+  1s source_gen:combining_builder on 215 inputs: 195 skipped; test/core/services/asset_manager_test.dart
+  1s source_gen:combining_builder on 215 inputs: 215 skipped
+  0s injectable_generator:injectable_builder on 430 inputs; lib/core/app/app.dart
+  0s injectable_generator:injectable_builder on 430 inputs: 430 skipped
+  0s injectable_generator:injectable_config_builder on 430 inputs; lib/core/app/app.dart
+  0s injectable_generator:injectable_config_builder on 430 inputs: 430 skipped
+  Running the post build.
+  Writing the asset graph.
+E injectable_generator:injectable_config_builder on lib/core/di/injection.dart:
+  
+  Injectable Generator ---------------------------------------------------
+  EntityManager [IEntityManager] envs: []  scope: null 
+  is registered more than once under the same environment or in the same scope
+  ------------------------------------------------------------------------ 
+  
+  #0      throwBoxed (package:injectable_generator/utils.dart:22:3)
+  #1      InjectableConfigGenerator._validateDuplicateDependencies (package:injectable_generator/generators/injectable_config_generator.dart:316:11)
+  #2      InjectableConfigGenerator.generateForAnnotatedElement (package:injectable_generator/generators/injectable_config_generator.dart:148:5)
+  <asynchronous suspension>
+  #3      normalizeGeneratorOutput (package:source_gen/src/output_helpers.dart:10:1)
+  <asynchronous suspension>
+  #4      StreamCompleter.setSourceStream (package:async/src/stream_completer.dart:76:3)
+  <asynchronous suspension>
+  
+E injectable_generator:injectable_config_builder on lib/core/di/injection.dart:
+  
+  Injectable Generator ---------------------------------------------------
+  EntityManager [IEntityManager] envs: []  scope: null 
+  is registered more than once under the same environment or in the same scope
+  ------------------------------------------------------------------------ 
+  
+  #0      throwBoxed (package:injectable_generator/utils.dart:22:3)
+  #1      InjectableConfigGenerator._validateDuplicateDependencies (package:injectable_generator/generators/injectable_config_generator.dart:316:11)
+  #2      InjectableConfigGenerator.generateForAnnotatedElement (package:injectable_generator/generators/injectable_config_generator.dart:148:5)
+  <asynchronous suspension>
+  #3      normalizeGeneratorOutput (package:source_gen/src/output_helpers.dart:10:1)
+  <asynchronous suspension>
+  #4      StreamCompleter.setSourceStream (package:async/src/stream_completer.dart:76:3)
+  <asynchronous suspension>
+  
+  Failed to build with build_runner in 5s; wrote 0 outputs.

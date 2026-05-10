@@ -1,0 +1,24 @@
+  Generating the build script.
+  Reading the asset graph.
+  Checking for updates.
+  Updating the asset graph.
+  Building, incremental build.
+  0s json_serializable on 222 inputs; lib/core/app/app.dart
+W SDK language version 3.10.0 is newer than `analyzer` language version 3.9.0. Run `flutter packages upgrade`.
+  26s json_serializable on 222 inputs: 1 no-op; spent 20s analyzing, 4s resolving; lib/core/app/hard_hat_app.dart
+  27s json_serializable on 222 inputs: 32 skipped, 15 no-op; spent 21s analyzing, 4s resolving; lib/features/game/data/data.dart
+  28s json_serializable on 222 inputs: 72 skipped, 59 no-op; spent 22s analyzing, 4s resolving; lib/features/game/domain/systems/level_transition_system.dart
+  30s json_serializable on 222 inputs: 111 skipped, 96 no-op; spent 24s analyzing, 5s resolving; test/core/services/performance_test.dart
+  31s json_serializable on 222 inputs: 114 skipped, 108 no-op; spent 24s analyzing, 5s resolving
+  0s source_gen:combining_builder on 222 inputs; lib/core/app/app.dart
+  0s source_gen:combining_builder on 222 inputs: 31 skipped; lib/core/services/performance_monitor.dart
+  1s source_gen:combining_builder on 222 inputs: 194 skipped, 7 no-op; test/core/services/asset_converter_test.dart
+  1s source_gen:combining_builder on 222 inputs: 215 skipped, 7 no-op; spent 1s tracking
+  0s injectable_generator:injectable_builder on 444 inputs; lib/core/app/app.dart
+  1s injectable_generator:injectable_builder on 444 inputs: 101 skipped, 4 same, 18 no-op; spent 1s building; lib/features/game/di/game_module.g.dart
+  2s injectable_generator:injectable_builder on 444 inputs: 336 skipped, 6 same, 102 no-op; spent 1s building
+  0s injectable_generator:injectable_config_builder on 444 inputs; lib/core/app/app.dart
+  0s injectable_generator:injectable_config_builder on 444 inputs: 429 skipped, 15 no-op
+  Running the post build.
+  Writing the asset graph.
+  Built with build_runner in 52s; wrote 6 outputs.
