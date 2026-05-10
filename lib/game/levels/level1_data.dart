@@ -120,226 +120,703 @@ LevelLayout buildGodotLevel1(double screenHeight) {
     tiles.add(TileInfo(type, fgx, fgy, wx, wy));
   }
 
-  // --- FLOOR: Godot y=-7, continuous girder row x=-12 to x=83 ---
-  for (int x = -12; x <= 83; x++) t(TileType.beam, x, -7);
+  // Generated Godot Tiles
+// === LEVEL 1 TILE DATA (from Godot GridMap) ===
+// Godot coord system: Y-up. Tile at godot(x, y)
+// Flutter coord system: Y-down. We use: flutter_y = -godot_y
+// Godot cell_size = 1x1, scale to tileSize (40px)
 
-  // --- CEILING: Godot y=6, continuous girder row x=-12 to x=83 ---
-  for (int x = -12; x <= 83; x++) t(TileType.beam, x, 6);
+// Total tiles: 685
 
-  // --- VERTICAL WALLS (girder columns) ---
-  // Left wall at x=-12, from y=-6 to y=5
-  for (int y = -6; y <= 5; y++) t(TileType.beam, -12, y);
-  // Right wall at x=83, from y=-6 to y=5
-  for (int y = -6; y <= 5; y++) t(TileType.beam, 83, y);
-  // Wall at x=11 (partial), from y=-6 to y=5 (every level)
-  for (int y = -6; y <= 5; y++) t(TileType.beam, 11, y);
-  // Wall at x=25, from y=-2 to y=5
-  for (int y = -2; y <= 5; y++) t(TileType.beam, 25, y);
-  // Wall at x=30, from y=-2 to y=5
-  for (int y = -2; y <= 5; y++) t(TileType.beam, 30, y);
-  // Wall at x=35, from y=-6 to y=5
-  for (int y = -6; y <= 5; y++) t(TileType.beam, 35, y);
-  // Wall at x=59, from y=-6 to y=5
-  for (int y = -6; y <= 5; y++) t(TileType.beam, 59, y);
-
-  // --- INTERNAL PLATFORMS (girder rows) ---
-  // Platform at y=2, x=-11 to x=-2
-  for (int x = -11; x <= -2; x++) t(TileType.beam, x, 2);
-  // Platform at y=2, x=2 to x=4
-  for (int x = 2; x <= 4; x++) t(TileType.beam, x, 2);
-  // Platform at y=2, x=9 to x=10
-  for (int x = 9; x <= 10; x++) t(TileType.beam, x, 2);
-  // Long platform at y=2, x=12 to x=24
-  for (int x = 12; x <= 24; x++) t(TileType.beam, x, 2);
-  // Long platform at y=2, x=39 to x=74
-  for (int x = 39; x <= 74; x++) t(TileType.beam, x, 2);
-
-  // Platform at y=-2, x=30 to x=55
-  for (int x = 30; x <= 55; x++) t(TileType.beam, x, -2);
-  // Platform at y=-2, x=66 to x=82
-  for (int x = 66; x <= 82; x++) t(TileType.beam, x, -2);
-
-  // Small platforms
+// girder: 370 tiles
+  t(TileType.beam, -12, 6);
+  t(TileType.beam, -11, 6);
+  t(TileType.beam, -10, 6);
+  t(TileType.beam, -9, 6);
+  t(TileType.beam, -8, 6);
+  t(TileType.beam, -7, 6);
+  t(TileType.beam, -6, 6);
+  t(TileType.beam, -5, 6);
+  t(TileType.beam, -4, 6);
+  t(TileType.beam, -3, 6);
+  t(TileType.beam, -2, 6);
+  t(TileType.beam, -1, 6);
+  t(TileType.beam, 0, 6);
+  t(TileType.beam, 1, 6);
+  t(TileType.beam, 2, 6);
+  t(TileType.beam, 3, 6);
+  t(TileType.beam, 4, 6);
+  t(TileType.beam, 5, 6);
+  t(TileType.beam, 6, 6);
+  t(TileType.beam, 7, 6);
+  t(TileType.beam, 8, 6);
+  t(TileType.beam, 9, 6);
+  t(TileType.beam, 10, 6);
+  t(TileType.beam, 11, 6);
+  t(TileType.beam, 12, 6);
+  t(TileType.beam, 13, 6);
+  t(TileType.beam, 14, 6);
+  t(TileType.beam, 15, 6);
+  t(TileType.beam, 16, 6);
+  t(TileType.beam, 17, 6);
+  t(TileType.beam, 18, 6);
+  t(TileType.beam, 19, 6);
+  t(TileType.beam, 20, 6);
+  t(TileType.beam, 21, 6);
+  t(TileType.beam, 22, 6);
+  t(TileType.beam, 23, 6);
+  t(TileType.beam, 24, 6);
+  t(TileType.beam, 25, 6);
+  t(TileType.beam, 26, 6);
+  t(TileType.beam, 27, 6);
+  t(TileType.beam, 28, 6);
+  t(TileType.beam, 29, 6);
+  t(TileType.beam, 30, 6);
+  t(TileType.beam, 31, 6);
+  t(TileType.beam, 32, 6);
+  t(TileType.beam, 33, 6);
+  t(TileType.beam, 34, 6);
+  t(TileType.beam, 35, 6);
+  t(TileType.beam, 36, 6);
+  t(TileType.beam, 37, 6);
+  t(TileType.beam, 38, 6);
+  t(TileType.beam, 39, 6);
+  t(TileType.beam, 40, 6);
+  t(TileType.beam, 41, 6);
+  t(TileType.beam, 42, 6);
+  t(TileType.beam, 43, 6);
+  t(TileType.beam, 44, 6);
+  t(TileType.beam, 45, 6);
+  t(TileType.beam, 46, 6);
+  t(TileType.beam, 47, 6);
+  t(TileType.beam, 48, 6);
+  t(TileType.beam, 49, 6);
+  t(TileType.beam, 50, 6);
+  t(TileType.beam, 51, 6);
+  t(TileType.beam, 52, 6);
+  t(TileType.beam, 53, 6);
+  t(TileType.beam, 54, 6);
+  t(TileType.beam, 55, 6);
+  t(TileType.beam, 56, 6);
+  t(TileType.beam, 57, 6);
+  t(TileType.beam, 58, 6);
+  t(TileType.beam, 59, 6);
+  t(TileType.beam, 60, 6);
+  t(TileType.beam, 61, 6);
+  t(TileType.beam, 62, 6);
+  t(TileType.beam, 63, 6);
+  t(TileType.beam, 64, 6);
+  t(TileType.beam, 65, 6);
+  t(TileType.beam, 66, 6);
+  t(TileType.beam, 67, 6);
+  t(TileType.beam, 68, 6);
+  t(TileType.beam, 69, 6);
+  t(TileType.beam, 70, 6);
+  t(TileType.beam, 71, 6);
+  t(TileType.beam, 72, 6);
+  t(TileType.beam, 73, 6);
+  t(TileType.beam, 74, 6);
+  t(TileType.beam, 75, 6);
+  t(TileType.beam, 76, 6);
+  t(TileType.beam, 77, 6);
+  t(TileType.beam, 78, 6);
+  t(TileType.beam, 79, 6);
+  t(TileType.beam, 80, 6);
+  t(TileType.beam, 81, 6);
+  t(TileType.beam, 82, 6);
+  t(TileType.beam, 83, 6);
+  t(TileType.beam, -12, 5);
   t(TileType.beam, -2, 5);
+  t(TileType.beam, 11, 5);
+  t(TileType.beam, 25, 5);
+  t(TileType.beam, 30, 5);
+  t(TileType.beam, 35, 5);
+  t(TileType.beam, 83, 5);
+  t(TileType.beam, -12, 4);
+  t(TileType.beam, -2, 4);
   t(TileType.beam, -1, 4);
+  t(TileType.beam, 11, 4);
+  t(TileType.beam, 25, 4);
+  t(TileType.beam, 30, 4);
+  t(TileType.beam, 35, 4);
+  t(TileType.beam, 77, 4);
+  t(TileType.beam, 78, 4);
+  t(TileType.beam, 83, 4);
+  t(TileType.beam, -12, 3);
+  t(TileType.beam, -2, 3);
+  t(TileType.beam, 11, 3);
+  t(TileType.beam, 25, 3);
+  t(TileType.beam, 30, 3);
+  t(TileType.beam, 35, 3);
+  t(TileType.beam, 83, 3);
+  t(TileType.beam, -12, 2);
+  t(TileType.beam, -11, 2);
+  t(TileType.beam, -10, 2);
+  t(TileType.beam, -9, 2);
+  t(TileType.beam, -8, 2);
+  t(TileType.beam, -7, 2);
+  t(TileType.beam, -6, 2);
+  t(TileType.beam, -5, 2);
+  t(TileType.beam, -4, 2);
+  t(TileType.beam, -3, 2);
+  t(TileType.beam, -2, 2);
+  t(TileType.beam, 2, 2);
+  t(TileType.beam, 3, 2);
+  t(TileType.beam, 4, 2);
+  t(TileType.beam, 9, 2);
+  t(TileType.beam, 10, 2);
+  t(TileType.beam, 11, 2);
+  t(TileType.beam, 12, 2);
+  t(TileType.beam, 13, 2);
+  t(TileType.beam, 14, 2);
+  t(TileType.beam, 15, 2);
+  t(TileType.beam, 16, 2);
+  t(TileType.beam, 17, 2);
+  t(TileType.beam, 18, 2);
+  t(TileType.beam, 19, 2);
+  t(TileType.beam, 20, 2);
+  t(TileType.beam, 21, 2);
+  t(TileType.beam, 22, 2);
+  t(TileType.beam, 23, 2);
+  t(TileType.beam, 24, 2);
+  t(TileType.beam, 25, 2);
+  t(TileType.beam, 30, 2);
+  t(TileType.beam, 35, 2);
+  t(TileType.beam, 39, 2);
+  t(TileType.beam, 40, 2);
+  t(TileType.beam, 41, 2);
+  t(TileType.beam, 42, 2);
+  t(TileType.beam, 43, 2);
+  t(TileType.beam, 44, 2);
+  t(TileType.beam, 45, 2);
+  t(TileType.beam, 46, 2);
+  t(TileType.beam, 47, 2);
+  t(TileType.beam, 48, 2);
+  t(TileType.beam, 49, 2);
+  t(TileType.beam, 50, 2);
+  t(TileType.beam, 51, 2);
+  t(TileType.beam, 52, 2);
+  t(TileType.beam, 53, 2);
+  t(TileType.beam, 54, 2);
+  t(TileType.beam, 55, 2);
+  t(TileType.beam, 56, 2);
+  t(TileType.beam, 57, 2);
+  t(TileType.beam, 58, 2);
+  t(TileType.beam, 59, 2);
+  t(TileType.beam, 60, 2);
+  t(TileType.beam, 61, 2);
+  t(TileType.beam, 62, 2);
+  t(TileType.beam, 63, 2);
+  t(TileType.beam, 64, 2);
+  t(TileType.beam, 65, 2);
+  t(TileType.beam, 66, 2);
+  t(TileType.beam, 67, 2);
+  t(TileType.beam, 68, 2);
+  t(TileType.beam, 69, 2);
+  t(TileType.beam, 70, 2);
+  t(TileType.beam, 71, 2);
+  t(TileType.beam, 72, 2);
+  t(TileType.beam, 73, 2);
+  t(TileType.beam, 74, 2);
+  t(TileType.beam, 83, 2);
+  t(TileType.beam, -12, 1);
+  t(TileType.beam, 25, 1);
+  t(TileType.beam, 30, 1);
+  t(TileType.beam, 35, 1);
+  t(TileType.beam, 59, 1);
+  t(TileType.beam, 83, 1);
+  t(TileType.beam, -12, 0);
+  t(TileType.beam, 25, 0);
   t(TileType.beam, 26, 0);
   t(TileType.beam, 27, 0);
   t(TileType.beam, 28, 0);
   t(TileType.beam, 29, 0);
+  t(TileType.beam, 30, 0);
+  t(TileType.beam, 35, 0);
+  t(TileType.beam, 59, 0);
   t(TileType.beam, 60, 0);
   t(TileType.beam, 61, 0);
-  t(TileType.beam, 77, 4);
-  t(TileType.beam, 78, 4);
-
-  // --- SCAFFOLDING (breakable, 1 hit) ---
-  // Vertical ladders at specific X positions
-  for (int y = 3; y <= 5; y++) {
-    t(TileType.scaffolding, -10, y);
-    t(TileType.scaffolding, -8, y);
-    t(TileType.scaffolding, -6, y);
-    t(TileType.scaffolding, -4, y);
-  }
-  // Scaffolding columns
-  for (int y = -6; y <= -2; y++) t(TileType.scaffolding, 20, y);
-  for (int y = -6; y <= -3; y++) t(TileType.scaffolding, 30, y);
-  for (int y = -6; y <= -3; y++) t(TileType.scaffolding, 50, y);
-  // Long row at y=-4, x=-11 to x=10
-  for (int x = -11; x <= 10; x++) t(TileType.scaffolding, x, -4);
-  // Scaffolding at top right area
-  for (int y = 0; y <= 5; y += 2) {
-    t(TileType.scaffolding, 73, y);
-    t(TileType.scaffolding, 81, y);
-  }
-  for (int y = 0; y <= 4; y += 2) {
-    t(TileType.scaffolding, 80, y);
-    t(TileType.scaffolding, 82, y);
-  }
-  t(TileType.scaffolding, 67, 0);
+  t(TileType.beam, 83, 0);
+  t(TileType.beam, -12, -1);
+  t(TileType.beam, 30, -1);
+  t(TileType.beam, 35, -1);
+  t(TileType.beam, 59, -1);
+  t(TileType.beam, 83, -1);
+  t(TileType.beam, -12, -2);
+  t(TileType.beam, 11, -2);
+  t(TileType.beam, 30, -2);
+  t(TileType.beam, 31, -2);
+  t(TileType.beam, 32, -2);
+  t(TileType.beam, 33, -2);
+  t(TileType.beam, 34, -2);
+  t(TileType.beam, 35, -2);
+  t(TileType.beam, 36, -2);
+  t(TileType.beam, 37, -2);
+  t(TileType.beam, 38, -2);
+  t(TileType.beam, 39, -2);
+  t(TileType.beam, 40, -2);
+  t(TileType.beam, 41, -2);
+  t(TileType.beam, 42, -2);
+  t(TileType.beam, 43, -2);
+  t(TileType.beam, 44, -2);
+  t(TileType.beam, 45, -2);
+  t(TileType.beam, 46, -2);
+  t(TileType.beam, 47, -2);
+  t(TileType.beam, 48, -2);
+  t(TileType.beam, 49, -2);
+  t(TileType.beam, 50, -2);
+  t(TileType.beam, 51, -2);
+  t(TileType.beam, 52, -2);
+  t(TileType.beam, 53, -2);
+  t(TileType.beam, 54, -2);
+  t(TileType.beam, 55, -2);
+  t(TileType.beam, 59, -2);
+  t(TileType.beam, 66, -2);
+  t(TileType.beam, 67, -2);
+  t(TileType.beam, 68, -2);
+  t(TileType.beam, 69, -2);
+  t(TileType.beam, 73, -2);
+  t(TileType.beam, 74, -2);
+  t(TileType.beam, 75, -2);
+  t(TileType.beam, 76, -2);
+  t(TileType.beam, 77, -2);
+  t(TileType.beam, 78, -2);
+  t(TileType.beam, 79, -2);
+  t(TileType.beam, 80, -2);
+  t(TileType.beam, 81, -2);
+  t(TileType.beam, 82, -2);
+  t(TileType.beam, 83, -2);
+  t(TileType.beam, -12, -3);
+  t(TileType.beam, 11, -3);
+  t(TileType.beam, 59, -3);
+  t(TileType.beam, 83, -3);
+  t(TileType.beam, -12, -4);
+  t(TileType.beam, 11, -4);
+  t(TileType.beam, 59, -4);
+  t(TileType.beam, 83, -4);
+  t(TileType.beam, -12, -5);
+  t(TileType.beam, 11, -5);
+  t(TileType.beam, 59, -5);
+  t(TileType.beam, 83, -5);
+  t(TileType.beam, -12, -6);
+  t(TileType.beam, 11, -6);
+  t(TileType.beam, 35, -6);
+  t(TileType.beam, 59, -6);
+  t(TileType.beam, 83, -6);
+  t(TileType.beam, -12, -7);
+  t(TileType.beam, -11, -7);
+  t(TileType.beam, -10, -7);
+  t(TileType.beam, -9, -7);
+  t(TileType.beam, -8, -7);
+  t(TileType.beam, -7, -7);
+  t(TileType.beam, -6, -7);
+  t(TileType.beam, -5, -7);
+  t(TileType.beam, -4, -7);
+  t(TileType.beam, -3, -7);
+  t(TileType.beam, -2, -7);
+  t(TileType.beam, -1, -7);
+  t(TileType.beam, 0, -7);
+  t(TileType.beam, 1, -7);
+  t(TileType.beam, 2, -7);
+  t(TileType.beam, 3, -7);
+  t(TileType.beam, 4, -7);
+  t(TileType.beam, 5, -7);
+  t(TileType.beam, 6, -7);
+  t(TileType.beam, 7, -7);
+  t(TileType.beam, 8, -7);
+  t(TileType.beam, 9, -7);
+  t(TileType.beam, 10, -7);
+  t(TileType.beam, 11, -7);
+  t(TileType.beam, 12, -7);
+  t(TileType.beam, 13, -7);
+  t(TileType.beam, 14, -7);
+  t(TileType.beam, 15, -7);
+  t(TileType.beam, 16, -7);
+  t(TileType.beam, 17, -7);
+  t(TileType.beam, 18, -7);
+  t(TileType.beam, 19, -7);
+  t(TileType.beam, 20, -7);
+  t(TileType.beam, 21, -7);
+  t(TileType.beam, 22, -7);
+  t(TileType.beam, 23, -7);
+  t(TileType.beam, 24, -7);
+  t(TileType.beam, 25, -7);
+  t(TileType.beam, 26, -7);
+  t(TileType.beam, 27, -7);
+  t(TileType.beam, 28, -7);
+  t(TileType.beam, 29, -7);
+  t(TileType.beam, 30, -7);
+  t(TileType.beam, 31, -7);
+  t(TileType.beam, 32, -7);
+  t(TileType.beam, 33, -7);
+  t(TileType.beam, 34, -7);
+  t(TileType.beam, 35, -7);
+  t(TileType.beam, 36, -7);
+  t(TileType.beam, 37, -7);
+  t(TileType.beam, 38, -7);
+  t(TileType.beam, 39, -7);
+  t(TileType.beam, 40, -7);
+  t(TileType.beam, 41, -7);
+  t(TileType.beam, 42, -7);
+  t(TileType.beam, 43, -7);
+  t(TileType.beam, 44, -7);
+  t(TileType.beam, 45, -7);
+  t(TileType.beam, 46, -7);
+  t(TileType.beam, 47, -7);
+  t(TileType.beam, 48, -7);
+  t(TileType.beam, 49, -7);
+  t(TileType.beam, 50, -7);
+  t(TileType.beam, 51, -7);
+  t(TileType.beam, 52, -7);
+  t(TileType.beam, 53, -7);
+  t(TileType.beam, 54, -7);
+  t(TileType.beam, 55, -7);
+  t(TileType.beam, 56, -7);
+  t(TileType.beam, 57, -7);
+  t(TileType.beam, 58, -7);
+  t(TileType.beam, 59, -7);
+  t(TileType.beam, 60, -7);
+  t(TileType.beam, 61, -7);
+  t(TileType.beam, 62, -7);
+  t(TileType.beam, 63, -7);
+  t(TileType.beam, 64, -7);
+  t(TileType.beam, 65, -7);
+  t(TileType.beam, 66, -7);
+  t(TileType.beam, 67, -7);
+  t(TileType.beam, 68, -7);
+  t(TileType.beam, 69, -7);
+  t(TileType.beam, 70, -7);
+  t(TileType.beam, 71, -7);
+  t(TileType.beam, 72, -7);
+  t(TileType.beam, 73, -7);
+  t(TileType.beam, 74, -7);
+  t(TileType.beam, 75, -7);
+  t(TileType.beam, 76, -7);
+  t(TileType.beam, 77, -7);
+  t(TileType.beam, 78, -7);
+  t(TileType.beam, 79, -7);
+  t(TileType.beam, 80, -7);
+  t(TileType.beam, 81, -7);
+  t(TileType.beam, 82, -7);
+  t(TileType.beam, 83, -7);
+// scaffolding: 157 tiles
+  t(TileType.scaffolding, -10, 5);
+  t(TileType.scaffolding, -8, 5);
+  t(TileType.scaffolding, -6, 5);
+  t(TileType.scaffolding, -4, 5);
+  t(TileType.scaffolding, 73, 5);
+  t(TileType.scaffolding, 81, 5);
+  t(TileType.scaffolding, -10, 4);
+  t(TileType.scaffolding, -8, 4);
+  t(TileType.scaffolding, -6, 4);
+  t(TileType.scaffolding, -4, 4);
+  t(TileType.scaffolding, 73, 4);
+  t(TileType.scaffolding, 80, 4);
+  t(TileType.scaffolding, 82, 4);
+  t(TileType.scaffolding, -10, 3);
+  t(TileType.scaffolding, -8, 3);
+  t(TileType.scaffolding, -6, 3);
+  t(TileType.scaffolding, -4, 3);
+  t(TileType.scaffolding, 73, 3);
+  t(TileType.scaffolding, 81, 3);
+  t(TileType.scaffolding, 80, 2);
+  t(TileType.scaffolding, 82, 2);
+  t(TileType.scaffolding, 20, 1);
   t(TileType.scaffolding, 67, 1);
+  t(TileType.scaffolding, 73, 1);
+  t(TileType.scaffolding, 81, 1);
+  t(TileType.scaffolding, 20, 0);
+  t(TileType.scaffolding, 67, 0);
+  t(TileType.scaffolding, 73, 0);
+  t(TileType.scaffolding, 80, 0);
+  t(TileType.scaffolding, 82, 0);
+  t(TileType.scaffolding, 20, -1);
   t(TileType.scaffolding, 67, -1);
-
-  // --- Bottom scaffolding staircase pattern ---
-  // y=-8: groups of 4 scaffolding blocks
-  final scafY8 = [
-    -12,
-    -11,
-    -10,
-    -9,
-    -4,
-    -3,
-    -2,
-    -1,
-    4,
-    5,
-    6,
-    7,
-    12,
-    13,
-    14,
-    15,
-    20,
-    21,
-    22,
-    23,
-    28,
-    29,
-    30,
-    31,
-    36,
-    37,
-    38,
-    39,
-    44,
-    45,
-    46,
-    47,
-    52,
-    53,
-    54,
-    55,
-    60,
-    61,
-    62,
-    63,
-    68,
-    69,
-    70,
-    71,
-  ];
-  for (final x in scafY8) t(TileType.scaffolding, x, -8);
-
-  // y=-9: alternating groups of 4 (offset by 4 from y=-8)
-  final scafY9 = [
-    -8,
-    -7,
-    -6,
-    -5,
-    0,
-    1,
-    2,
-    3,
-    8,
-    9,
-    10,
-    11,
-    16,
-    17,
-    18,
-    19,
-    24,
-    25,
-    26,
-    27,
-    32,
-    33,
-    34,
-    35,
-    40,
-    41,
-    42,
-    43,
-    48,
-    49,
-    50,
-    51,
-    56,
-    57,
-    58,
-    59,
-    64,
-    65,
-    66,
-    67,
-    72,
-    73,
-    74,
-    75,
-  ];
-  for (final x in scafY9) t(TileType.scaffolding, x, -9);
-
-  // --- TIMBER (breakable, 2 hits) ---
-  // Upper timber platform at y=4, x=12 to x=24 (with gaps at 25)
-  for (int x = 12; x <= 24; x++) t(TileType.timber, x, 4);
-  // Timber at y=4, x=26-29, 31-34
-  for (int x = 26; x <= 29; x++) t(TileType.timber, x, 4);
-  for (int x = 31; x <= 34; x++) t(TileType.timber, x, 4);
-  // Timber at y=2, x=26-29, 31-34
-  for (int x = 26; x <= 29; x++) t(TileType.timber, x, 2);
-  for (int x = 31; x <= 34; x++) t(TileType.timber, x, 2);
-  // Timber at y=0, x=31-34
-  for (int x = 31; x <= 34; x++) t(TileType.timber, x, 0);
-  // Single timber columns
-  for (int y = -1; y <= 1; y++) t(TileType.timber, 45, y);
-  // Timber columns at right side
-  for (int y = -6; y <= -3; y++) {
-    t(TileType.timber, 67, y);
-    t(TileType.timber, 73, y);
-  }
-  // Timber at y=-5, -6: x=-8,-3,2,7
-  for (int y = -6; y <= -5; y++) {
-    t(TileType.timber, -8, y);
-    t(TileType.timber, -3, y);
-    t(TileType.timber, 2, y);
-    t(TileType.timber, 7, y);
-  }
-  // Large timber floor at y=-10, x=-12 to x=11
-  for (int x = -12; x <= 11; x++) t(TileType.timber, x, -10);
-  // Large timber floor at y=-10, x=36 to x=59
-  for (int x = 36; x <= 59; x++) t(TileType.timber, x, -10);
-  // Large timber floor at y=-11, x=12 to x=35
-  for (int x = 12; x <= 35; x++) t(TileType.timber, x, -11);
-  // Timber floor at y=-11, x=60 to x=75
-  for (int x = 60; x <= 75; x++) t(TileType.timber, x, -11);
-
-  // --- BRICKS (breakable, 3 hits) ---
-  for (int y = 3; y <= 5; y++) {
-    t(TileType.bricks, 9, y);
-    t(TileType.bricks, 10, y);
-  }
-  for (int y = 3; y <= 5; y++) t(TileType.bricks, 50, y);
-  for (int y = -1; y <= 5; y++) t(TileType.bricks, 79, y);
+  t(TileType.scaffolding, 73, -1);
+  t(TileType.scaffolding, 81, -1);
+  t(TileType.scaffolding, 20, -2);
+  t(TileType.scaffolding, 20, -3);
+  t(TileType.scaffolding, 30, -3);
+  t(TileType.scaffolding, 50, -3);
+  t(TileType.scaffolding, -11, -4);
+  t(TileType.scaffolding, -10, -4);
+  t(TileType.scaffolding, -9, -4);
+  t(TileType.scaffolding, -8, -4);
+  t(TileType.scaffolding, -7, -4);
+  t(TileType.scaffolding, -6, -4);
+  t(TileType.scaffolding, -5, -4);
+  t(TileType.scaffolding, -4, -4);
+  t(TileType.scaffolding, -3, -4);
+  t(TileType.scaffolding, -2, -4);
+  t(TileType.scaffolding, -1, -4);
+  t(TileType.scaffolding, 0, -4);
+  t(TileType.scaffolding, 1, -4);
+  t(TileType.scaffolding, 2, -4);
+  t(TileType.scaffolding, 3, -4);
+  t(TileType.scaffolding, 4, -4);
+  t(TileType.scaffolding, 5, -4);
+  t(TileType.scaffolding, 6, -4);
+  t(TileType.scaffolding, 7, -4);
+  t(TileType.scaffolding, 8, -4);
+  t(TileType.scaffolding, 9, -4);
+  t(TileType.scaffolding, 10, -4);
+  t(TileType.scaffolding, 20, -4);
+  t(TileType.scaffolding, 30, -4);
+  t(TileType.scaffolding, 50, -4);
+  t(TileType.scaffolding, 20, -5);
+  t(TileType.scaffolding, 30, -5);
+  t(TileType.scaffolding, 50, -5);
+  t(TileType.scaffolding, 20, -6);
+  t(TileType.scaffolding, 30, -6);
+  t(TileType.scaffolding, 50, -6);
+  t(TileType.scaffolding, -12, -8);
+  t(TileType.scaffolding, -11, -8);
+  t(TileType.scaffolding, -10, -8);
+  t(TileType.scaffolding, -9, -8);
+  t(TileType.scaffolding, -4, -8);
+  t(TileType.scaffolding, -3, -8);
+  t(TileType.scaffolding, -2, -8);
+  t(TileType.scaffolding, -1, -8);
+  t(TileType.scaffolding, 4, -8);
+  t(TileType.scaffolding, 5, -8);
+  t(TileType.scaffolding, 6, -8);
+  t(TileType.scaffolding, 7, -8);
+  t(TileType.scaffolding, 12, -8);
+  t(TileType.scaffolding, 13, -8);
+  t(TileType.scaffolding, 14, -8);
+  t(TileType.scaffolding, 15, -8);
+  t(TileType.scaffolding, 20, -8);
+  t(TileType.scaffolding, 21, -8);
+  t(TileType.scaffolding, 22, -8);
+  t(TileType.scaffolding, 23, -8);
+  t(TileType.scaffolding, 28, -8);
+  t(TileType.scaffolding, 29, -8);
+  t(TileType.scaffolding, 30, -8);
+  t(TileType.scaffolding, 31, -8);
+  t(TileType.scaffolding, 36, -8);
+  t(TileType.scaffolding, 37, -8);
+  t(TileType.scaffolding, 38, -8);
+  t(TileType.scaffolding, 39, -8);
+  t(TileType.scaffolding, 44, -8);
+  t(TileType.scaffolding, 45, -8);
+  t(TileType.scaffolding, 46, -8);
+  t(TileType.scaffolding, 47, -8);
+  t(TileType.scaffolding, 52, -8);
+  t(TileType.scaffolding, 53, -8);
+  t(TileType.scaffolding, 54, -8);
+  t(TileType.scaffolding, 55, -8);
+  t(TileType.scaffolding, 60, -8);
+  t(TileType.scaffolding, 61, -8);
+  t(TileType.scaffolding, 62, -8);
+  t(TileType.scaffolding, 63, -8);
+  t(TileType.scaffolding, 68, -8);
+  t(TileType.scaffolding, 69, -8);
+  t(TileType.scaffolding, 70, -8);
+  t(TileType.scaffolding, 71, -8);
+  t(TileType.scaffolding, -8, -9);
+  t(TileType.scaffolding, -7, -9);
+  t(TileType.scaffolding, -6, -9);
+  t(TileType.scaffolding, -5, -9);
+  t(TileType.scaffolding, 0, -9);
+  t(TileType.scaffolding, 1, -9);
+  t(TileType.scaffolding, 2, -9);
+  t(TileType.scaffolding, 3, -9);
+  t(TileType.scaffolding, 8, -9);
+  t(TileType.scaffolding, 9, -9);
+  t(TileType.scaffolding, 10, -9);
+  t(TileType.scaffolding, 11, -9);
+  t(TileType.scaffolding, 16, -9);
+  t(TileType.scaffolding, 17, -9);
+  t(TileType.scaffolding, 18, -9);
+  t(TileType.scaffolding, 19, -9);
+  t(TileType.scaffolding, 24, -9);
+  t(TileType.scaffolding, 25, -9);
+  t(TileType.scaffolding, 26, -9);
+  t(TileType.scaffolding, 27, -9);
+  t(TileType.scaffolding, 32, -9);
+  t(TileType.scaffolding, 33, -9);
+  t(TileType.scaffolding, 34, -9);
+  t(TileType.scaffolding, 35, -9);
+  t(TileType.scaffolding, 40, -9);
+  t(TileType.scaffolding, 41, -9);
+  t(TileType.scaffolding, 42, -9);
+  t(TileType.scaffolding, 43, -9);
+  t(TileType.scaffolding, 48, -9);
+  t(TileType.scaffolding, 49, -9);
+  t(TileType.scaffolding, 50, -9);
+  t(TileType.scaffolding, 51, -9);
+  t(TileType.scaffolding, 56, -9);
+  t(TileType.scaffolding, 57, -9);
+  t(TileType.scaffolding, 58, -9);
+  t(TileType.scaffolding, 59, -9);
+  t(TileType.scaffolding, 64, -9);
+  t(TileType.scaffolding, 65, -9);
+  t(TileType.scaffolding, 66, -9);
+  t(TileType.scaffolding, 67, -9);
+  t(TileType.scaffolding, 72, -9);
+  t(TileType.scaffolding, 73, -9);
+  t(TileType.scaffolding, 74, -9);
+  t(TileType.scaffolding, 75, -9);
+// bricks: 18 tiles
+  t(TileType.bricks, 9, 5);
+  t(TileType.bricks, 10, 5);
+  t(TileType.bricks, 50, 5);
+  t(TileType.bricks, 79, 5);
+  t(TileType.bricks, 9, 4);
+  t(TileType.bricks, 10, 4);
+  t(TileType.bricks, 50, 4);
+  t(TileType.bricks, 79, 4);
+  t(TileType.bricks, 9, 3);
+  t(TileType.bricks, 10, 3);
+  t(TileType.bricks, 50, 3);
+  t(TileType.bricks, 79, 3);
+  t(TileType.bricks, 79, 2);
   t(TileType.bricks, 60, 1);
   t(TileType.bricks, 61, 1);
+  t(TileType.bricks, 79, 1);
+  t(TileType.bricks, 79, 0);
+  t(TileType.bricks, 79, -1);
+// timber: 140 tiles
+  t(TileType.timber, 12, 4);
+  t(TileType.timber, 13, 4);
+  t(TileType.timber, 14, 4);
+  t(TileType.timber, 15, 4);
+  t(TileType.timber, 16, 4);
+  t(TileType.timber, 17, 4);
+  t(TileType.timber, 18, 4);
+  t(TileType.timber, 19, 4);
+  t(TileType.timber, 20, 4);
+  t(TileType.timber, 21, 4);
+  t(TileType.timber, 22, 4);
+  t(TileType.timber, 23, 4);
+  t(TileType.timber, 24, 4);
+  t(TileType.timber, 26, 4);
+  t(TileType.timber, 27, 4);
+  t(TileType.timber, 28, 4);
+  t(TileType.timber, 29, 4);
+  t(TileType.timber, 31, 4);
+  t(TileType.timber, 32, 4);
+  t(TileType.timber, 33, 4);
+  t(TileType.timber, 34, 4);
+  t(TileType.timber, 26, 2);
+  t(TileType.timber, 27, 2);
+  t(TileType.timber, 28, 2);
+  t(TileType.timber, 29, 2);
+  t(TileType.timber, 31, 2);
+  t(TileType.timber, 32, 2);
+  t(TileType.timber, 33, 2);
+  t(TileType.timber, 34, 2);
+  t(TileType.timber, 45, 1);
+  t(TileType.timber, 31, 0);
+  t(TileType.timber, 32, 0);
+  t(TileType.timber, 33, 0);
+  t(TileType.timber, 34, 0);
+  t(TileType.timber, 45, 0);
+  t(TileType.timber, 45, -1);
+  t(TileType.timber, 67, -3);
+  t(TileType.timber, 73, -3);
+  t(TileType.timber, 67, -4);
+  t(TileType.timber, 73, -4);
+  t(TileType.timber, -8, -5);
+  t(TileType.timber, -3, -5);
+  t(TileType.timber, 2, -5);
+  t(TileType.timber, 7, -5);
+  t(TileType.timber, 67, -5);
+  t(TileType.timber, 73, -5);
+  t(TileType.timber, -8, -6);
+  t(TileType.timber, -3, -6);
+  t(TileType.timber, 2, -6);
+  t(TileType.timber, 7, -6);
+  t(TileType.timber, 67, -6);
+  t(TileType.timber, 73, -6);
+  t(TileType.timber, -12, -10);
+  t(TileType.timber, -11, -10);
+  t(TileType.timber, -10, -10);
+  t(TileType.timber, -9, -10);
+  t(TileType.timber, -8, -10);
+  t(TileType.timber, -7, -10);
+  t(TileType.timber, -6, -10);
+  t(TileType.timber, -5, -10);
+  t(TileType.timber, -4, -10);
+  t(TileType.timber, -3, -10);
+  t(TileType.timber, -2, -10);
+  t(TileType.timber, -1, -10);
+  t(TileType.timber, 0, -10);
+  t(TileType.timber, 1, -10);
+  t(TileType.timber, 2, -10);
+  t(TileType.timber, 3, -10);
+  t(TileType.timber, 4, -10);
+  t(TileType.timber, 5, -10);
+  t(TileType.timber, 6, -10);
+  t(TileType.timber, 7, -10);
+  t(TileType.timber, 8, -10);
+  t(TileType.timber, 9, -10);
+  t(TileType.timber, 10, -10);
+  t(TileType.timber, 11, -10);
+  t(TileType.timber, 36, -10);
+  t(TileType.timber, 37, -10);
+  t(TileType.timber, 38, -10);
+  t(TileType.timber, 39, -10);
+  t(TileType.timber, 40, -10);
+  t(TileType.timber, 41, -10);
+  t(TileType.timber, 42, -10);
+  t(TileType.timber, 43, -10);
+  t(TileType.timber, 44, -10);
+  t(TileType.timber, 45, -10);
+  t(TileType.timber, 46, -10);
+  t(TileType.timber, 47, -10);
+  t(TileType.timber, 48, -10);
+  t(TileType.timber, 49, -10);
+  t(TileType.timber, 50, -10);
+  t(TileType.timber, 51, -10);
+  t(TileType.timber, 52, -10);
+  t(TileType.timber, 53, -10);
+  t(TileType.timber, 54, -10);
+  t(TileType.timber, 55, -10);
+  t(TileType.timber, 56, -10);
+  t(TileType.timber, 57, -10);
+  t(TileType.timber, 58, -10);
+  t(TileType.timber, 59, -10);
+  t(TileType.timber, 12, -11);
+  t(TileType.timber, 13, -11);
+  t(TileType.timber, 14, -11);
+  t(TileType.timber, 15, -11);
+  t(TileType.timber, 16, -11);
+  t(TileType.timber, 17, -11);
+  t(TileType.timber, 18, -11);
+  t(TileType.timber, 19, -11);
+  t(TileType.timber, 20, -11);
+  t(TileType.timber, 21, -11);
+  t(TileType.timber, 22, -11);
+  t(TileType.timber, 23, -11);
+  t(TileType.timber, 24, -11);
+  t(TileType.timber, 25, -11);
+  t(TileType.timber, 26, -11);
+  t(TileType.timber, 27, -11);
+  t(TileType.timber, 28, -11);
+  t(TileType.timber, 29, -11);
+  t(TileType.timber, 30, -11);
+  t(TileType.timber, 31, -11);
+  t(TileType.timber, 32, -11);
+  t(TileType.timber, 33, -11);
+  t(TileType.timber, 34, -11);
+  t(TileType.timber, 35, -11);
+  t(TileType.timber, 60, -11);
+  t(TileType.timber, 61, -11);
+  t(TileType.timber, 62, -11);
+  t(TileType.timber, 63, -11);
+  t(TileType.timber, 64, -11);
+  t(TileType.timber, 65, -11);
+  t(TileType.timber, 66, -11);
+  t(TileType.timber, 67, -11);
+  t(TileType.timber, 68, -11);
+  t(TileType.timber, 69, -11);
+  t(TileType.timber, 70, -11);
+  t(TileType.timber, 71, -11);
+  t(TileType.timber, 72, -11);
+  t(TileType.timber, 73, -11);
+  t(TileType.timber, 74, -11);
+  t(TileType.timber, 75, -11);
 
   // === SEGMENTS ===
   final segments = <SegmentInfo>[

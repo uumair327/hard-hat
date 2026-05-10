@@ -11,7 +11,7 @@ class BillboardComponent extends PositionComponent {
     required this.type,
     required Vector2 position,
     this.large = false,
-  }) : super(position: position);
+  }) : super(position: position, scale: Vector2.all(0.2));
 
   @override
   Future<void> onLoad() async {

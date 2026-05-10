@@ -179,8 +179,23 @@ class _GameFlowManagerState extends State<GameFlowManager> {
         return Scaffold(
           body: Stack(
             children: [
-              // The Flame game
-              if (_game != null) GameWidget(game: _game!, mouseCursor: SystemMouseCursors.none),
+              // The Flame game — wrapped in Listener to capture mouse clicks for strike
+              if (_game != null) Listener(
+                onPointerDown: (event) {
+                  _game!.handlePointerDown(event.localPosition.dx, event.localPosition.dy);
+                },
+                onPointerMove: (event) {
+                  // Update mouse position during drag for aim tracking
+                  _game!.handlePointerMove(event.localPosition.dx, event.localPosition.dy);
+                },
+                onPointerUp: (event) {
+                  _game!.handlePointerUp();
+                },
+                onPointerCancel: (event) {
+                  _game!.handlePointerUp();
+                },
+                child: GameWidget(game: _game!, mouseCursor: SystemMouseCursors.none),
+              ),
 
               // Level splash overlay
               if (_showLevelSplash)

@@ -156,7 +156,7 @@ class TileComponent extends PositionComponent with CollisionCallbacks {
     removeFromParent();
   }
 
-  // === RENDERING ===
+  // === RENDERING (matching Godot mesh library visual style) ===
   @override
   void render(Canvas canvas) {
     final rect = Rect.fromLTWH(0, 0, size.x, size.y);
@@ -170,7 +170,8 @@ class TileComponent extends PositionComponent with CollisionCallbacks {
         texture.width.toDouble(),
         texture.height.toDouble(),
       );
-      final paint = Paint();
+      // Use nearest-neighbor for pixel-perfect scaling (Godot uses pixel art)
+      final paint = Paint()..filterQuality = FilterQuality.none;
       // Flash white on damage
       if (_isFlashing) {
         paint.colorFilter = const ColorFilter.mode(
@@ -180,7 +181,7 @@ class TileComponent extends PositionComponent with CollisionCallbacks {
       }
       canvas.drawImageRect(texture, src, rect, paint);
     } else {
-      // Fallback to colored rectangles
+      // Fallback to solid color blocks matching Godot mesh materials
       final paint = Paint()..color = _getColor();
       if (_isFlashing) {
         paint.color = Color.lerp(paint.color, const Color(0xFFFFFFFF), 0.7)!;
@@ -188,35 +189,39 @@ class TileComponent extends PositionComponent with CollisionCallbacks {
       canvas.drawRect(rect, paint);
       _drawDetails(canvas, rect);
     }
-
-    // Subtle outline
-    final outlinePaint = Paint()
-      ..color = const Color(0x22000000)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.5;
-    canvas.drawRect(rect, outlinePaint);
+    // No outline — Godot tiles render as seamless blocks
   }
 
+  /// Fallback colors extracted from actual Godot mesh library textures
   Color _getColor() {
     switch (_tileType) {
       case TileType.scaffolding:
-        return const Color(0xFFC4A882);
+        // Godot scaffolding.png: steel gray-purple
+        return const Color(0xFF8387A3);
       case TileType.timber:
-        return const Color(0xFF8B6914);
+        // Godot timber.png: warm brown
+        return const Color(0xFFCD9C62);
       case TileType.timberOneHit:
-        return const Color(0xFF6B4914);
+        // Godot timber_one_hit.png: cracked brown
+        return const Color(0xFF9C7040);
       case TileType.bricks:
-        return const Color(0xFFB22222);
+        // Godot bricks.png: red-brown construction brick
+        return const Color(0xFFAB6553);
       case TileType.bricksOneHit:
-        return const Color(0xFF8B1A1A);
+        // Godot bricks_one_hit.png: damaged red-brown
+        return const Color(0xFF8B5040);
       case TileType.bricksTwoHit:
-        return const Color(0xFF5C1010);
+        // Godot bricks_two_hits.png: heavily damaged
+        return const Color(0xFF613630);
       case TileType.beam:
-        return const Color(0xFF708090);
+        // Godot girder.png: dark navy steel
+        return const Color(0xFF2A3055);
       case TileType.spike:
-        return const Color(0xFFFF0000);
+        // Godot spikes_mesh_library: metallic silver-gray
+        return const Color(0xFFC0C0C0);
       case TileType.ground:
-        return const Color(0xFF556B2F);
+        // Godot girder.png: same dark navy as beam
+        return const Color(0xFF2A3055);
     }
   }
 
@@ -230,6 +235,7 @@ class TileComponent extends PositionComponent with CollisionCallbacks {
       case TileType.bricks:
       case TileType.bricksOneHit:
       case TileType.bricksTwoHit:
+        // Brick mortar lines
         canvas.drawLine(
           Offset(0, rect.height / 2),
           Offset(rect.width, rect.height / 2),
@@ -242,20 +248,41 @@ class TileComponent extends PositionComponent with CollisionCallbacks {
         );
         break;
       case TileType.spike:
-        final spikePaint = Paint()..color = const Color(0xFFCC0000);
+        // Godot spikes: metallic silver triangular spikes
+        final spikePaint = Paint()..color = const Color(0xFF909090);
+        final basePaint = Paint()..color = const Color(0xFF606060);
+        // Base bar
+        canvas.drawRect(
+          Rect.fromLTWH(0, rect.height * 0.8, rect.width, rect.height * 0.2),
+          basePaint,
+        );
+        // Triangular spikes
         final path = Path();
-        for (int i = 0; i < 3; i++) {
-          final x = (i + 0.5) * rect.width / 3;
-          path.moveTo(x - rect.width / 6, rect.height);
+        for (int i = 0; i < 4; i++) {
+          final x = (i + 0.5) * rect.width / 4;
+          path.moveTo(x - rect.width / 8, rect.height * 0.8);
           path.lineTo(x, 0);
-          path.lineTo(x + rect.width / 6, rect.height);
+          path.lineTo(x + rect.width / 8, rect.height * 0.8);
           path.close();
         }
         canvas.drawPath(path, spikePaint);
         break;
+      case TileType.beam:
       case TileType.ground:
-        final grassPaint = Paint()..color = const Color(0xFF228B22);
-        canvas.drawRect(Rect.fromLTWH(0, 0, rect.width, 4), grassPaint);
+        // Godot girder: dark navy with subtle cross-bracing detail
+        final bracePaint = Paint()
+          ..color = const Color(0x22FFFFFF)
+          ..strokeWidth = 1.0;
+        canvas.drawLine(
+          Offset(0, 0),
+          Offset(rect.width, rect.height),
+          bracePaint,
+        );
+        canvas.drawLine(
+          Offset(rect.width, 0),
+          Offset(0, rect.height),
+          bracePaint,
+        );
         break;
       default:
         break;

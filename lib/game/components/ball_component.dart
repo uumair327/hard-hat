@@ -6,7 +6,6 @@ import 'package:flame/geometry.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:hard_hat/game/hard_hat_game.dart';
 import 'package:hard_hat/audio/game_audio_manager.dart';
-import 'package:flame/geometry.dart';
 import 'shutter_component.dart';
 import 'tile_component.dart';
 
@@ -124,28 +123,17 @@ class BallComponent extends PositionComponent
   }
 
   void _handleBounds() {
+    // In Godot, the ball bounces off tiles (via move_and_collide), not screen edges.
+    // We only kill the ball if it falls way out of the playable area (safety net).
     final gameSize = game.size;
+    final camPos = game.camera.viewfinder.position;
 
-    // Bounce off screen edges
-    if (position.x - ballRadius < 0) {
-      position.x = ballRadius;
-      velocity.x = velocity.x.abs();
-      _onBounce(Vector2(1, 0));
-    }
-    if (position.x + ballRadius > gameSize.x) {
-      position.x = gameSize.x - ballRadius;
-      velocity.x = -velocity.x.abs();
-      _onBounce(Vector2(-1, 0));
-    }
-    if (position.y - ballRadius < 0) {
-      position.y = ballRadius;
-      velocity.y = velocity.y.abs();
-      _onBounce(Vector2(0, 1));
-    }
-    if (position.y + ballRadius > gameSize.y - 64) {
-      position.y = gameSize.y - 64 - ballRadius;
-      velocity.y = -velocity.y.abs();
-      _onBounce(Vector2(0, -1));
+    // Kill ball if it goes far outside the visible area (e.g. fell through gap)
+    if (position.y > camPos.y + gameSize.y + 200 ||
+        position.y < camPos.y - 400 ||
+        position.x < camPos.x - 400 ||
+        position.x > camPos.x + gameSize.x + 400) {
+      kill();
     }
   }
 
@@ -163,7 +151,8 @@ class BallComponent extends PositionComponent
         intersectionPoints,
         isDestructible: other.isDestructible,
         onDamage: () => other.takeDamage(1),
-        isBeam: other.tileType == TileType.beam,
+        isBeam: other.tileType == TileType.beam ||
+            other.tileType == TileType.ground,
       );
     } else if (other is ShutterComponent) {
       _handleSolidCollision(
@@ -189,13 +178,20 @@ class BallComponent extends PositionComponent
   }) {
     if (_dead) return;
 
-    // Godot ball.gd L35: If hits beam while tracking, force quit aiming
+    // Godot ball.gd L55-59: If hits beam while tracking, force quit aiming
+    // and push ball out using collision depth * normal * 100
     if (isBeam && tracking) {
       onForceQuitAiming?.call();
-      // Push ball out drastically to avoid getting stuck inside sliding beam
-      final center = solid.position + solid.size / 2;
-      final diff = position - center;
-      position += diff.normalized() * 10.0;
+      // Resolve overlap aggressively (Godot uses depth * normal * 100)
+      final solidCenter = solid.position + solid.size / 2;
+      final diff = position - solidCenter;
+      final overlapX = (size.x / 2 + solid.size.x / 2) - diff.x.abs();
+      final overlapY = (size.y / 2 + solid.size.y / 2) - diff.y.abs();
+      if (overlapX < overlapY) {
+        position.x += (diff.x > 0 ? 1 : -1) * (overlapX + 2.0);
+      } else {
+        position.y += (diff.y > 0 ? 1 : -1) * (overlapY + 2.0);
+      }
     }
 
     if (tracking) return; // Ignore other collisions while tracking
@@ -205,22 +201,21 @@ class BallComponent extends PositionComponent
     final ballCenter = position;
     final diff = ballCenter - solidCenter;
 
-    // Determine collision normal
+    // Determine collision normal and resolve exact overlap
     Vector2 normal;
-    final absX = diff.x.abs();
-    final absY = diff.y.abs();
+    final overlapX = (size.x / 2 + solid.size.x / 2) - diff.x.abs();
+    final overlapY = (size.y / 2 + solid.size.y / 2) - diff.y.abs();
 
-    if (absX > absY) {
+    if (overlapX < overlapY) {
       normal = Vector2(diff.x > 0 ? 1 : -1, 0);
+      position.x += normal.x * overlapX; // Exact horizontal resolution
     } else {
       normal = Vector2(0, diff.y > 0 ? 1 : -1);
+      position.y += normal.y * overlapY; // Exact vertical resolution
     }
 
     // Bounce: velocity = velocity.bounce(normal) equivalent
     velocity = velocity - normal * (2 * velocity.dot(normal));
-
-    // Push ball out of tile
-    position += normal * 2;
 
     _updateSquish();
 
@@ -239,15 +234,6 @@ class BallComponent extends PositionComponent
       if (points.isNotEmpty) {
         onStarParticles?.call(points.first, normal);
       }
-    }
-  }
-
-  void _onBounce(Vector2 normal) {
-    _updateSquish();
-    if (!_dead) {
-      onCameraShakeRequest?.call(velocity);
-      // Star particles on wall bounces too (Godot spawns on all collisions)
-      onStarParticles?.call(position, normal);
     }
   }
 

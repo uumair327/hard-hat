@@ -1,8 +1,10 @@
-import 'dart:math' as dart_math;
+
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/foundation.dart';
 
 /// Audio manager — replicates Godot audio_manager.gd + audio_registry.gd
-/// Plays sound effects and music. Audio files located at assets/audio/.
+/// Uses a fixed pool of reusable AudioPlayers to prevent the Windows
+/// non-platform-thread crash caused by unlimited player creation.
 ///
 /// FlameAudio path convention: paths relative to assets/audio/
 /// So 'sfx/sfx_hit.mp3' loads 'assets/audio/sfx/sfx_hit.mp3'
@@ -12,10 +14,28 @@ class GameAudioManager {
   static double _musicVolume = 0.5;
   static String _currentMusicTrack = '';
   static AudioPlayer? _elevatorLoop;
-  static final _rng = dart_math.Random();
 
-  /// Initialize audio system — pre-cache all sounds
+  // === SFX PLAYER POOL ===
+  // Fixed pool of AudioPlayers reused round-robin to prevent unbounded
+  // player creation which causes Windows threading crashes.
+  static const int _poolSize = 8;
+  static final List<AudioPlayer> _sfxPool = [];
+  static int _nextPoolIndex = 0;
+  static bool _poolInitialized = false;
+
+  /// Initialize audio system — set up player pool and pre-cache sounds
   static Future<void> initialize() async {
+    // Create the fixed SFX pool once
+    if (!_poolInitialized) {
+      for (int i = 0; i < _poolSize; i++) {
+        final player = AudioPlayer();
+        // Suppress event listener errors on Windows
+        player.setReleaseMode(ReleaseMode.stop);
+        _sfxPool.add(player);
+      }
+      _poolInitialized = true;
+    }
+
     try {
       await FlameAudio.audioCache.loadAll([
         'sfx/sfx_hit.mp3',
@@ -36,18 +56,25 @@ class GameAudioManager {
         'loop/loop_step.mp3',
       ]);
     } catch (e) {
-      // Silently fail if audio files are missing
+      debugPrint('GameAudioManager: Failed to pre-cache audio: $e');
     }
   }
 
-  /// Play a one-shot sound effect with random pitch (Godot audio_manager.gd L19)
+  /// Play a one-shot sound effect using pooled players
   static Future<void> playSound(String path) async {
+    if (!_poolInitialized || _sfxPool.isEmpty) return;
+
     try {
-      final player = await FlameAudio.play(path, volume: 0.7);
-      final pitch = 0.8 + _rng.nextDouble() * 0.4; // 0.8 to 1.2
-      await player.setPlaybackRate(pitch);
+      // Round-robin through the pool
+      final player = _sfxPool[_nextPoolIndex];
+      _nextPoolIndex = (_nextPoolIndex + 1) % _poolSize;
+
+      // Stop current sound on this player and play the new one
+      await player.stop();
+      await player.setVolume(0.7);
+      await player.play(AssetSource('audio/$path'));
     } catch (e) {
-      // Silently fail
+      // Silently fail — audio should never crash the game
     }
   }
 
@@ -63,38 +90,47 @@ class GameAudioManager {
   static Future<void> playTick() => playSound('sfx/sfx_tick.mp3');
   static Future<void> playDing() => playSound('sfx/sfx_ding.mp3');
   static Future<void> playElevator() => playSound('sfx/sfx_elevator.mp3');
+
   static Future<void> playElevatorLoop() async {
     try {
-      _elevatorLoop ??= await FlameAudio.loopLongAudio(
-        'loop/loop_elevator.mp3',
-        volume: 0.7,
-      );
+      if (_elevatorLoop == null) {
+        _elevatorLoop = AudioPlayer();
+        await _elevatorLoop!.setSource(AssetSource('audio/loop/loop_elevator.mp3'));
+        await _elevatorLoop!.setReleaseMode(ReleaseMode.loop);
+        await _elevatorLoop!.setVolume(0.7);
+      }
+      if (_elevatorLoop!.state != PlayerState.playing) {
+        await _elevatorLoop!.resume();
+      }
     } catch (e) {
       // Silently fail
     }
   }
 
   static void stopElevatorLoop() {
-    _elevatorLoop?.stop();
-    _elevatorLoop = null;
+    _elevatorLoop?.pause();
   }
 
   static AudioPlayer? _stepLoop;
 
   static Future<void> playStepLoop() async {
     try {
-      _stepLoop ??= await FlameAudio.loopLongAudio(
-        'loop/loop_step.mp3',
-        volume: 0.6,
-      );
+      if (_stepLoop == null) {
+        _stepLoop = AudioPlayer();
+        await _stepLoop!.setSource(AssetSource('audio/loop/loop_step.mp3'));
+        await _stepLoop!.setReleaseMode(ReleaseMode.loop);
+        await _stepLoop!.setVolume(0.6);
+      }
+      if (_stepLoop!.state != PlayerState.playing) {
+        await _stepLoop!.resume();
+      }
     } catch (e) {
       // Silently fail
     }
   }
 
   static void stopStepLoop() {
-    _stepLoop?.stop();
-    _stepLoop = null;
+    _stepLoop?.pause();
   }
 
   static Future<void> playBlueprints() => playSound('sfx/sfx_blueprints.mp3');
@@ -207,6 +243,26 @@ class GameAudioManager {
     try {
       FlameAudio.bgm.stop();
     } catch (_) {}
+    // Clean up pooled players
+    for (final player in _sfxPool) {
+      try {
+        player.dispose();
+      } catch (_) {}
+    }
+    _sfxPool.clear();
+    _poolInitialized = false;
+    _nextPoolIndex = 0;
+
+    // Clean up loop players
+    try {
+      _elevatorLoop?.dispose();
+      _elevatorLoop = null;
+    } catch (_) {}
+    try {
+      _stepLoop?.dispose();
+      _stepLoop = null;
+    } catch (_) {}
+
     _musicPlaying = false;
   }
 }

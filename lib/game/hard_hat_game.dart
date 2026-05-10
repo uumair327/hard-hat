@@ -1,8 +1,6 @@
 import 'dart:math';
-import 'dart:ui' as ui;
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
@@ -71,7 +69,7 @@ class HardHatGameActual extends FlameGame
     ballSegment = 0;
 
     // Background
-    world.add(_BackgroundComponent(gameSize: size));
+    camera.backdrop.add(_SkyBackgroundComponent());
 
     // Build level
     final levelData = _getLevelData(levelId);
@@ -117,8 +115,11 @@ class HardHatGameActual extends FlameGame
       );
     }
 
-    // Ground
-    _addGround(levelData.groundY, levelData.totalWidth);
+    // Ground — only add extra ground tiles if level data doesn't already
+    // include floor beam tiles (Level 1 GridMap data already has them)
+    if (!levelData.hasFloorTiles) {
+      _addGround(levelData.groundY, levelData.totalWidth);
+    }
 
     // Spawn player at segment 0
     final seg0 = levelData.segments[0];
@@ -175,25 +176,42 @@ class HardHatGameActual extends FlameGame
     }
   }
 
-  // === CAMERA (matching Godot sandbox._on_player_x_update) ===
+  // === CAMERA (matching Godot sandbox._on_player_x_update L134-141) ===
   void _updateCamera(double playerX) {
-    double targetX = playerX;
-    if (targetX < tripodMinX || targetX > tripodMaxX) {
-      targetX = targetX.clamp(tripodMinX, tripodMaxX);
+    // Godot sandbox.gd L134-141:
+    // The tripod X directly follows the player X. If outside anchor bounds,
+    // it smooths via move_toward. Otherwise it just clamps to bounds.
+    double newX = playerX;
+
+    if (newX < tripodMinX || newX > tripodMaxX) {
+      newX = newX.clamp(tripodMinX, tripodMaxX);
+      // Godot: move_toward(current_x, target_x, 0.5)
+      // In pixel space, scale 0.5 units → 20px step
+      final currentX = camera.viewfinder.position.x + size.x / 2;
+      final diff = newX - currentX;
+      newX = currentX + diff.clamp(-20.0, 20.0);
+    } else {
+      newX = newX.clamp(tripodMinX, tripodMaxX);
     }
-    final camX = (targetX - size.x / 2)
-        .clamp(tripodMinX, max(tripodMinX, tripodMaxX - size.x))
-        .toDouble();
-    camera.viewfinder.position = Vector2(camX, 0);
+
+    // Godot sets Tripod.global_position.x = newX directly.
+    // In Flame, the viewfinder position is the top-left corner,
+    // so we center the camera on newX.
+    final camX = (newX - size.x / 2).clamp(
+      tripodMinX,
+      max(tripodMinX, tripodMaxX - size.x),
+    ).toDouble();
+    camera.viewfinder.position = Vector2(camX, 0) + _shakeOffset;
   }
 
+  // Camera shake state (matching Godot sandbox._on_camera_shake_request L145-153)
+  Vector2 _shakeOffset = Vector2.zero();
+  double _shakeTimer = 0.0;
+
   void _cameraShake(Vector2 direction) {
-    final shakeOffset = direction.normalized() * 3;
-    final origPos = camera.viewfinder.position.clone();
-    camera.viewfinder.position += shakeOffset;
-    Future.delayed(const Duration(milliseconds: 50), () {
-      camera.viewfinder.position = origPos;
-    });
+    // Godot: direction.normalized() * 0.05 → in our pixel space: * 3
+    _shakeOffset = direction.normalized() * 3;
+    _shakeTimer = 0.1; // Total shake duration: 0.05s offset + 0.05s return
   }
 
   void _spawnBreakParticles(TileType type, Vector2 position) {
@@ -210,16 +228,16 @@ class HardHatGameActual extends FlameGame
   Color _getParticleColor(TileType type) {
     switch (type) {
       case TileType.scaffolding:
-        return const Color(0xFFC4A882);
+        return const Color(0xFF8387A3); // Steel gray-purple
       case TileType.timber:
       case TileType.timberOneHit:
-        return const Color(0xFF8B6914);
+        return const Color(0xFFCD9C62); // Warm brown
       case TileType.bricks:
       case TileType.bricksOneHit:
       case TileType.bricksTwoHit:
-        return const Color(0xFFB22222);
+        return const Color(0xFFAB6553); // Red-brown
       default:
-        return const Color(0xFF888888);
+        return const Color(0xFF2A3055); // Dark navy
     }
   }
 
@@ -267,11 +285,21 @@ class HardHatGameActual extends FlameGame
     ballTimerMax = player.ballTimerMax;
 
     // Forward mouse position to ball for aim tracking (Godot ball.gd L73-93)
+    // Godot uses screen-space: cursor_position - ball_screen_pos
     if (player.ballReference != null && player.ballReference!.tracking) {
       final ballScreenPos = player.ballReference!.absolutePosition;
       final direction = _mousePosition - ballScreenPos;
       if (direction.length2 > 1.0) {
-        player.ballReference!.setDirection(direction.clone()..y = direction.y);
+        player.ballReference!.setDirection(direction.normalized());
+      }
+    }
+
+    // Process camera shake timer (matching Godot tween-based shake)
+    if (_shakeTimer > 0) {
+      _shakeTimer -= dt;
+      if (_shakeTimer <= 0) {
+        _shakeOffset = Vector2.zero();
+        _shakeTimer = 0;
       }
     }
   }
@@ -280,6 +308,21 @@ class HardHatGameActual extends FlameGame
   @override
   void onMouseMove(PointerHoverInfo info) {
     _mousePosition = info.eventPosition.global;
+  }
+
+  // === MOUSE CLICK (matching Godot "strike" = left mouse button) ===
+  // FlameGame inherits from Game which has pointer event handling
+  void handlePointerDown(double x, double y) {
+    _mousePosition = Vector2(x, y);
+    player.onMouseDown();
+  }
+
+  void handlePointerUp() {
+    player.onMouseUp();
+  }
+
+  void handlePointerMove(double x, double y) {
+    _mousePosition = Vector2(x, y);
   }
 
   // === KEY HANDLING ===
@@ -391,6 +434,7 @@ class HardHatGameActual extends FlameGame
       props: props,
       groundY: layout.groundY,
       totalWidth: layout.totalWidth,
+      hasFloorTiles: true, // Level 1 GridMap data includes floor beam row
     );
   }
 
@@ -974,12 +1018,16 @@ class _LevelData {
   final List<Component> props;
   final double groundY;
   final double totalWidth;
+  /// True if the level tile data already includes floor beam tiles.
+  /// When true, _addGround() is skipped to prevent duplicate tiles.
+  final bool hasFloorTiles;
 
   _LevelData({
     required this.segments,
     required this.props,
     required this.groundY,
     required this.totalWidth,
+    this.hasFloorTiles = false,
   });
 }
 
@@ -1042,84 +1090,39 @@ class _SegmentTrigger extends PositionComponent {
 
 // === PARALLAX BACKGROUND ===
 
-class _BackgroundComponent extends PositionComponent
+class _SkyBackgroundComponent extends Component
     with HasGameReference<HardHatGameActual> {
-  final Vector2 gameSize;
-  ui.Image? _bgImage;
-  bool _imageLoaded = false;
-
-  _BackgroundComponent({required this.gameSize})
-    : super(position: Vector2.zero(), size: gameSize * 3, priority: -10);
-
-  @override
-  Future<void> onLoad() async {
-    await super.onLoad();
-    try {
-      _bgImage = await Flame.images.load('sprites/game/background.png');
-      _imageLoaded = true;
-    } catch (e) {
-      debugPrint('Background image failed to load: $e');
-    }
-  }
-
+  
   @override
   void render(Canvas canvas) {
-    final camX = game.camera.viewfinder.position.x;
-
-    if (_imageLoaded && _bgImage != null) {
-      _renderWithImage(canvas, camX);
-    } else {
-      _renderFallback(canvas, camX);
-    }
-  }
-
-  void _renderWithImage(Canvas canvas, double camX) {
-    final img = _bgImage!;
-    final imgW = img.width.toDouble();
-    final imgH = img.height.toDouble();
-
-    // Sky gradient above the background image
+    // Fill the viewport background with the procedural sky
+    final size = game.size;
+    final camY = game.camera.viewfinder.position.y;
+    
+    // Horizon moves slightly with camera Y for parallax
+    final horizonY = size.y * 0.6 - (camY * 0.1);
+    
+    // Draw sky
     final skyPaint = Paint()
       ..shader = const LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [Color(0xFF87CEEB), Color(0xFFB0E0E6)],
-      ).createShader(Rect.fromLTWH(0, 0, size.x, size.y * 0.3));
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.x, size.y * 0.3), skyPaint);
-
-    // Draw background image tiled with parallax (0.3x scroll)
-    final parallax = camX * 0.3;
-    final scale = gameSize.y / imgH; // Scale to fill screen height
-    final scaledW = imgW * scale;
-
-    // Determine how many tiles we need to cover visible area
-    final startTile = ((parallax / scaledW).floor() - 1);
-    final endTile = startTile + (size.x / scaledW).ceil() + 2;
-
-    final src = Rect.fromLTWH(0, 0, imgW, imgH);
-    for (int i = startTile; i <= endTile; i++) {
-      final x = i * scaledW - parallax;
-      final dst = Rect.fromLTWH(x, 0, scaledW, gameSize.y);
-      canvas.drawImageRect(img, src, dst, Paint());
+        colors: [Color(0xFF2395FF), Color(0xFF92B0CE)], // Procedural sky colors
+      ).createShader(Rect.fromLTRB(0, 0, size.x, horizonY.clamp(0.0, size.y)));
+      
+    if (horizonY > 0) {
+      canvas.drawRect(Rect.fromLTRB(0, 0, size.x, horizonY), skyPaint);
     }
-  }
-
-  void _renderFallback(Canvas canvas, double camX) {
-    // Sky gradient
-    final skyPaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Color(0xFF1565C0), Color(0xFF64B5F6), Color(0xFFBBDEFB)],
-      ).createShader(Rect.fromLTWH(0, 0, size.x, size.y * 0.7));
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.x, size.y * 0.7), skyPaint);
-
-    // Simple buildings silhouette
-    final bp = Paint()..color = const Color(0x33000000);
-    for (int i = 0; i < 20; i++) {
-      final x = i * 120.0 - camX * 0.3;
-      final h = 60.0 + (i * 37 % 90);
-      canvas.drawRect(Rect.fromLTWH(x, size.y * 0.65 - h, 80, h), bp);
+    
+    // Draw ground below horizon
+    if (horizonY < size.y) {
+      final groundPaint = Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF92B0CE), Color(0xFF272E3B)], // Procedural ground colors
+        ).createShader(Rect.fromLTRB(0, horizonY.clamp(0.0, size.y), size.x, size.y));
+      canvas.drawRect(Rect.fromLTRB(0, horizonY, size.x, size.y), groundPaint);
     }
   }
 }

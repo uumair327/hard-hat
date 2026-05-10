@@ -30,12 +30,18 @@ class PlayerComponent extends PositionComponent
         CollisionCallbacks,
         KeyboardHandler,
         HasGameReference<HardHatGameActual> {
-  // === PHYSICS CONSTANTS (from Godot player.gd) ===
-  static const double speed = 200.0; // SPEED = 5.0 scaled to pixels
-  static const double jumpSpeed = 180.0; // JUMP_SPEED = 4.5 scaled
-  static const double springFactor = 3.0; // SPRING_FACTOR
-  static const double strikeBoost = 80.0; // STRIKE_BOOST = 2.0 scaled
-  static const double gravityForce = 400.0; // GRAVITY = 1.0 scaled
+  // === PHYSICS CONSTANTS (from Godot player.tscn — NOT the .gd defaults!) ===
+  // The .gd file has default values that are OVERRIDDEN in the .tscn scene.
+  // player.tscn L384-388: SPEED=6.0, JUMP_SPEED=14.0, SPRING_FACTOR=2.0,
+  //                       STRIKE_BOOST=8.0, GRAVITY=4.0
+  // 1 Godot unit = 40px (tileSize). Godot gravity = get_gravity() * GRAVITY.
+  // Godot default gravity = 9.8 m/s², so effective = 9.8 * 4.0 = 39.2 u/s².
+  // In pixels: 39.2 * 40 = 1568 px/s².
+  static const double speed = 240.0; // SPEED=6.0 * 40px = 240 px/s
+  static const double jumpSpeed = 560.0; // JUMP_SPEED=14.0 * 40px = 560 px/s
+  static const double springFactor = 2.0; // SPRING_FACTOR=2.0 (from .tscn)
+  static const double strikeBoost = 320.0; // STRIKE_BOOST=8.0 * 40px = 320 px/s
+  static const double gravityForce = 1568.0; // 9.8 * GRAVITY(4.0) * 40px
 
   // === STATE ===
   PlayerState _state = PlayerState.idle;
@@ -83,13 +89,13 @@ class PlayerComponent extends PositionComponent
   double _strikeQueueTimer = 0.0;
   double _deathTimer = 0.0;
 
-  // Timer durations (from Godot)
-  static const double coyoteTimeDuration = 0.1;
-  static const double jumpQueueDuration = 0.15;
-  static const double ballTimerDuration = 10.0;
-  static const double strikeCooldownDuration = 0.3;
-  static const double strikeQueueDuration = 0.5;
-  static const double deathTimerDuration = 1.5;
+  // Timer durations (from Godot player.tscn)
+  static const double coyoteTimeDuration = 0.1; // CoyoteTimer
+  static const double jumpQueueDuration = 0.2; // JumpQueueTimer (tscn L409)
+  static const double ballTimerDuration = 4.0; // BallTimer (tscn L414)
+  static const double strikeCooldownDuration = 0.16; // StrikeCooldown (tscn L421)
+  static const double strikeQueueDuration = 0.2; // StrikeQueueTimer (tscn L418)
+  static const double deathTimerDuration = 2.0; // DeathTimer (tscn L425)
 
   // Key state tracking for just_pressed / just_released (matching Godot)
   final Set<LogicalKeyboardKey> _prevPressedKeys = {};
@@ -97,6 +103,11 @@ class PlayerComponent extends PositionComponent
   bool _strikeJustReleased = false;
   bool _jumpJustPressedFlag = false;
   bool _jumpJustReleasedFlag = false;
+
+  // Mouse click for strike (Godot binds strike to left mouse button)
+  bool _mouseDown = false;
+  bool _mouseJustPressed = false;
+  bool _mouseJustReleased = false;
 
   // Respawn callback
   void Function()? onRespawn;
@@ -328,6 +339,23 @@ class PlayerComponent extends PositionComponent
     return false;
   }
 
+  // === MOUSE CLICK HANDLING (Godot binds strike to left mouse button) ===
+  void onMouseDown() {
+    if (!_mouseDown) {
+      _mouseDown = true;
+      _mouseJustPressed = true;
+      _strikeJustPressed = true; // Treat mouse click same as strike key
+    }
+  }
+
+  void onMouseUp() {
+    if (_mouseDown) {
+      _mouseDown = false;
+      _mouseJustReleased = true;
+      _strikeJustReleased = true; // Treat mouse release same as strike release
+    }
+  }
+
   bool _isKeyPressed(LogicalKeyboardKey key) => _pressedKeys.contains(key);
 
   bool get _moveLeftPressed =>
@@ -345,7 +373,8 @@ class PlayerComponent extends PositionComponent
 
   bool get _strikeHeld =>
       _isKeyPressed(LogicalKeyboardKey.keyE) ||
-      _isKeyPressed(LogicalKeyboardKey.keyZ);
+      _isKeyPressed(LogicalKeyboardKey.keyZ) ||
+      _mouseDown;
 
   // === UPDATE LOOP (matching Godot _physics_process) ===
   @override
@@ -402,6 +431,9 @@ class PlayerComponent extends PositionComponent
     _updateTimers(dt);
 
     // State-specific physics
+    // NOTE: _isOnFloor retains its value from PREVIOUS frame's collision
+    // callbacks (onCollision). This matches Godot where is_on_floor()
+    // reflects the state after the previous move_and_slide().
     switch (_state) {
       case PlayerState.idle:
         _idlePhysicsProcess(dt);
@@ -435,10 +467,15 @@ class PlayerComponent extends PositionComponent
         break;
     }
 
+    // Reset _isOnFloor AFTER state processing, BEFORE collision detection.
+    // Flame runs collision detection after all update() calls complete.
+    // onCollision will set _isOnFloor back to true if player touches a tile.
+    _isOnFloor = false;
+
     // Apply velocity (move_and_slide equivalent)
     position += velocity * dt;
 
-    // Simple floor collision (will be replaced by real tilemap collision)
+    // Fallback floor collision (bottom of screen)
     _handleFloorCollision();
 
     // Step sound loop is handled via playStepLoop/stopStepLoop on state change.
@@ -451,6 +488,8 @@ class PlayerComponent extends PositionComponent
     _strikeJustReleased = false;
     _jumpJustPressedFlag = false;
     _jumpJustReleasedFlag = false;
+    _mouseJustPressed = false;
+    _mouseJustReleased = false;
   }
 
   // === TIMER UPDATES ===
@@ -558,26 +597,22 @@ class PlayerComponent extends PositionComponent
     // Lock velocity during aim (Godot L71: velocity = Vector3.ZERO)
     velocity = Vector2.zero();
 
-    // Update ball direction toward mouse (matching Godot ball.gd L73-93)
-    if (ballReference != null && ballReference!.tracking) {
-      // Convert mouse screen position to world position
-      // mousePosition is in screen coords, ball position is in world coords
-      final camPos = game.camera.viewfinder.position;
-      final mouseWorld = game.mousePosition + camPos;
-      final ballPos = ballReference!.position;
-      final dir = mouseWorld - ballPos;
-      if (dir.length2 > 1.0) {
-        ballReference!.setDirection(dir.normalized());
-      }
-    }
+    // Ball direction is updated by game.update() in screen space (matching Godot ball.gd L73-93)
 
-    // Release ball when strike key is released (Godot L258)
+    // Release ball when strike is released (Godot L258)
     if (_strikeJustReleased && ballReference != null) {
       _shootBall();
     }
   }
 
+  // Godot _strike_physics_process (L262-269)
+  // Godot's GDScript doesn't call _handle_gravity here, but
+  // CharacterBody3D.move_and_slide() applies gravity implicitly.
+  // Since Flame has no implicit physics engine, we must apply gravity
+  // ourselves to prevent the player from floating after the strike boost.
   void _strikePhysicsProcess(double dt) {
+    _handleGravity(dt);
+
     if (_isOnFloor) {
       if (_inputDirection != 0.0) {
         _setPlayerState(PlayerState.run);
@@ -616,7 +651,8 @@ class PlayerComponent extends PositionComponent
   }
 
   void _handleLand() {
-    if (_isOnFloor) {
+    // Only land if we were actually falling (velocity.y > 0 means downward in Flame)
+    if (_isOnFloor && velocity.y >= 0) {
       GameAudioManager.playLand();
       if (_inputDirection != 0.0) {
         _setPlayerState(PlayerState.run);
@@ -738,17 +774,15 @@ class PlayerComponent extends PositionComponent
     }
   }
 
-  // === SIMPLE FLOOR COLLISION (placeholder until tilemap) ===
+  // === SAFETY NET (kill player if they fall off-screen) ===
   void _handleFloorCollision() {
-    final gameHeight = game.size.y;
-    final floorY = gameHeight - 64; // 64px from bottom as ground
+    // If the player falls far below the camera, trigger death/respawn.
+    // In Godot there's no fallback floor — the level geometry IS the floor.
+    final camY = game.camera.viewfinder.position.y;
+    final killY = camY + game.size.y + 200; // 200px below visible area
 
-    if (position.y >= floorY) {
-      position.y = floorY;
-      if (velocity.y > 0) velocity.y = 0;
-      _isOnFloor = true;
-    } else {
-      _isOnFloor = false;
+    if (position.y >= killY && _state != PlayerState.death) {
+      _setPlayerState(PlayerState.death);
     }
 
     // Keep player in bounds horizontally
@@ -760,11 +794,11 @@ class PlayerComponent extends PositionComponent
 
   // === Collision callbacks for tile collisions ===
   @override
-  void onCollisionStart(
+  void onCollision(
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
-    super.onCollisionStart(intersectionPoints, other);
+    super.onCollision(intersectionPoints, other);
     if (other is TileComponent) {
       _handleSolidCollision(other, intersectionPoints);
     } else if (other is ShutterComponent) {
@@ -777,40 +811,63 @@ class PlayerComponent extends PositionComponent
   void _handleSolidCollision(PositionComponent solid, Set<Vector2> points) {
     if (points.isEmpty) return;
 
-    // Calculate collision normal
-    final solidCenter = solid.position + solid.size / 2;
-    final playerCenter = position + Vector2(size.x / 2, -size.y / 2);
-    final diff = playerCenter - solidCenter;
+    // Calculate world-space AABBs for proper collision resolution.
+    //
+    // Player: anchor=bottomCenter, size=(32,48)
+    //   World top-left:  (position.x - 16, position.y - 48)
+    //   World bot-right: (position.x + 16, position.y)
+    //   World center:    (position.x, position.y - 24)
+    //
+    // Tile: anchor=topLeft (default), size=(tileSize, tileSize)
+    //   World top-left:  solid.position
+    //   World center:    solid.position + solid.size / 2
+    final playerCenterX = position.x;
+    final playerCenterY = position.y - size.y / 2;
+    final playerHalfW = size.x / 2; // 16
+    final playerHalfH = size.y / 2; // 24
 
-    // Determine collision side
-    final overlapX = (size.x / 2 + solid.size.x / 2) - diff.x.abs();
-    final overlapY = (size.y / 2 + solid.size.y / 2) - diff.y.abs();
+    final solidCenterX = solid.position.x + solid.size.x / 2;
+    final solidCenterY = solid.position.y + solid.size.y / 2;
+    final solidHalfW = solid.size.x / 2;
+    final solidHalfH = solid.size.y / 2;
+
+    final diffX = playerCenterX - solidCenterX;
+    final diffY = playerCenterY - solidCenterY;
+
+    final overlapX = (playerHalfW + solidHalfW) - diffX.abs();
+    final overlapY = (playerHalfH + solidHalfH) - diffY.abs();
+
+    // No overlap = no collision to resolve
+    if (overlapX <= 0 || overlapY <= 0) return;
 
     if (overlapX < overlapY) {
-      // Horizontal collision
-      if (diff.x > 0) {
+      // Horizontal collision (wall)
+      if (diffX > 0) {
         position.x += overlapX;
       } else {
         position.x -= overlapX;
       }
       velocity.x = 0;
     } else {
-      // Vertical collision
-      if (diff.y > 0) {
-        // Player is below tile (hitting head)
+      // Vertical collision (floor/ceiling)
+      if (diffY > 0) {
+        // Player center is below tile center → player hitting head on ceiling
         position.y += overlapY;
-        velocity.y = 0;
+        if (velocity.y < 0) velocity.y = 0;
       } else {
-        // Player is above tile (landing)
+        // Player center is above tile center → player landing on floor
         position.y -= overlapY;
         if (velocity.y > 0) velocity.y = 0;
         _isOnFloor = true;
       }
     }
 
-    // Check for spike collision
+    // Check for spike collision — Godot player.gd L147:
+    // Only kill on vertical contact (not when brushing spike from the side)
     if (solid is TileComponent && solid.tileType == TileType.spike) {
-      _setPlayerState(PlayerState.death);
+      if (overlapX >= overlapY) {
+        _setPlayerState(PlayerState.death);
+      }
     }
   }
 
